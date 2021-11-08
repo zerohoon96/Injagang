@@ -1,7 +1,6 @@
 package com.SpringIsComing.injagang.Entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,12 +12,15 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED) //싱글 테이블 전략
 @DiscriminatorColumn
 public abstract class Board {
     @Id @GeneratedValue
     @Column(name = "BOARD_ID")
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member writer;
 
     private LocalDateTime date; //작성 날짜
     private String title; //제목

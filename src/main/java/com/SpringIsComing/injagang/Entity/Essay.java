@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Essay extends Board{
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
-
-    private String title; //제목
     @OneToMany(mappedBy = "essay")
     private List<EssayContent> contents =  new ArrayList<>(); //자소서 문항들
 }

@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Interview extends Board{
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
-
-    private String title; //제목
-    private String text; //글
-
     @OneToMany(mappedBy = "interview")
-    private List<Video> videos = new ArrayList<>();
+    private List<Video> videos = new ArrayList<>(); //면접 녹화 영상들
 }
