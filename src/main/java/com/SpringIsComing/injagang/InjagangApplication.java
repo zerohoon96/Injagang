@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class}) //https://lemontia.tistory.com/586 참고
+//@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class}) //https://lemontia.tistory.com/586 참고
 public class InjagangApplication {
 
 	public static void main(String[] args) {
