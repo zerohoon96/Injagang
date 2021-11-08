@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/toy
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  messages:
+    basename: "errors"
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging.level:
+  org.hibernate.SQL: debug
+
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
