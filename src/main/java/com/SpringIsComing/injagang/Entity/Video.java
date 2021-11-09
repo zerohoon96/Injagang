@@ -20,6 +20,7 @@ public class Video {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD_ID")
     private Interview interview;
 
     private String videoURL; //영상 url

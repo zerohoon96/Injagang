@@ -21,6 +21,7 @@ public class Alarm {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     private String content; //내용

@@ -20,6 +20,7 @@ public class EssayFeedbackComment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "EF_ID")
     private EssayFeedback essayFeedback;
 
     private int num; //문항 번호

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 //게시물 Entity
 @Entity
@@ -20,7 +22,11 @@ public abstract class Board {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     private Member writer;
+
+    @OneToMany(mappedBy = "board")
+    private List<Reply> replies = new ArrayList<>();
 
     private LocalDateTime date; //작성 날짜
     private String title; //제목

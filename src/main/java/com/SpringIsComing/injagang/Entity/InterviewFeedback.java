@@ -22,9 +22,11 @@ public class InterviewFeedback {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD_ID")
     private Interview interview;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
     private String comment; //문항별 첨삭 내용

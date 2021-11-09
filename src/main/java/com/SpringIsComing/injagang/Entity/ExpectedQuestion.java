@@ -6,28 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
-//댓글 Entity
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reply {
+public class ExpectedQuestion {
     @Id
     @GeneratedValue
-    @Column(name = "REPLY_ID")
+    @Column(name = "ExpecetdQuestion_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
-    private Board board;
+    @JoinColumn(name = "EssayContent_ID")
+    private EssayContent essayContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private Member writer; //글쓴이
 
-    private String content; //내용
-    private LocalDateTime date; //글쓴 날짜
+    private String text; //내용
 }

@@ -23,9 +23,11 @@ public class EssayFeedback {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD_Id")
     private Essay essay; //FK
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member; //FK
 
     @OneToMany(mappedBy = "essayFeedback")
