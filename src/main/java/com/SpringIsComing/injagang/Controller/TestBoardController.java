@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TestBoardController {
 
     @GetMapping("/essay-list")
-    public void test(){
+    public String test(){
         log.info("==========TestBoardController==========");
+        return "/boards/essay-list";
     }
 }

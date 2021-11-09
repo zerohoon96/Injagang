@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+  <th:block th:fragment="content">
+    <head>
+      <script>
+        var questionValue = new Array(0);
+        var cur = "";
+        function addInput() { //추가 버튼을 눌렀을때
+        if(cur.length>0){ //입력값이 있어야 추가
+          questionValue.push(cur);
+          cur="";
+        }
+        display();
+        }
+
+        function display() {
+          document.getElementById('inputQuestion').innerHTML="";
+          //기존 내용, 삭제 버튼 추가
+          for(i=0;i<questionValue.length;i++)
+            document.getElementById('inputQuestion').innerHTML+=createInput(i);
+          //새로운 입력창 띄움
+          document.getElementById('inputQuestion').innerHTML+="<input class=input1 type='text' name='question' placeholder='면접 질문을 추가해보세요' onChange='cur=this.value'>  "+
+                  "<input class=input2 type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
+        }
+
+        function createInput(idx) { //HTML 생성
+        return "<div class=input1 style='display:inline;'>"+questionValue[idx]+"</div>  "+
+                "<input class=input2 type='button' value='삭제' onclick='deleteInput("+idx+");''></div><br>";
+        }
+
+        function deleteInput(idx) { //삭제 버튼 눌렀을때
+          console.log("삭제 인덱스 : ",idx);
+          console.log("삭제전 상태",questionValue.length)
+          for(i=0;i<questionValue.length;i++)
+            console.log(i,questionValue[i]);
+          if(questionValue.length>0) {
+            questionValue.splice(idx,1);
+          }
+          console.log("삭제후 상태",questionValue.length)
+          for(i=0;i<questionValue.length;i++)
+            console.log(i,questionValue[i]);
+          display();
+        }
+      </script>
+      <meta charset="utf-8"/>
+      <title>면접 보기</title>
+      <style>
+        #interviewForm {
+          /* display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          border: 1px solid #000000;
+          margin: 0px; */
+          border: 20px solid lightblue;
+          padding: 5px 20px;
+          position: absolute;
+          top: 30%;
+          left: 50%;
+          /* width: 100vh; height: 100vh; */
+          margin-left: -220px;
+          margin-top : -170px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          /* text-align: center; */
+        }
+        .input1 {
+          width: 300px;
+        height: 30px;
+        text-align: center;
+        }
+        .input2 {
+          width: 70px;
+          height: 33px;
+          text-align: center;
+        }
+        .input3 {
+          width: 150px;
+          height: 35px;
+          text-align: center;
+        }
+      </style>
+    </head>
+    <body>
+    <div id="interviewForm">
+      <section>
+        <h1 style="text-align: center;">면접 보기</h1>
+        <form name="interview" action="test.html" method="post">
+          <div>면접 제목<br>
+            <input class=input1 type="text" name="interviewName" placeholder="면접 제목을 입력하세요" >
+          </div>
+          <br><br>
+          <div>
+            기본 문제 선택 <!--자바스크립트로 디비에 있는 질문 수 만큼 질문 개수 정하기-->
+            <div>인성 질문
+              <select class=input3 name="baseQuestion">
+                <option value="">-- 문제 수 선택 --</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              </select>
+            </div>
+            <div>전공 질문
+              <select class=input3 name="csQuestion">
+                <option value="">-- 문제 수 선택 --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+          </div>
+
+          <br><br>
+
+          <div>예상 질문 댓글<br>
+            <select class=input1 name="essayName">
+              <option value="">-- 불러올 자기소개서를 선택하세요 --</option>
+              <option value="1995">삼성 자기소개서</option>
+              <option value="1996">네이버 자기소개서</option>
+              <option value="1997">카카오 자기소개서</option>
+            </select>
+            <select class=input2 name="questionUnit"> <!--자바스크립트로 자소서 눌렀을때 질문 개수 정하기-->
+              <option value="">-- 질문 개수 --</option>
+              <option value="1">1개</option>
+              <option value="2">2개</option>
+              <option value="3">3개</option>
+              <option value="4">4개</option>
+            </select>
+          </div>
+          <br><br>
+          직접 입력하기<br>
+          <div id="inputQuestion">
+            <script>
+              // questionValue.push("");
+              display();
+            </script>
+          </div>
+          <input class=input2 type="submit" name="" value="면접 시작">
+        </form>
+      </section>
+    </div>
+    </body>
+  </th:block>
+</th:block>
+</html>
+
