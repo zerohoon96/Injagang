@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <table id="board_body">
+            <th>글쓴이</th>
+            <th>제목</th>
+            <th>날짜</th>
+            <tr>
+                <td>김수만</td>
+                <td><a href="#">2021 삼성전자 하반기 자소서 피드백 부탁드립니다!</a></td>
+                <td>2021.11.09</td>
+            </tr>
+            <tr>
+                <td>이영훈</td>
+                <td><a href="#">2021년 LG전자 하반기 자소서 입니다. 예상 질문 많이 달아주세요!</a></td>
+                <td>2021.11.03</td>
+            </tr>
+            <tr>
+                <td>김의현</td>
+                <td><a href="#">일주일 동안 쓴 자소서인데 첨삭 부탁드려용</a></td>
+                <td>2021.11.01</td>
+            </tr>
+        </table>
+    </th:block>
+</th:block>

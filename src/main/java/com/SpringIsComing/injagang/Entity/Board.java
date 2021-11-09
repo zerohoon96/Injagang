@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED) //싱글 테이블 전략
+@Inheritance(strategy = InheritanceType.JOINED) //조인 테이블 전략
 @DiscriminatorColumn
 public abstract class Board {
     @Id @GeneratedValue
