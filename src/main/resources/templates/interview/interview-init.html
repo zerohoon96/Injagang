@@ -3,7 +3,7 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
   <th:block th:fragment="content">
     <head>
-      <script>
+      <script th:inline="javascript">
         var questionValue = new Array(0);
         var cur = "";
         function addInput() { //추가 버튼을 눌렀을때
@@ -20,13 +20,13 @@
           for(i=0;i<questionValue.length;i++)
             document.getElementById('inputQuestion').innerHTML+=createInput(i);
           //새로운 입력창 띄움
-          document.getElementById('inputQuestion').innerHTML+="<input class=input1 type='text' name='question' placeholder='면접 질문을 추가해보세요' onChange='cur=this.value'>  "+
+          document.getElementById('inputQuestion').innerHTML+="<input class=input1 type='text' name='question' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  "+
                   "<input class=input2 type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
         }
 
-        function createInput(idx) { //HTML 생성
-        return "<div class=input1 style='display:inline;'>"+questionValue[idx]+"</div>  "+
-                "<input class=input2 type='button' value='삭제' onclick='deleteInput("+idx+");''></div><br>";
+        function createInput(idx) {
+          return "<input class=input1 type='text' name='question"+(idx+1)+"' value="+questionValue[idx]+" readonly>  "+
+                  "<input class=input2 type='button' value='삭제' onclick='deleteInput("+(idx)+");''></div><br>";
         }
 
         function deleteInput(idx) { //삭제 버튼 눌렀을때
@@ -42,6 +42,26 @@
             console.log(i,questionValue[i]);
           display();
         }
+
+        function afterSelect() { //자기소개서 선택 후
+          var selectForm = document.getElementById("essaySelect"); //자기소개서 선택
+          var essayName = selectForm.options[selectForm.selectedIndex].value; //자기소개서 선택 결과
+          let essayMap = [[${essayMap}]]; //자기소개서 map (이걸 활용해서 각 댓글수 추출)
+
+          console.log("essay name : ",essayName);
+          console.log("essayMap : ",essayMap[essayName],typeof essayMap);
+          if(essayMap[essayName]!=undefined) { //자기소개서를 선택한 경우
+            document.getElementById('expectedQuestion').innerHTML = "<option value='' hidden>질문 수</option>";
+            for (i = 1; i <= essayMap[essayName]; i++) //질문 개수만큼 설정 option 생성
+              document.getElementById('expectedQuestion').innerHTML += "<option value=" + i + ">" + i + "</option>";
+          }
+          else { //자기소개서를 선택하지 않은 경우
+            document.getElementById('expectedQuestion').innerHTML = "";
+            document.getElementById('expectedQuestion').innerHTML += "<option value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
+          }
+          console.log(document.getElementById('expectedQuestion').innerHTML);
+        }
+
       </script>
       <meta charset="utf-8"/>
       <title>면접 보기</title>
@@ -88,53 +108,49 @@
     <div id="interviewForm">
       <section>
         <h1 style="text-align: center;">면접 보기</h1>
-        <form name="interview" action="test.html" method="post">
+        <form name="interview" action="/interview/submit" method="post">
           <div>면접 제목<br>
-            <input class=input1 type="text" name="interviewName" placeholder="면접 제목을 입력하세요" >
+            <input class=input1 type="text" name="interviewName" placeholder="면접 제목을 입력하세요" required>
           </div>
           <br><br>
           <div>
-            기본 문제 선택 <!--자바스크립트로 디비에 있는 질문 수 만큼 질문 개수 정하기-->
+            기본 문제 선택
             <div>인성 질문
-              <select class=input3 name="baseQuestion">
-                <option value="">-- 문제 수 선택 --</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
+              <select class=input3 name="baseQuestion" required>
+                <option value="" hidden>-- 문제 수 선택 --</option>
+                <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                  <option th.value="${num}"><p th:text="${num}"></p></option>
+                </th:block>
               </select>
             </div>
             <div>전공 질문
-              <select class=input3 name="csQuestion">
-                <option value="">-- 문제 수 선택 --</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
+              <select class=input3 name="csQuestion" required>
+                <option value="" hidden>-- 문제 수 선택 --</option>
+                <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                  <option th.value="${num}"><p th:text="${num}"></p></option>
+                </th:block>
               </select>
             </div>
           </div>
 
           <br><br>
 
-          <div>예상 질문 댓글<br>
-            <select class=input1 name="essayName">
-              <option value="">-- 불러올 자기소개서를 선택하세요 --</option>
-              <option value="1995">삼성 자기소개서</option>
-              <option value="1996">네이버 자기소개서</option>
-              <option value="1997">카카오 자기소개서</option>
+          <div id="selectEssay">예상 질문 댓글<br>
+            <select id="essaySelect" class=input1 name="essayName" onChange="afterSelect()" required>
+              <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
+              <th:block th:each="essay: ${essayMap}">
+                <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
+              </th:block>
+              <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
             </select>
-            <select class=input2 name="questionUnit"> <!--자바스크립트로 자소서 눌렀을때 질문 개수 정하기-->
-              <option value="">-- 질문 개수 --</option>
-              <option value="1">1개</option>
-              <option value="2">2개</option>
-              <option value="3">3개</option>
-              <option value="4">4개</option>
+            <select id="expectedQuestion" class=input2 name="expectedQuestion" required>
+              <option value="">질문 수</option>
             </select>
           </div>
           <br><br>
           직접 입력하기<br>
           <div id="inputQuestion">
             <script>
-              // questionValue.push("");
               display();
             </script>
           </div>
@@ -146,4 +162,3 @@
   </th:block>
 </th:block>
 </html>
-
