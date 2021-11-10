@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>인자강 - 인터뷰와 자소서를 강하게! 취준생을 위한 웹페이지</title>
 
   <!-- Bootstrap core CSS -->
   <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
@@ -35,11 +35,20 @@
       <div class="sidebar-heading"> <i>인터뷰와<br>자소서를<br>강하게!</i></div>
       <br>
     <div class="list-group list-group-flush">
-      <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        <!--/*
+        <a th:href="@{/mypage}" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        */-->
+        <a th:href="@{/boards/essay-list}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
+        <a th:href="@{/boards/interview-list}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
+        <!--/*
+        <a th:href="@{/essay}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
+        */-->
+        <a href="#" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        <!--/*
+        <a th:href="@{/interview/init}" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        */-->
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -48,7 +57,7 @@
   <div id="page-content-wrapper">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-      <button class="btn btn-primary" id="menu-toggle">사이드바 접기</button>
+      <button class="btn btn-primary" id="menu-toggle">사이드바 토글</button>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

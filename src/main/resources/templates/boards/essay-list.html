@@ -9,6 +9,8 @@
             <thead>
             <tr>
                 <th>제목</th>
+                <th>예상질문</th>
+                <th>피드백</th>
                 <th>글쓴이</th>
                 <th>날짜</th>
             </tr>
@@ -16,16 +18,22 @@
             <tbody>
             <tr>
                 <td><a href="#">2021 삼성전자 하반기 자소서 피드백 부탁드립니다!</a></td>
+                <td>8</td>
+                <td>3</td>
                 <td>김수만</td>
                 <td>2021.11.09</td>
             </tr>
             <tr>
                 <td><a href="#">2021년 LG전자 하반기 자소서 입니다. 예상 질문 많이 달아주세요!</a></td>
+                <td>5</td>
+                <td>2</td>
                 <td>이영훈</td>
                 <td>2021.11.03</td>
             </tr>
             <tr>
                 <td><a href="#">일주일 동안 쓴 자소서인데 첨삭 부탁드려용</a></td>
+                <td>6</td>
+                <td>4</td>
                 <td>김의현</td>
                 <td>2021.11.01</td>
             </tr>
@@ -38,6 +46,8 @@
             <thead>
             <tr>
                 <th>제목</th>
+                <th>예상질문</th>
+                <th>피드백</th>
                 <th>글쓴이</th>
                 <th>날짜</th>
             </tr>
@@ -45,6 +55,8 @@
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
                 <td><a href="@{/essay/board/pk(pk=${dto.pk})}">[[${dto.title}]]</a></td>
+                <td>[[${dto.qCnt}]]</td>
+                <td>[[${dto.fCnt}]]</td>
                 <td>[[${dto.writer}]]</td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
             </tr>
