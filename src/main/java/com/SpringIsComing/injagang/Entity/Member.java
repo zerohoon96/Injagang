@@ -23,5 +23,6 @@ public class Member {
 
     private String login_id; //아이디
     private String password; //비밀번호
+    private String nickname; //닉네임
     private String info; //인적사항
 }
