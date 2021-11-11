@@ -29,7 +29,7 @@ public class InterviewController {
         model.addAttribute("baseQuestion",10); //인성면접 개수
         model.addAttribute("csQuestion",6); //전공면접 개수
         model.addAttribute("essayMap",essayMap); //자소서 이름, 질문수
-        return "/interview/interview-init";
+        return "interview/init";
     }
 
     /**
@@ -48,18 +48,18 @@ public class InterviewController {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
         System.out.println("InterviewController.interviewSubmit");
-        questionList.add("객체지향 설계 5원칙을 설명해보세요");
-        questionList.add("본인 성격의 장단점을 말씀해주세요");
-        questionList.add("최소 신장 트리를 만드는데 사용되는 알고리즘은 어떤 것이 있나요?");
-        questionList.add("요즘 관심있는 아이티 기술 및 이유를 말해주세요");
-        questionList.add("지원 동기를 말씀해주세요");
+        questionList.add("그대 눈동자에 건배");
+        questionList.add("우린 간부잖아..");
+        questionList.add("나 너무 무서워.. 이러다가는 다 죽어!");
+        questionList.add("그럼 자네가 날 속이고, 내 구슬을 가져간 건 말이 되고?");
+        questionList.add("밖에 나와보니까.... 그 사람들 말이 다 맞더라고. 여기가 더 지옥이야.");
         model.addAttribute("questions",questionList);
-        return "/interview/interview-test";
+        return "interview/test";
     }
 
     @GetMapping("/test")
     String test() {
-        return "/interview/test";
+        return "interview/muyaho";
     }
 
 }
