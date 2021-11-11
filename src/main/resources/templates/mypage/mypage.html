@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+<head>
+    <meta charset="utf-8">
+
+    <style>
+
+        .text-align-center{
+            text-align: center;
+        }
+
+        thead{
+            border-top: none;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="row mt-5 justify-content-center">
+
+    <div class="col-6 d-flex justify-content-center">
+        <span class="display-4">닉네임</span>
+    </div>
+
+</div>
+
+<div class="row mt-3 justify-content-center">
+
+    <div class="col-3 d-flex justify-content-between">
+
+        <span>자소서 : xx</span>
+        <span>면접 : xx</span>
+        <span>친구 : xx</span>
+
+    </div>
+
+
+
+
+</div>
+
+
+
+<div class="row justify-content-center mt-5">
+
+    <div class="btn-group col-lg-3" role="group" aria-label="Basic outlined example">
+        <button type="button" class="btn btn-outline-secondary">자소서</button>
+        <button type="button" class="btn btn-outline-secondary">면접</button>
+        <button type="button" class="btn btn-outline-secondary">친구</button>
+    </div>
+
+
+</div>
+
+<!--<div class="row justify-content-center">-->
+<!--    <hr class="col-lg-6">-->
+<!--</div>-->
+
+<div class="row justify-content-center mt-3">
+
+    <div class="col-lg-6">
+        <table class="table">
+
+            <tr>
+                <th class="col-8 text-align-center">자소서 제목</th>
+                <th class="col-4 text-align-center">질문수</th>
+            </tr>
+
+            <tbody>
+
+            <tr>
+                <td class="col-8">test1</td>
+                <td class="col-4 text-align-center">3</td>
+            </tr>
+
+            <tr>
+                <td class="col-8">test2</td>
+                <td class="col-4 text-align-center">3</td>
+            </tr>
+
+            <tr>
+                <td class="col-8">test3</td>
+                <td class="col-4 text-align-center">3</td>
+            </tr>
+
+            <tr>
+                <td class="col-8">test4</td>
+                <td class="col-4 text-align-center">3</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+
+    </th:block>
+</th:block>
+</html>
+
