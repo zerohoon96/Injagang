@@ -48,11 +48,9 @@ public class InterviewController {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
         System.out.println("InterviewController.interviewSubmit");
-        questionList.add("그대 눈동자에 건배");
-        questionList.add("우린 간부잖아..");
-        questionList.add("나 너무 무서워.. 이러다가는 다 죽어!");
-        questionList.add("그럼 자네가 날 속이고, 내 구슬을 가져간 건 말이 되고?");
-        questionList.add("밖에 나와보니까.... 그 사람들 말이 다 맞더라고. 여기가 더 지옥이야.");
+        questionList.add("안녕하세요");
+        questionList.add("이영훈입니다");
+        questionList.add("어쩌라구요");
         model.addAttribute("questions",questionList);
         return "interview/test";
     }

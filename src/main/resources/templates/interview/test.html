@@ -11,8 +11,36 @@
         speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
         speechMsg.lang = "ko-KR";
 
+        function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하는 함수
+          if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+            alert("이 브라우저에서 테스트가 불가능합니다.");
+            //다른 페이지로 이동
+          }
+          else { //가능한 경우 초기 html 추가
+            initGuide();
+          }
+        }
+
+        function initGuide() { //초기 화면 설정 (시작하기 포함)
+          document.getElementById('guide').innerHTML =
+                  "<div id='howToPlay'>" +
+                  "<p id='p1'>" +
+                  "<span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>진행 방법</span>" +
+                  "</p>" +
+                  "<p id='p2'><br><br>" +
+                  "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
+                  "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
+                  "3. 답변을 완료한 후에는 [다음으로] 버튼을 눌러서 다음 문제를 진행할 수 있습니다.<br><br>" +
+                  "4. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
+                  "5. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
+                  "</p>" +
+                  "<input class='btn btn-style' type='button' value='시작하기' onclick='startInterview(0)'/>" +
+                  "</div>";;
+        }
+
         function startInterview(idx) { //한 문제씩 면접을 진행하는 함수
-          document.getElementById('eachQuestion').innerHTML="";
+          showGuide('/listen.png', '문제를 읽고 있습니다!');
+          document.getElementById('everyBtn').innerHTML = "";
           console.log("*****말하기 세팅 시작*****");
           console.log("현재 문제 : ",questions[idx]);
           speakSet(questions[idx]).then(function(){
@@ -20,16 +48,21 @@
             return speak(); //문제 읽기
           }).then(function(){
             console.log("*****대기 시작*****");
-            // let res=waitSpeaking();
-            // console.log("finish!!!",n,res[Symbol.toStringTag]);
             return waitSpeaking();
-          }).then(function(){
+          }).then(function(){ //말하기 종료 후 영상 녹화 시작
+            //영상 녹화 시작
             console.log("*****버튼 세팅 시작*****");
+            showGuide('/speak.png', '이제 말하세요!');
             return btnControl(idx); //문제를 모두 읽고 다음 문제 버튼 추가
             //여기서 면접 시작
           }).catch(alert);
         }
 
+        function showGuide(imgPath, msg) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
+          document.getElementById('guide').innerHTML = "<p id='p1'><img src="+imgPath+" style='width:80px; height:80px;'>   "+msg+"</p><br>";
+          //여기서 카메라 화면까지 나타내기
+
+        }
         function speakSet(text) { //말하기 준비를 하는 함수
           return new Promise((resolve, reject) =>{
             console.log("말하기 세팅중!!!!!!");
@@ -75,10 +108,11 @@
 
         function btnControl(idx) { //버튼을 추가하는 함수
           return new Promise((resolve, reject) =>{
-            let btnValue = "다음 문제";
+            let btnValue = "다음문제";
+            // document.getElementById('eachQuestion').innerHTML="";
             if (idx == questions.length - 1)
-              btnValue = "면접 종료";
-            document.getElementById('eachQuestion').innerHTML += "<input class=input3 type='button' value="+btnValue+" onClick='processVideo("+(idx+1)+")'/>";
+              btnValue = "면접종료";
+            document.getElementById('everyBtn').innerHTML = "<input class='btn btn-style' type='button' value="+btnValue+" onClick='processVideo("+(idx+1)+")'/>";
             resolve();
           });
         }
@@ -91,70 +125,55 @@
           }
           else { //면접 종료
             console.log("면접을 종료합니다");
-            document.getElementById('eachQuestion').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
+
+            document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
           }
         }
 
-        function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하는 함수
-          if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-            alert("이 브라우저에서 테스트가 불가능합니다.");
-            //다른 페이지로 이동
-          }
-          else { //가능한 경우 시작하기 버튼을 추가
-            document.getElementById('eachQuestion').innerHTML="<input class=input2 type=\"button\" value='시작하기' onclick='startInterview(0)'/>";
-          }
-        }
+
       </script> 
       <meta charset="utf-8"/>
       <title>면접 보기</title>
       <style>
-        #interviewForm {
-          /* display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          border: 1px solid #000000;
-          margin: 0px; */
-          border: 20px solid lightblue;
-          padding: 5px 20px;
-          position: absolute;
-          top: 30%;
-          left: 50%;
-          /* width: 100vh; height: 100vh; */
-          margin-left: -220px;
-          margin-top : -170px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          /* text-align: center; */
+        .btn-style {
+          color: #fff;
+          background-color: plum;
+          border-color: plum;
+          text-align: center;
+          width: 200px;
+          height: 50px;
         }
-        .input1 {
-          width: 300px;
-        height: 30px;
-        text-align: center;
-        }
-        .input2 {
-          width: 70px;
-          height: 33px;
+        .common {
+          /*margin-left: 25%;*/
           text-align: center;
         }
-        .input3 {
-          width: 150px;
-          height: 35px;
+        #p1 {
+          font-family: 함초롬바탕;
+          font-size: 35px;
+          font-weight: bold;
           text-align: center;
+        }
+        #p2 {
+          font-family: 함초롬바탕;
+          font-size: 1vw;
+         }
+        #howToPlay {
+          width: 50%;
+          margin-left: 25%;
         }
       </style>
     </head>
     <body>
-    <h1 style="text-align: center;">모의 면접</h1>
-    <div id="eachQuestion">
-      <script>
-        speakSet("모의 면접에 오신걸 환영합니다. 시작 버튼을 누르면 첫 문제부터 면접이 시작됩니다. 다음 문제를 눌러서 진행 후 마지막에 종료하기를 누르면 종료됩니다.");
-        speak();
-        canRead();
-      </script>
-    </div>
+    <div id="guide" style="margin-top: 5%"></div>
+    <div id="camera" class="common">여기서 카메라 계속 녹화중~~~~</div>
+    <div id="everyBtn" class="common"></div>
+
+    <script>
+      speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");
+      speak();
+      canRead();
+    </script>
+
     </body>
   </th:block>
 </th:block>
