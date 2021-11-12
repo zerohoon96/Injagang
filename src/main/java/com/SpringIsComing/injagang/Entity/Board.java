@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED) //조인 테이블 전략
 @DiscriminatorColumn
-public abstract class Board {
+public class Board {
     @Id @GeneratedValue
     @Column(name = "BOARD_ID")
     private Long id;

@@ -64,10 +64,28 @@
                 <button type="button" class="btn btn-outline-primary">글쓰기</button>
             </a>
         </div>
-        
+    
         <!-- 페이지 버튼 들어갈 자리 -->
         <!--/*
-        
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/interview/board(page=${result.start - 1},
+                keyword=${pageRequestDTO.keyword}) }" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page ? 'active' : ''} "
+                th:each="page : ${result.pageList}">
+                <a class="page-link" th:href="@{/interview/board(page=${page},
+                keyword=${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/interview/board(page=${result.end + 1},
+                keyword=${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
         */-->
         
         <!-- 임시 검색창 -->
@@ -81,6 +99,18 @@
                 </div>
             </div>
         </form>
+        
+        <!-- 검색 기능 -->
+        <script th:inline="javascript">
+            let searchForm = $("#searchForm");
+            $('.btn-search').click(function(e){
+                searchForm.submit();
+            });
+        
+            $('.btn-clear').click(function(e){
+                searchForm.empty().submit();
+            });
+        </script>
     
     </th:block>
 </th:block>

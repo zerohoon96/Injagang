@@ -28,6 +28,8 @@
         </head>
         
         <div class="essay-content">
+            
+            <!-- 임시 질문/대답/예상질문 부분 -->
             <div class="left-space">
                 <div class="form-group">
                     <label >1.당신의 성격이 어떻다고 생각하십니까?(내성적, 외향적)</label>
@@ -57,19 +59,22 @@
                 </div>
             </div>
     
-            <!-- 실제 사용할 질문/대답 부분 -->
+            <!-- 실제 사용할 질문/대답/예상질문 부분 -->
             <!--/*
             <div class="left-space">
-            <div class="form-group" th:each="dto : ${result.dtoList}">
+            <div class="form-group" th:each="dto : ${result.contentList}">
                 <label>[[${dto.question}]]</label>
                 <input type="text" class="form-control" name="content" th:value="${dto.content}" readonly>
+                <div th:each="qdto : ${dto.questionList}">
+                    <label th:value="${qdto.nickname}"></label>
+                    <br>
+                    <textarea th:value="${qdto.content}" cols="80" readonly></textarea>
+                </div>
             </div>
             </div>
             */-->
-    
-            <!-- 실제 사용할 피드백 보기 부분-->
             
-            <!-- 오른쪽 공간 - 피드백 보기 버튼 임시 -->
+            <!-- 피드백 보기 버튼 임시 -->
             <div class="right-space">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -82,17 +87,36 @@
                     </div>
                 </div>
             </div>
+    
+            <!-- 실제 사용할 피드백 보기 부분-->
+            <!--/*
+            <div class="right-space">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        피드백([[${result.fCnt}]]개)
+                    </a>
+                </div>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"
+                     th:each="dto : ${result.feedbackList}">
+                    <a class="dropdown-item" th:value="${dto.nickname}님의 피드백"
+                       th:href="@{/essay/board/feedback/${dto.pk}"></a>
+                </div>
+            </div>
+            */-->
             
+            <!-- 첨삭쓰기 버튼 -->
             <div style="float: right; display: inline-block">
                 <button class="btn btn-primary">
                     <a th:href="@{/essay/board/feedback}" style="color: white;">첨삭 쓰기</a>
                 </button>
             </div>
-            
             <hr>
-            <!-- 댓글 -->
+            
+            <!-- 댓글 - js로 댓글 달기 -->
             <div class="reply-space">
                 <h3>댓글</h3>
+                
+                <!-- 기존 댓글 표시해줄 부분 임시 -->
                 <label>{nickname4}님의 댓글</label>
                 <br>
                 <textarea cols="80" readonly>잘 봤습니다!</textarea>
@@ -100,8 +124,35 @@
                 <label>{nickname5}님의 댓글</label>
                 <br>
                 <textarea cols="80" readonly>좋은 자소서네요.</textarea>
+                
+                <!-- 실제 기존 댓글 표시해줄 부분 -->
+                <!--/*
+                <div th:each="dto : ${result.replyList}">
+                    <label>[[${dto.nickname}]]님의 댓글</label>
+                    <br>
+                    <textarea cols="80" readonly>[[${dto.content}]]</textarea>
+                </div>
+                */-->
+                
+                <!-- 댓글 달기 -->
+                <div id="new_reply"></div>
+                <input id="reply_input" type="button" value="댓글 달기" onclick="make_reply(); remove_btn();">
             </div>
         </div>
+        
+        <!-- 댓글 달기 기능 -->
+        <script th:inline="javascript">
+            //댓글 달기를 누르면 그 부분 삭제
+            function remove_btn(){
+                $('#reply_input').remove();
+            }
+            //댓글 달기를 누르면 쓰는 사람의 닉네임 label과 textarea 생성 - 임시
+            function make_reply(){
+                document.getElementById("new_reply").innerHTML+=`<label>{nickname}님의 댓글</label><br>`+
+                `<textarea cols="80" rows="3" placeholder="내용을 입력해주세요."></textarea>`+
+                `<button style="border: 1px black; background-color: lightgray">확인</button>`;
+            }
+        </script>
         
     </th:block>
 </th:block>
