@@ -15,4 +15,19 @@ public class TestBoardController {
         log.info("==========TestBoardController==========");
         return "/boards/essay-list";
     }
+
+    @GetMapping("/test")
+    public String test2(){
+        return "/mypage/login";
+    }
+
+    @GetMapping("/test2")
+    public String test3(){
+        return "/mypage/reg";
+    }
+
+    @GetMapping("/test3")
+    public String test4(){
+        return "/mypage/mypage";
+    }
 }
