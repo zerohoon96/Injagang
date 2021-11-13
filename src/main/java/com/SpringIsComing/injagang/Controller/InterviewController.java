@@ -44,14 +44,12 @@ public class InterviewController {
         //2. 예상 댓글 질문 디비에서 랜덤으로 뽑아서 리스트에 추가
 
         //4. Shuffle
-        for (Map.Entry<String, Object> entry : allParameters.entrySet()) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
-        }
         System.out.println("InterviewController.interviewSubmit");
         questionList.add("안녕하세요");
         questionList.add("이영훈입니다");
         questionList.add("어쩌라구요");
         model.addAttribute("questions",questionList);
+        model.addAttribute("interviewName",allParameters.get("interviewName"));
         return "interview/test";
     }
 

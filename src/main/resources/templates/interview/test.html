@@ -1,180 +1,255 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-  <th:block th:fragment="content">
-    <head>
-      <script th:inline="javascript">
-        let questions = [[${questions}]];
-        let synth = window.speechSynthesis;
-        const speechMsg = new SpeechSynthesisUtterance();
-        speechMsg.rate = 1; // 속도: 0.1 ~ 10
-        speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
-        speechMsg.lang = "ko-KR";
+    <th:block th:fragment="content">
+        <head>
+            <meta charset="utf-8"/>
+            <title>면접 보기</title>
+            <style>
+                .btn-style {
+                    color: #fff;
+                    background-color: plum;
+                    border-color: plum;
+                    text-align: center;
+                    width: 200px;
+                    height: 50px;
+                }
 
-        function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하는 함수
-          if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
-            alert("이 브라우저에서 테스트가 불가능합니다.");
-            //다른 페이지로 이동
-          }
-          else { //가능한 경우 초기 html 추가
-            initGuide();
-          }
-        }
+                .common {
+                    /*margin-left: 25%;*/
+                    text-align: center;
+                }
 
-        function initGuide() { //초기 화면 설정 (시작하기 포함)
-          document.getElementById('guide').innerHTML =
-                  "<div id='howToPlay'>" +
-                  "<p id='p1'>" +
-                  "<span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>진행 방법</span>" +
-                  "</p>" +
-                  "<p id='p2'><br><br>" +
-                  "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
-                  "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
-                  "3. 답변을 완료한 후에는 [다음으로] 버튼을 눌러서 다음 문제를 진행할 수 있습니다.<br><br>" +
-                  "4. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
-                  "5. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
-                  "</p>" +
-                  "<input class='btn btn-style' type='button' value='시작하기' onclick='startInterview(0)'/>" +
-                  "</div>";;
-        }
+                #p1 {
+                    font-family: 함초롬바탕;
+                    font-size: 35px;
+                    font-weight: bold;
+                    text-align: center;
+                }
 
-        function startInterview(idx) { //한 문제씩 면접을 진행하는 함수
-          showGuide('/listen.png', '문제를 읽고 있습니다!');
-          document.getElementById('everyBtn').innerHTML = "";
-          console.log("*****말하기 세팅 시작*****");
-          console.log("현재 문제 : ",questions[idx]);
-          speakSet(questions[idx]).then(function(){
-            console.log("*****말하기 시작*****");
-            return speak(); //문제 읽기
-          }).then(function(){
-            console.log("*****대기 시작*****");
-            return waitSpeaking();
-          }).then(function(){ //말하기 종료 후 영상 녹화 시작
-            //영상 녹화 시작
-            console.log("*****버튼 세팅 시작*****");
-            showGuide('/speak.png', '이제 말하세요!');
-            return btnControl(idx); //문제를 모두 읽고 다음 문제 버튼 추가
-            //여기서 면접 시작
-          }).catch(alert);
-        }
+                #p2 {
+                    font-family: 함초롬바탕;
+                    font-size: 1vw;
+                }
 
-        function showGuide(imgPath, msg) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
-          document.getElementById('guide').innerHTML = "<p id='p1'><img src="+imgPath+" style='width:80px; height:80px;'>   "+msg+"</p><br>";
-          //여기서 카메라 화면까지 나타내기
+                #howToPlay {
+                    width: 50%;
+                    margin-left: 25%;
+                }
 
-        }
-        function speakSet(text) { //말하기 준비를 하는 함수
-          return new Promise((resolve, reject) =>{
-            console.log("말하기 세팅중!!!!!!");
-            synth.cancel(); // 현재 읽고있다면 초기화
-            speechMsg.text = text;
-            console.log("말하기 세팅끝!!!!!!");
-            resolve();
-          });
-        }
+                #video {
+                    margin: 0px auto;
+                    width: 500px;
+                    height: 375px;
+                    /*border: 10px #333 solid;*/
+                }
 
-        function speak() { //설정된 텍스트를 말하는 함수
-          return new Promise((resolve, reject)=>{
-            console.log("말하기중!!!!");
-            synth.speak(speechMsg);
-            console.log("말하기 끝!!!");
-            resolve();
-          })
-        }
+                #videoElement {
+                    width: 500px;
+                    height: 375px;
+                    /*background-color: #666;*/
+                }
+            </style>
+        </head>
 
-        let n=0;
-        function waitSpeaking() { //말하기 종료를 검사하는 함수
-          if(synth.speaking) {
-            console.log(++n);
-            let res=finishWait().then(waitSpeaking);
-            console.log(n,res);
-            return res;
-          }
-          else
-            return new Promise((resolve, reject) =>{
-              console.log("finish!!!",synth.speaking);
-              resolve();
-            });
-        }
+        <body>
+        <div id="guide" style="margin-top: 5%"></div>
+        <div id="video" class="common">
+            <video autoplay="true" id="videoElement" muted="true">
+            </video>
+            <a id="autoDownload" href="">ㅋㅋㅋㅋㅋ</a>
+        </div>
+        <div id="everyBtn" class="common">
+        </div>
 
-        function finishWait() { //과부하를 막기 위해 1초간 대기하는 함수
-          return new Promise((resolve, reject) =>{
-            setTimeout(function() {
-              console.log(n," test!");
-              resolve();
-            },1000);
-          })
-        }
+<!--        <script src="/js/processInterview.js" th:inline="javascript" ></script> &lt;!&ndash;왜 비디오는 널로 쳐 나오고 얘는 아무것도 실행이 안되냐 개빡치게&ndash;&gt;-->
 
-        function btnControl(idx) { //버튼을 추가하는 함수
-          return new Promise((resolve, reject) =>{
-            let btnValue = "다음문제";
-            // document.getElementById('eachQuestion').innerHTML="";
-            if (idx == questions.length - 1)
-              btnValue = "면접종료";
-            document.getElementById('everyBtn').innerHTML = "<input class='btn btn-style' type='button' value="+btnValue+" onClick='processVideo("+(idx+1)+")'/>";
-            resolve();
-          });
-        }
+        <script th:inline="javascript">
+            const questions = [[${questions}]];
+            const interviewName = [[${interviewName}]];
+            let synth = window.speechSynthesis;
+            let video;
+            let recorder;
+            let chunks = [];
+            const download = document.querySelector("#autoDownload");
 
-        function processVideo(idx) { //한 문제 종료 후 영상을 처리하는 함수
-          //비디오 저장 처리
-          console.log("비디오 저장 완료!");
-          if (idx < questions.length) { //다음 문제
-            startInterview(idx);
-          }
-          else { //면접 종료
-            console.log("면접을 종료합니다");
-
-            document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
-          }
-        }
+            const speechMsg = new SpeechSynthesisUtterance();
+            speechMsg.rate = 1; // 속도: 0.1 ~ 10
+            speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
+            speechMsg.lang = "ko-KR";
 
 
-      </script> 
-      <meta charset="utf-8"/>
-      <title>면접 보기</title>
-      <style>
-        .btn-style {
-          color: #fff;
-          background-color: plum;
-          border-color: plum;
-          text-align: center;
-          width: 200px;
-          height: 50px;
-        }
-        .common {
-          /*margin-left: 25%;*/
-          text-align: center;
-        }
-        #p1 {
-          font-family: 함초롬바탕;
-          font-size: 35px;
-          font-weight: bold;
-          text-align: center;
-        }
-        #p2 {
-          font-family: 함초롬바탕;
-          font-size: 1vw;
-         }
-        #howToPlay {
-          width: 50%;
-          margin-left: 25%;
-        }
-      </style>
-    </head>
-    <body>
-    <div id="guide" style="margin-top: 5%"></div>
-    <div id="camera" class="common">여기서 카메라 계속 녹화중~~~~</div>
-    <div id="everyBtn" class="common"></div>
+            function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하는 함수
+                console.log(questions, interviewName);
+                if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+                    alert("이 브라우저에서 테스트가 불가능합니다.");
+                    //다른 페이지로 이동
+                } else { //가능한 경우 초기 html 추가 및 카메라 화면 설정
+                    initGuide();
+                    startVideo();
+                }
+            }
 
-    <script>
-      speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");
-      speak();
-      canRead();
-    </script>
+            function initGuide() { //초기 화면 설정 (시작하기 포함)
+                document.getElementById('guide').innerHTML =
+                    "<div id='howToPlay'>" +
+                    "<p id='p1'>" +
+                    "<span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>진행 방법</span>" +
+                    "</p>" +
+                    "<p id='p2'><br><br>" +
+                    "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
+                    "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
+                    "3. 답변을 완료한 후에는 [다음으로] 버튼을 눌러서 다음 문제를 진행할 수 있습니다.<br><br>" +
+                    "4. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
+                    "5. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
+                    "</p>" +
+                    "</div>";
 
-    </body>
-  </th:block>
+                document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-style' type='button' value='시작하기' onclick='startInterview(0)'/>";
+            }
+
+            function startVideo() { //화면에 카메라를 띄우는 함수
+                video = document.querySelector("#videoElement");
+
+                if (navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({video: true, audio: true})
+                        .then(function (stream) {
+                            video.srcObject = stream;
+                            console.log('스트림 : ', video.srcObject);
+                        })
+                        .catch(function (err0r) {
+                            console.log("Something went wrong!");
+                        });
+                }
+            }
+
+            function startInterview(idx) { //한 문제씩 면접을 진행하는 함수
+                document.getElementById('everyBtn').innerHTML = "";
+
+                speakSet(questions[idx]).then(function () {
+                    showGuide('/listen.png', '문제를 읽고 있습니다.');
+                    return speak(); //말하기 세팅
+                }).then(function () {
+                    return waitSpeaking(); //말하기가 종료될 때까지 대기
+                }).then(function () {
+                    return startRecording(); //영상 녹화 시작
+                }).then(function () { //말하기 종료 후 영상 녹화 시작
+                    showGuide('/speak.png', '이제 말하세요!');
+                    return btnControl(idx); //문제를 모두 읽고 다음 문제 버튼 추가
+                }).catch(alert);
+            }
+
+            function showGuide(imgPath, msg) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
+                console.log("*****가이드 세팅*****");
+                document.getElementById('guide').innerHTML = "<p id='p1'><img src=" + imgPath + " style='width:80px; height:80px;'>   " + msg + "</p><br>";
+                //여기서 카메라 화면까지 나타내기
+
+            }
+
+            function speakSet(text) { //말하기 준비를 하는 함수
+                return new Promise((resolve, reject) => {
+                    console.log("*****말하기 세팅 시작*****");
+                    synth.cancel(); // 현재 읽고있다면 초기화
+                    speechMsg.text = text;
+                    resolve();
+                });
+            }
+
+            function speak() { //설정된 텍스트를 말하는 함수
+                return new Promise((resolve, reject) => {
+                    console.log("*****말하기 시작*****");
+                    synth.speak(speechMsg);
+                    resolve();
+                })
+            }
+
+            function waitSpeaking() { //말하기 종료를 검사하는 함수
+                console.log("*****대기 시작*****");
+                if (synth.speaking) {
+                    let res = finishWait().then(waitSpeaking);
+                    return res;
+                } else
+                    return new Promise((resolve, reject) => {
+                        resolve();
+                    });
+            }
+
+            function finishWait() { //과부하를 막기 위해 1초간 대기하는 함수
+                return new Promise((resolve, reject) => {
+                    setTimeout(function () {
+                        resolve();
+                    }, 1000);
+                })
+            }
+
+            function startRecording() { //화면 녹화를 시작하는 함수
+                return new Promise((resolve, reject) => {
+                    console.log("*****녹화 시작*****");
+                    chunks = []; //항상 새로운 녹화를 할 수 있도록 저장
+                    recorder = new MediaRecorder(video.captureStream());
+                    console.log('시작전 레코더 : ', recorder);
+                    recorder.ondataavailable = (e) => {
+                        chunks.push(e.data);
+                    };
+                    recorder.start();
+                    console.log('시작후 레코더 : ', recorder);
+                    resolve();
+                })
+            }
+
+            function stopRecording(idx) {
+                console.log("한 문제 종료!!!");
+                console.log('미디어 정보 : ', video.srcObject.getTracks());
+                recorder.stop();
+                downloadVideo(idx);
+                console.log("청크 : ", chunks);
+            }
+
+            function downloadVideo(idx) {
+                let recordedBlob = new Blob(chunks, {type: "video/webm"});
+                console.log("이거 에러임? ", URL.createObjectURL(recordedBlob));
+                console.log("다운로드 : ", download);
+                download.href = URL.createObjectURL(recordedBlob);
+                download.download = interviewName + "_" + idx.toString() + ".webm"; //////////////////다운받았는데 왜 비어있다고 나오냐?
+                download.click();
+            }
+
+            function btnControl(idx) { //버튼을 추가하는 함수
+                return new Promise((resolve, reject) => {
+                    console.log("*****버튼 세팅 시작*****");
+                    let btnValue = "다음문제";
+                    if (idx == questions.length - 1)
+                        btnValue = "면접종료";
+                    document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-style' type='button' value=" + btnValue + " onClick='processVideo(" + (idx + 1) + ")'/>";
+                    resolve();
+                });
+            }
+
+            function processVideo(idx) { //녹화를 종료하고 영상을 처리하는 함수
+                //비디오 저장 처리
+                console.log("녹화 종료 시작!");
+                stopRecording(idx);
+
+                if (idx < questions.length) { //다음 문제
+                    startInterview(idx);
+                } else { //면접 종료
+                    console.log("면접을 종료합니다");
+                    document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
+                }
+            }
+            speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");
+            speak();
+            canRead();
+        </script>
+<!--        <script>-->
+<!--            speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");-->
+<!--            speak();-->
+<!--            canRead();-->
+<!--        </script>-->
+        </body>
+<!--        <script th:src="@{/js/processInterview.js}" th:inline="javascript" >-->
+<!--            console.log('zzzzzzzzzzzz');-->
+<!--        </script>-->
+    </th:block>
 </th:block>
 </html>
