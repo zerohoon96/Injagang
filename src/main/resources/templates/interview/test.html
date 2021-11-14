@@ -57,7 +57,8 @@
         <div id="video" class="common">
             <video autoplay="true" id="videoElement" muted="true">
             </video>
-            <a id="autoDownload" href="">ㅋㅋㅋㅋㅋ</a>
+            <a id="autoDownload" href=""></a>
+            <a id="endInterview" href=""></a>
         </div>
         <div id="everyBtn" class="common">
         </div>
@@ -72,6 +73,7 @@
             let recorder;
             let chunks = [];
             const download = document.querySelector("#autoDownload");
+            const endInterview = document.querySelector("#endInterview");
 
             const speechMsg = new SpeechSynthesisUtterance();
             speechMsg.rate = 1; // 속도: 0.1 ~ 10
@@ -99,9 +101,10 @@
                     "<p id='p2'><br><br>" +
                     "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
                     "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
-                    "3. 답변을 완료한 후에는 [다음으로] 버튼을 눌러서 다음 문제를 진행할 수 있습니다.<br><br>" +
-                    "4. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
-                    "5. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
+                    "3. 답변을 완료한 후에는 [다음으로] 버튼을 누르세요<br><br>" +
+                    "4. [다음으로] 버튼을 누르면 면접 영상이 다운로드되고 다음 문제를 진행합니다.<br><br>" +
+                    "5. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
+                    "6. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
                     "</p>" +
                     "</div>";
 
@@ -132,8 +135,8 @@
                 }).then(function () {
                     return waitSpeaking(); //말하기가 종료될 때까지 대기
                 }).then(function () {
-                    return startRecording(); //영상 녹화 시작
-                }).then(function () { //말하기 종료 후 영상 녹화 시작
+                    return startRecording(idx); //말하기 종료 후 영상 녹화 시작
+                }).then(function () {
                     showGuide('/speak.png', '이제 말하세요!');
                     return btnControl(idx); //문제를 모두 읽고 다음 문제 버튼 추가
                 }).catch(alert);
@@ -182,11 +185,14 @@
                 })
             }
 
-            function startRecording() { //화면 녹화를 시작하는 함수
+            function startRecording(idx) { //화면 녹화를 시작하는 함수
                 return new Promise((resolve, reject) => {
                     console.log("*****녹화 시작*****");
                     chunks = []; //항상 새로운 녹화를 할 수 있도록 저장
                     recorder = new MediaRecorder(video.captureStream());
+                    recorder.onstop = function(e){
+                        downloadVideo(idx);
+                    };
                     console.log('시작전 레코더 : ', recorder);
                     recorder.ondataavailable = (e) => {
                         chunks.push(e.data);
@@ -201,7 +207,7 @@
                 console.log("한 문제 종료!!!");
                 console.log('미디어 정보 : ', video.srcObject.getTracks());
                 recorder.stop();
-                downloadVideo(idx);
+                // downloadVideo(idx);
                 console.log("청크 : ", chunks);
             }
 
@@ -210,7 +216,7 @@
                 console.log("이거 에러임? ", URL.createObjectURL(recordedBlob));
                 console.log("다운로드 : ", download);
                 download.href = URL.createObjectURL(recordedBlob);
-                download.download = interviewName + "_" + idx.toString() + ".webm"; //////////////////다운받았는데 왜 비어있다고 나오냐?
+                download.download = interviewName + "_질문 " + (idx+1).toString() + ".webm"; //////////////////다운받았는데 왜 비어있다고 나오냐?
                 download.click();
             }
 
@@ -234,9 +240,12 @@
                     startInterview(idx);
                 } else { //면접 종료
                     console.log("면접을 종료합니다");
-                    document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
+                    endInterview.href = '/interview/aaaa';
+                    endInterview.click();
+                    // document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
                 }
             }
+
             speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");
             speak();
             canRead();
