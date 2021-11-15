@@ -5,6 +5,7 @@
     <th:block th:fragment="content">
         <h1 class="mt-4">면접 게시판</h1>
         <!-- 임시 테이블 -->
+        <!--
         <table class="table table-striped">
             <thead>
             <tr>
@@ -35,28 +36,27 @@
             </tr>
             </tbody>
         </table>
+        -->
         
-        <!--실제 활용할 테이블-->
-        <!--/*
+        <!-- 게시판 글목록 테이블-->
         <table id="board_body" class="table table-striped">
             <thead>
             <tr>
-                <th>제목</th>
-                <th>피드백</th>
-                <th>글쓴이</th>
-                <th>날짜</th>
+                <th scope="col">제목</th>
+                <th scope="col">피드백</th>
+                <th scope="col">글쓴이</th>
+                <th scope="col">날짜</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
-                <td><a href="@{/interview/board/pk(pk=${dto.pk})}">[[${dto.title}]]</a></td>
+                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk})}">[[${dto.title}]]</a></td>
                 <th>[[${dto.fCnt}]]</th>
                 <td>[[${dto.writer}]]</td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
             </tr>
             </tbody>
         </table>
-        */-->
         
         <!-- 글쓰기 버튼 -->
         <div style="float: right; margin-bottom: 30px;">
@@ -66,7 +66,6 @@
         </div>
     
         <!-- 페이지 버튼 들어갈 자리 -->
-        <!--/*
         <ul class="pagination h-100 justify-content-center align-items-center">
             <li class="page-item " th:if="${result.prev}">
                 <a class="page-link" th:href="@{/interview/board(page=${result.start - 1},
@@ -86,7 +85,6 @@
                 keyword=${pageRequestDTO.keyword})}">Next</a>
             </li>
         </ul>
-        */-->
         
         <!-- 임시 검색창 -->
         <form action="//essay-list" method="get" id="searchForm">

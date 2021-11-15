@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EssayContent {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EssayContent_ID")
     private Long id;
 
@@ -26,6 +26,7 @@ public class EssayContent {
     private Essay essay;
 
     @OneToMany(mappedBy = "essayContent")
+    @Builder.Default
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
     private String title; //질문

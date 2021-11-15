@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 public class EssayFeedback {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EF_ID")
     private Long id;
 
@@ -31,6 +31,7 @@ public class EssayFeedback {
     private Member member; //FK
 
     @OneToMany(mappedBy = "essayFeedback")
+    @Builder.Default
     private List<EssayFeedbackComment> feedbackComments= new ArrayList<>();
 
     private String content; //총평

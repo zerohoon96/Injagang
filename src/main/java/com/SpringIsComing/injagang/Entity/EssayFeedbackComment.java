@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class EssayFeedbackComment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EFC_ID")
     private Long id;
 
