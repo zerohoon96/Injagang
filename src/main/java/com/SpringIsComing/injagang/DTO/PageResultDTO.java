@@ -28,12 +28,13 @@ public class PageResultDTO<DTO, EN> {
     //페이지 번호 목록
     private List<Integer> pageList;
 
-    public PageResultDTO(Page<EN> result, Function<EN, DTO> fn) { //Function: EN을 DTO타입으로 변경해 줌
+    public PageResultDTO(Page<EN> result, Function<EN, DTO> fn) { //Function: Entity를 DTO타입으로 변경해 줌
         dtoList = result.stream().map(fn).collect(Collectors.toList());
         totalPage = result.getTotalPages();
         makePageList(result.getPageable());
     }
 
+    //페이지 네이게이터 바에 표시될 페이지 수 계산
     private void makePageList(Pageable pageable) {
         this.page = pageable.getPageNumber() + 1; //0부터 시작하기 때문에 1 추가
         this.size = pageable.getPageSize();

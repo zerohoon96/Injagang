@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Video {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "VIDEO_ID")
     private Long id;
 

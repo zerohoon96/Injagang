@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -37,20 +38,26 @@ public class BoardController {
         return "boards/interview-list";
     }
 
-    @GetMapping("/essay/board/{eb_pk}")
-    public String essayViewer(@PathVariable Integer eb_pk, EssayDTO essayDTO, Model model) {
+    @GetMapping("/essay/board/{pk}")
+    public String essayViewer(@PathVariable("pk") Long eb_pk,
+                              @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("----------essayViewer----------");
 
         /* eb_pk로 해당 Essay 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
+        EssayDTO dto = service.readEssayBoard(eb_pk);
+        model.addAttribute("result", dto);
 
         return "boards/essay-read";
     }
 
-    @GetMapping("/interview/board/{ib_pk}")
-    public String interviewViewer(@PathVariable Integer ib_pk, InterviewDTO interviewDTO, Model model) {
+    @GetMapping("/interview/board/{pk}")
+    public String interviewViewer(@PathVariable("pk") Long ib_pk,
+                                  @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("----------interviewViewer----------");
 
         /* ib_pk로 해당 Interview 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
+        InterviewDTO dto = service.readInterviewBoard(ib_pk);
+        model.addAttribute("result", dto);
 
         return "boards/interview-read";
     }

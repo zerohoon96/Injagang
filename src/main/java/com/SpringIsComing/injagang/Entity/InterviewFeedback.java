@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InterviewFeedback {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IF_ID")
     private Long id;
 
