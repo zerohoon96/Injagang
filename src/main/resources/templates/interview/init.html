@@ -9,7 +9,9 @@
 
                 function addInput() { //추가 버튼을 눌렀을때
                     if (cur.length > 0) { //입력값이 있어야 추가
+                        console.log("cur : ",cur);
                         questionValue.push(cur);
+                        console.log("추가 후 : ",questionValue);
                         cur = "";
                     }
                     display();
@@ -21,26 +23,21 @@
                     for (i = 0; i < questionValue.length; i++)
                         document.getElementById('inputQuestion').innerHTML += createInput(i);
                     //새로운 입력창 띄움
-                    document.getElementById('inputQuestion').innerHTML += "<input type='text' name='question' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
-                        "<input type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
+                    document.getElementById('inputQuestion').innerHTML += "<input class='input width-70' type='text' name='question' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
+                        "<input class='btn btn-style-mini' type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
                 }
 
-                function createInput(idx) {
-                    return "<input type='text' name='question" + (idx + 1) + "' value=" + questionValue[idx] + " readonly>  " +
-                        "<input type='button' value='삭제' onclick='deleteInput(" + (idx) + ");''></div><br>";
+                function createInput(idx) { //기존에 저장한 추가 질문 및 삭제 버튼을 추가하는 함수
+                    return "<input class='input width-70' type='text' name='question" + (idx + 1) + "' value='" + questionValue[idx] + "' readonly>  " +
+                        "<input class='btn btn-style-mini' type='button' value='삭제' onclick='deleteInput(" + (idx) + ");''></div><br>";
                 }
 
                 function deleteInput(idx) { //삭제 버튼 눌렀을때
-                    console.log("삭제 인덱스 : ", idx);
-                    console.log("삭제전 상태", questionValue.length)
                     for (i = 0; i < questionValue.length; i++)
                         console.log(i, questionValue[i]);
                     if (questionValue.length > 0) {
                         questionValue.splice(idx, 1);
                     }
-                    console.log("삭제후 상태", questionValue.length)
-                    for (i = 0; i < questionValue.length; i++)
-                        console.log(i, questionValue[i]);
                     display();
                 }
 
@@ -49,49 +46,20 @@
                     var essayName = selectForm.options[selectForm.selectedIndex].value; //자기소개서 선택 결과
                     let essayMap = [[${essayMap}]]; //자기소개서 map (이걸 활용해서 각 댓글수 추출)
 
-                    console.log("essay name : ", essayName);
-                    console.log("essayMap : ", essayMap[essayName], typeof essayMap);
                     if (essayMap[essayName] != undefined) { //자기소개서를 선택한 경우
                         document.getElementById('expectedQuestion').innerHTML = "<option value='' hidden>질문 수</option>";
                         for (i = 1; i <= essayMap[essayName]; i++) //질문 개수만큼 설정 option 생성
-                            document.getElementById('expectedQuestion').innerHTML += "<option value=" + i + ">" + i + "</option>";
+                            document.getElementById('expectedQuestion').innerHTML += "<option class='center' value=" + i + ">" + i + "</option>";
                     } else { //자기소개서를 선택하지 않은 경우
                         document.getElementById('expectedQuestion').innerHTML = "";
-                        document.getElementById('expectedQuestion').innerHTML += "<option value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
+                        document.getElementById('expectedQuestion').innerHTML += "<option class='center' value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
                     }
-                    console.log(document.getElementById('expectedQuestion').innerHTML);
                 }
 
             </script>
             <meta charset="utf-8"/>
             <title>면접 보기</title>
             <style>
-                .interviewForm {
-                    /* display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                    border: 1px solid #000000;
-                    margin: 0px; */
-                    /*border: 20px solid lightblue;*/
-
-
-                    padding: 5px 20px;
-                    position: absolute;
-                    top: 30%;
-                    left: 50%;
-                    /* width: 100vh; height: 100vh; */
-                    margin-left: -220px;
-                    margin-top: -170px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-
-
-                    /* text-align: center; */
-                }
-
                 #headLine {
                     font-family: 함초롬바탕;
                     font-size: 35px;
@@ -102,12 +70,21 @@
                     width: 50%;
                 }
 
-                .btn-style {
+                .btn-style-big {
                     color: #fff;
                     background-color: plum;
                     border-color: plum;
                     text-align: center;
                     width: 200px;
+                    height: 50px;
+                }
+
+                .btn-style-mini {
+                    color: #fff;
+                    background-color: plum;
+                    border-color: plum;
+                    text-align: center;
+                    width: 100px;
                     height: 50px;
                 }
 
@@ -118,12 +95,43 @@
                     justify-content: center;
                     align-items: center;
                 }
+
+                .center {
+                    text-align: center;
+                }
+                .bold {
+                    font-weight: bold;
+                }
                 #content {
                     display: flex;
                     flex-direction: column;
-                    width: 460px;
+                    width: 600px;
                     /* justify-content: center; */
                     align-items: center;
+                }
+                .margin-bottom-10 {
+                    margin-bottom: 30px;
+                }
+                .input{
+                    display: inline;
+                    height: 51px;
+                    border: solid 1px #dadada;
+                    padding: 10px 14px 10px 14px;
+                    box-sizing: border-box;
+                    background: #fff;
+                    /* position: relative; */
+                }
+                .width-100 {
+                    width: 100%;
+                }
+                .width-70 {
+                    width: 70%;
+                }
+                .width-40 {
+                    width: 40%;
+                }
+                .width-20 {
+                    width: 20%;
                 }
             </style>
         </head>
@@ -134,49 +142,58 @@
                     <div id="headLine">
                         <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>
                     </div>
+                    <br>
                     <form name="interview" action="/interview/test" method="post">
-<!--                        면접 제목<br>-->
-                        <label>면접 제목</label>
-                        <input type="text" name="interviewName" placeholder="면접 제목을 입력하세요" required>
-                        <br><br>
-                        기본 문제 선택<br>
-                        인성 질문
-                        <select name="baseQuestion" required>
-                            <option value="" hidden>-- 문제 수 선택 --</option>
-                            <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
-                                <option th.value="${num}"><p th:text="${num}"></p></option>
-                            </th:block>
-                        </select><br>
-                        전공 질문
-                        <select name="csQuestion" required>
-                            <option value="" hidden>-- 문제 수 선택 --</option>
-                            <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
-                                <option th.value="${num}"><p th:text="${num}"></p></option>
-                            </th:block>
-                        </select>
+                        <div class="margin-bottom-10">
+                            <label class=bold for="interviewName">면접 제목</label><br>
+                            <input class="input width-100" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요" required>
+                        </div><br>
 
-                        <br><br>
+                        <div class="margin-bottom-10">
+                            <label class=bold>기본 문제 선택</label><br>
+                            <label class="center width-40" for="baseQuestion">인성 면접 질문</label>
+                            <select class="input width-40 center" id="baseQuestion" name="baseQuestion" required>
+                                <option class=center value="" hidden>-- 문제 수 선택 --</option>
+                                <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                                    <option th.value="${num}"><p th:text="${num}"></p></option>
+                                </th:block>
+                            </select><br>
 
-                        예상 질문 댓글<br>
-                        <select id="essaySelect" name="essayName" onChange="afterSelect()" required>
-                            <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
-                            <th:block th:each="essay: ${essayMap}">
-                                <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
-                            </th:block>
-                            <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
-                        </select>
-                        <select id="expectedQuestion" name="expectedQuestion" required>
-                            <option value="">질문 수</option>
-                        </select>
-                        <br><br>
-                        직접 입력하기<br>*앞서 선택한 문제들과 겹칠 수가 있습니다.<br>*영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)
-                        <div id="inputQuestion">
-                            <script>
-                                display();
-                            </script>
-                        </div>
-                        <br>
-                        <input class="btn btn-style" type="submit" name="" value="면접 시작">
+                            <label class="center width-40" for="csQuestion">CS 면접 질문</label>
+                            <select class="input width-40 center" id="csQuestion" name="csQuestion" required>
+                                <option value="" hidden>-- 문제 수 선택 --</option>
+                                <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                                    <option th.value="${num}"><p th:text="${num}"></p></option>
+                                </th:block>
+                            </select>
+                        </div><br>
+
+                        <div class="margin-bottom-10">
+                            <label class=bold>예상 질문 댓글</label><br>
+
+                            <select class="center input width-70" id="essaySelect" name="essayName" onChange="afterSelect()" required>
+                                <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
+                                <th:block th:each="essay: ${essayMap}">
+                                    <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
+                                </th:block>
+                                <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
+                            </select>
+                            <select class="input width-20" id="expectedQuestion" name="expectedQuestion" required>
+                                <option value="">질문 수</option>
+                            </select>
+                        </div><br>
+
+                        <div class="margin-bottom-10">
+                            <label class=bold>직접 입력하기</label><br>
+                            *앞서 선택한 문제들과 겹칠 수가 있습니다.<br>
+                            *영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)<br>
+                            <div id="inputQuestion">
+                                <script>
+                                    display();
+                                </script>
+                            </div>
+                        </div><br>
+                        <input class="btn btn-style-big" type="submit" name="" value="면접 시작">
                     </form>
                 </div>
             </div>

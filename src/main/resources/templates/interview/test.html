@@ -15,11 +15,6 @@
                     height: 50px;
                 }
 
-                .common {
-                    /*margin-left: 25%;*/
-                    text-align: center;
-                }
-
                 #p1 {
                     font-family: 함초롬바탕;
                     font-size: 35px;
@@ -32,38 +27,49 @@
                     font-size: 1vw;
                 }
 
-                #howToPlay {
-                    width: 50%;
-                    margin-left: 25%;
-                }
-
                 #video {
                     margin: 0px auto;
                     width: 500px;
                     height: 375px;
-                    /*border: 10px #333 solid;*/
                 }
 
                 #videoElement {
                     width: 500px;
                     height: 375px;
-                    /*background-color: #666;*/
                 }
+
+                .body {
+                    display: flex;
+                    height: 100%;
+                    background: #f5f6f7;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                #content {
+                    display: flex;
+                    flex-direction: column;
+                    width: 1000px;
+                    /* justify-content: center; */
+                    align-items: center;
+                }
+
             </style>
         </head>
 
         <body>
-        <div id="guide" style="margin-top: 5%"></div>
-        <div id="video" class="common">
-            <video autoplay="true" id="videoElement" muted="true">
-            </video>
-            <a id="autoDownload" href=""></a>
-            <a id="endInterview" href=""></a>
+        <div class="body">
+            <div id="content">
+                <div id="guide" style="margin-top: 5%"></div>
+                <div id="video">
+                    <video autoplay="true" id="videoElement" muted="true">
+                    </video>
+                    <a id="autoDownload" href=""></a>
+                    <a id="endInterview" href=""></a>
+                </div>
+                <div id="everyBtn"></div>
+            </div>
         </div>
-        <div id="everyBtn" class="common">
-        </div>
-
-<!--        <script src="/js/processInterview.js" th:inline="javascript" ></script> &lt;!&ndash;왜 비디오는 널로 쳐 나오고 얘는 아무것도 실행이 안되냐 개빡치게&ndash;&gt;-->
 
         <script th:inline="javascript">
             const questions = [[${questions}]];
@@ -81,11 +87,12 @@
             speechMsg.lang = "ko-KR";
 
 
-            function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하는 함수
+            function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하고 초기 세팅을 진행하는 함수
                 console.log(questions, interviewName);
                 if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
                     alert("이 브라우저에서 테스트가 불가능합니다.");
-                    //다른 페이지로 이동
+                    endInterview.href = '/interview/aaaa'; //이동할 경로
+                    endInterview.click();
                 } else { //가능한 경우 초기 html 추가 및 카메라 화면 설정
                     initGuide();
                     startVideo();
@@ -94,7 +101,7 @@
 
             function initGuide() { //초기 화면 설정 (시작하기 포함)
                 document.getElementById('guide').innerHTML =
-                    "<div id='howToPlay'>" +
+                    "<div>" +
                     "<p id='p1'>" +
                     "<span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>진행 방법</span>" +
                     "</p>" +
@@ -145,8 +152,6 @@
             function showGuide(imgPath, msg) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
                 console.log("*****가이드 세팅*****");
                 document.getElementById('guide').innerHTML = "<p id='p1'><img src=" + imgPath + " style='width:80px; height:80px;'>   " + msg + "</p><br>";
-                //여기서 카메라 화면까지 나타내기
-
             }
 
             function speakSet(text) { //말하기 준비를 하는 함수
@@ -190,34 +195,19 @@
                     console.log("*****녹화 시작*****");
                     chunks = []; //항상 새로운 녹화를 할 수 있도록 저장
                     recorder = new MediaRecorder(video.captureStream());
-                    recorder.onstop = function(e){
-                        downloadVideo(idx);
-                    };
-                    console.log('시작전 레코더 : ', recorder);
-                    recorder.ondataavailable = (e) => {
-                        chunks.push(e.data);
+                    recorder.onstop = function (e) {
+                        downloadVideo(idx); //stop 이벤트 발생시 비디오 다운로드
                     };
                     recorder.start();
-                    console.log('시작후 레코더 : ', recorder);
                     resolve();
                 })
             }
 
-            function stopRecording(idx) {
-                console.log("한 문제 종료!!!");
-                console.log('미디어 정보 : ', video.srcObject.getTracks());
-                recorder.stop();
-                // downloadVideo(idx);
-                console.log("청크 : ", chunks);
-            }
-
             function downloadVideo(idx) {
-                let recordedBlob = new Blob(chunks, {type: "video/webm"});
-                console.log("이거 에러임? ", URL.createObjectURL(recordedBlob));
-                console.log("다운로드 : ", download);
+                let recordedBlob = new Blob(chunks, {type: "video/mp4"});
                 download.href = URL.createObjectURL(recordedBlob);
-                download.download = interviewName + "_질문 " + (idx+1).toString() + ".webm"; //////////////////다운받았는데 왜 비어있다고 나오냐?
-                download.click();
+                download.download = interviewName + "_질문 " + (idx + 1).toString() + ".mp4";
+                download.click(); //자동으로 다운로드 되도록 설정
             }
 
             function btnControl(idx) { //버튼을 추가하는 함수
@@ -232,17 +222,13 @@
             }
 
             function processVideo(idx) { //녹화를 종료하고 영상을 처리하는 함수
-                //비디오 저장 처리
-                console.log("녹화 종료 시작!");
-                stopRecording(idx);
-
+                recorder.stop(); //녹화 중지
                 if (idx < questions.length) { //다음 문제
                     startInterview(idx);
                 } else { //면접 종료
                     console.log("면접을 종료합니다");
-                    endInterview.href = '/interview/aaaa';
+                    endInterview.href = '/interview/aaaa'; //이동할 경로
                     endInterview.click();
-                    // document.getElementById('everyBtn').innerHTML = "<meta http-equiv='refresh' content='0;URL='/interview/aaaa''>"; //이거 실패. 걍 get 원래 링크로 넘어감..
                 }
             }
 
@@ -250,15 +236,7 @@
             speak();
             canRead();
         </script>
-<!--        <script>-->
-<!--            speakSet("진행 방법을 잘 읽고 시작하기 버튼을 눌러 면접을 시작하세요.");-->
-<!--            speak();-->
-<!--            canRead();-->
-<!--        </script>-->
         </body>
-<!--        <script th:src="@{/js/processInterview.js}" th:inline="javascript" >-->
-<!--            console.log('zzzzzzzzzzzz');-->
-<!--        </script>-->
     </th:block>
 </th:block>
 </html>
