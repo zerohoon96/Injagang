@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
@@ -101,6 +101,13 @@
     margin-top: 30px;
 }
 
+.input-error {
+    border-color: red;
+}
+.field-error {
+    color: red;
+}
+
 </style>
 
 </head>
@@ -110,20 +117,31 @@
 <div class="body">
     <div class="login-box">
         <a href="#" class="margin-bottom-50 margin-top-30"><img th:src="@{/인자강.png}" src="../../static/인자강.png"></a>
-        <form>
+        <form action th:object="${member}" method="post">
             <div>
-                <input type="text" class="input w-300 margin-bottom-10" placeholder="아이디">
-                <input type="password" class="input w-300 margin-bottom-10" placeholder="비밀번호">
+                <input type="text" class="input w-300 margin-bottom-10" placeholder="아이디" th:field="*{loginId}">
+                <input type="password" class="input w-300 margin-bottom-10" placeholder="비밀번호"th:field="*{password}">
             </div>
                 
             <button type="submit" class="margin-bottom-10 w-300 btn btn-primary" >로그인</button>
 
 
             <div class="flex w-300 justify-content-around">
-                <a class="font-size-15 a-deco" href="#">회원가입</a>
-                <a class="font-size-15 a-deco" href="#">아이디 찾기</a>
-                <a class="font-size-15 a-deco" href="#">비밀번호 찾기</a>
+                <a class="font-size-15 a-deco" href="#" th:href="@{/register}">회원가입</a>
+                <a class="font-size-15 a-deco" href="#" th:href="@{/find}">아이디/비밀번호 찾기</a>
+<!--                <a class="font-size-15 a-deco" href="#">비밀번호 찾기</a>-->
             </div>
+
+<!--            <span th:errors="*{loginId}" class="field-error mt-3" >아이디 오류</span>-->
+<!--            <span th:errors="*{password}" class="field-error mt-3">아이디 오류</span>-->
+
+
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p  th:each="err : ${#fields.globalErrors()}" class="field-error mt-3" th:text="${err}">글로벌 오류 메시지</p>
+            </div>
+
+
             
         </form>
 

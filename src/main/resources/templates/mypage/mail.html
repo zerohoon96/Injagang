@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <head>
+            <style>
+
+
+                .body{
+                    display: flex;
+                    height: 100%;
+                    background: #f5f6f7;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                #content {
+                    display: flex;
+                    flex-direction: column;
+                    width: 460px;
+                    /* justify-content: center; */
+                    align-items: center;
+                }
+
+                .container-fluid {
+                    background-color: #f5f6f7;
+                    height: 100%;
+                }
+                .input{
+                    display: block;
+                    width: 100%;
+                    height: 51px;
+                    border: solid 1px #dadada;
+                    padding: 10px 14px 10px 14px;
+                    box-sizing: border-box;
+                    background: #fff;
+                    /* position: relative; */
+                }
+                .flex{
+                    display: flex;
+                }
+
+                .justify-content-even{
+                    justify-content:space-evenly
+                }
+
+                .w-300{
+                    width: 300px;
+                }
+
+                .w-400 {
+                    width: 400px;
+                }
+                .margin-top-30{
+                    margin-top: 30px;
+                }
+
+                .margin-bottom-10 {
+                    margin-bottom: 10px;
+                }
+
+                .margin-bottom-30 {
+                    margin-bottom: 30px;
+                }
+
+                .margin-bottom-50 {
+                    margin-bottom: 50px;
+                }
+
+                .btn{
+                    padding: 10px 14px 10px 14px;
+                }
+
+                .field-error {
+                    color: red;
+                }
+
+
+            </style>
+        </head>
+
+
+        <body>
+        <div class="body">
+            <div id="content">
+
+                <a href="#" class="margin-top-30"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
+
+                <p>이메일 보냈으니 확인하셈 ㅡㅡ</p>
+
+            </div>
+        </div>
+        </body>
+    </th:block>
+</th:block>
+
+</html>
