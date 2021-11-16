@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+  <th:block th:fragment="content">
+    <head>
+      <meta charset="UTF-8">
+      <title>essay_read_page</title>
+      <style>
+        textarea {
+          resize: none;
+        }
+      </style>
+    </head>
+    <body>
+      <form name="readTemplate" action="" method="">
+        <div class="form-group container-fluid" id="readData"></div>
+        <br>
+        <br>
+      </form>
+      <div class="text-center">
+        <input class="btn btn-primary px-5" id="" type="submit" name="" value="확인">
+      </div>
+      <br>
+      <br>
+    </body>
+
+    <script th:inline="javascript">
+      (function () {
+        //db에서 가져와
+
+        let t_title = [[${t_title}]];
+        let t_data = [[${t_data}]];
+        let d_data = [[${d_data}]];
+        let cnt;
+        // 템플릿 데이터가 존재할 경우
+        if (t_title != "t0") {
+          cnt = 0;
+          document.getElementById("readData").innerHTML += `<label class="form-control text-center mt-3">${t_title}</label>`;
+          for (let key in t_data) {
+            cnt += 1;
+            console.log(key);
+            document.getElementById("readData").innerHTML +=
+                    `<br><label>${cnt}. ${key}</label>
+                    <br><textarea rows=10 class="form-control" onfocus="blur()">${t_data[key]}</textarea>` + "<br><br>";
+          }
+        }
+        // 직접 입력 데이터만 존재할 경우
+        cnt = 0;
+        for (let key in d_data) {
+          cnt += 1;
+          document.getElementById("readData").innerHTML += `<br><label >${cnt}. ${key}</label>`
+                  + `<br><textarea rows=10 class="form-control" onfocus="blur()">${d_data[key]}</textarea>` + "<br><br>";
+        }
+      })();
+    </script>
+  </th:block>
+</th:block>

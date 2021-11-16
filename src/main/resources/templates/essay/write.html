@@ -6,110 +6,32 @@
         <head>
             <meta charset="UTF-8">
             <title>essay_write_page</title>
-            <script type="text/javascript">
-                //test하기위해 잠깐 직접 선언함
-                var myArray = {
-                    "t1" : ["질문1", "질문2", "질문3", "질문4"],
-                    "t2" : ["질문1", "질문2", "질문3"],
-                    "t3" : ["질문1", "질문2"]
-                }
 
-                //직접입력 부분에서 추가 할 경우 다른 내용은 저장해 두어야 하기 때문에
-
-                //직접 입력부분의 질문 입력
-                var direct_question = new Array(0);
-                //직접 입력부분의 내용 입력
-                var direct_answer = new Array(0);
-
-                //템플릿을 몇번째 실행할건지 선택
-                function Change_template()
-                {
-                    var id = document.getElementById("template_select");
-                    var select = id.options[id.selectedIndex].value;
-
-                    buildTemplate(select, myArray);
-                }
-
-                //선택한 템플릿 질문 갯수만큼 화면 생성
-                //ex) 삼성공채 하반기 - 질문5개 => 작성 포맷이 5개 생성
-                function buildTemplate(select, myArray) {
-                    //불러오기전 이전의 내용(화면) 초기화
-                    document.getElementById("ct_newessay").innerHTML="";
-
-                    if (select == "t0") return;
-
-                    //템플릿 질문 갯수만큼 생성
-                    for (let ele in myArray[select]) {
-                        document.getElementById("ct_newessay").innerHTML+=`<label>${+ele + 1}. <input  class="control-label" type="text" style="border:0 solid black;" name="template_question${+ele + 1}" value="${myArray[select][ele]}" readonly /></label>`
-                            +`<br><textarea rows=10 name="template_answer${+ele+1}"placeholder="내용을 입력해주세요." required></textarea><br><br>`;
-                    }
-                }
-
-                //직접 입력 버튼을 눌렀을 경우
-                function template_direct_click() {
-                    //이전에 내용이 있다면 출력
-                    display();
-                    //직접 입력 템플릿이 추가되었으니 array배열에 빈 값을 하나 넣어줌
-                    direct_question.push("");
-                    direct_answer.push("");
-                    document.getElementById("cd_newessay").innerHTML+=`<label>${direct_question.length}. <input  class="control-label" type="text" name="direct_question${direct_question.length}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required></label>`
-                        +`<br><div><textarea rows=10 name="direct_answer${direct_answer.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[direct_answer.length-1]=this.value" required></textarea>`
-                        +` <input type="button" value="삭제" onclick="deleteInput(${direct_question.length-1});"></div>` +"<br><br>";
-                }
-
-                //삭제하거나 추가할 경우
-                //이전의 저장된 내용을 다시 화면에 출력
-                function display() {
-                    //초기화 해주고
-                    document.getElementById("cd_newessay").innerHTML = "";
-                    //현재 저장된 내용을 출력
-                    for (let i=0; i<direct_answer.length; i++) {
-                        document.getElementById("cd_newessay").innerHTML+=`<label>${i+1}. <input type="text" name="direct_question${i+1}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required></label>`
-                            +`<br><textarea rows=10 name="direct_answer${i+1}" placeholder="내용을 입력해주세요." onChange="direct_answer[direct_answer.length-1]=this.value" required>${direct_answer[i]}</textarea>`
-                            +` <input type="button" value="삭제" onclick="deleteInput(${i});">` + "<br><br>";
-                    }
-                }
-
-                //게시글 작성 포맷을 전부 완료 한뒤 삭제가능
-                //하나 포맷 생성해놓고 확인 안누르면 삭제 불가능
-                function deleteInput(idx) {
-                    direct_answer.splice(idx, 1);
-                    direct_question.splice(idx, 1);
-                    display();
-                }
-            </script>
-
-            <!--테스트를 위해 잠깐 css적음-->
             <style>
-                label {
-                    margin: 0px 0px 0px 5px;
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
                 }
-
-                input {
-                    outline: none;
-                    margin: 0px 0px 0px 5px;
-                }
-
                 textarea {
-                    width: 80%;
-                    outline: none;
                     resize: none;
-                    margin: 5px 0px 0px 5px;
                 }
 
                 select {
-                    width: 50%;
                     text-align: center;
                     margin: 15px 0px 15px 5px;
                 }
             </style>
+
         </head>
         <body>
         <!--동적 게시글 작성 양식-->
-        <form name="createTemplate" action="a.html" method="post">
-            <div>
+        <form id="createTemplate" name="createTemplate" action="/essay/read" method="post">
+            <div class="form-group container-fluid">
                 <!--템플릿 불러오기 칸-->
-                <select name="template_select" id="template_select" onchange="Change_template();">
+                <select class="form-control" name="template_select" id="template_select" onchange="Change_template();">
                     <option value="t0">템플릿 불러오기</option>
                     <option value="t1">템플릿 1</option>
                     <option value="t2">템플릿 2</option>
@@ -120,15 +42,174 @@
                 <div id="ct_newessay"></div>
             </div>
             <br>
-            <div>
+            <div class="container-fluid">
                 <!--직접 입력-->
                 <div id="cd_newessay"></div>
-                <input id="template_direct" type="button" value="직접 입력" onclick="template_direct_click();">
+                <input class="btn btn-outline-info" id="template_direct" type="button" value="+">
             </div>
             <br>
             <br>
-            <input id="" type="submit" name="" value="저장">
+            <div class="text-center">
+                <input class="btn btn-primary px-5" id="save" type="submit" value="저장">
+            </div>
+            <br>
+            <br>
+
+            <!-- Modal -->
+            <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="saveModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="saveModalLavel">자소서 제목 입력</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" class="form-control" name="titleName">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                            <button type="submit" class="btn btn-primary">확인</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
+
+        <script type="text/javascript">
+            //test하기위해 잠깐 직접 선언함
+            var myArray = {
+                "t1" : ["질문1", "질문2", "질문3", "질문4"],
+                "t2" : ["질문1", "질문2", "질문3"],
+                "t3" : ["질문1", "질문2"]
+            }
+
+            //직접입력 부분에서 추가 할 경우 다른 내용은 저장해 두어야 하기 때문에
+
+            //직접 입력부분의 질문 입력
+            var direct_question = new Array(0);
+            //직접 입력부분의 내용 입력
+            var direct_answer = new Array(0);
+            var select = "t0";
+
+            //템플릿을 몇번째 실행할건지 선택
+            function Change_template()
+            {
+                var id = document.getElementById("template_select");
+                select = id.options[id.selectedIndex].value;
+
+                buildTemplate(myArray);
+            }
+
+            //선택한 템플릿 질문 갯수만큼 화면 생성
+            //ex) 삼성공채 하반기 - 질문5개 => 작성 포맷이 5개 생성
+            function buildTemplate(myArray) {
+                //불러오기전 이전의 내용(화면) 초기화
+                document.getElementById("ct_newessay").innerHTML="";
+
+                if (select == "t0") return;
+
+                //템플릿 질문 갯수만큼 생성
+                for (let ele in myArray[select]) {
+                    document.getElementById("ct_newessay").innerHTML +=
+                        `<form>
+                            <label> ${+ele + 1}. ${myArray[select][ele]}</label>
+                            <textarea class="form-control" rows=10 name="template_answer${+ele+1}"placeholder="내용을 입력해주세요." required></textarea><br>
+                        </form>`
+                }
+            }
+
+            //삭제하거나 추가할 경우
+            //이전의 저장된 내용을 다시 화면에 출력
+            function display() {
+                //초기화 해주고
+                document.getElementById("cd_newessay").innerHTML = "";
+                //현재 저장된 내용을 출력
+                for (let i=0; i<direct_answer.length; i++) {
+                    document.getElementById("cd_newessay").innerHTML +=
+                        `<form>
+                            <div class="form-inline mb-1">
+                                <label class="mr-2">${i+1}.</label>
+                                <input class="form-control col-md" type="text" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required>
+                                <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
+                            </div>
+                            <textarea class="form-control mb-1" rows=10 name="direct_answer${i}" placeholder="내용을 입력해주세요." onChange="direct_answer[${i}]=this.value" required>${direct_answer[i]}</textarea>
+                            <br>
+                        </form>`;
+                }
+            }
+
+            //게시글 작성 포맷을 전부 완료 한뒤 삭제가능
+            //하나 포맷 생성해놓고 확인 안누르면 삭제 불가능
+            function deleteInput(idx) {
+                direct_answer.splice(idx, 1);
+                direct_question.splice(idx, 1);
+                display();
+            }
+
+            //버튼 클릭시
+            $(document).ready(function () {
+
+                //저장 버튼 누를 경우
+                // $("#save").on("click", function () {
+                //     $("#createTemplate").on("submit", function(event) {
+                //        event.preventDefault();
+                //        $(":required", this).parent().show();
+                //        var invalidInputs = $(":invalid", this);
+                //        console.log(invalidInputs);
+                //        if (invalidInputs.length > 0){
+                //            console.log("bis");
+                //            $("#saveModal").modal("show");
+                //        }
+                //        else if (event.originalEvent) {
+                //            return false;
+                //        }
+                //     });
+                // });
+
+                $("#save").click(function (event) {
+                    event.preventDefault();
+                    $(":required", this).parent().show();
+                    var invalidInputs = $(":invalid", this);
+                   console.log(invalidInputs);
+                    if (select=="t0" && direct_question.length == 0) {
+                        alert("저장할 내용이 없습니다.");
+                        return false;
+                    }
+                    else {
+                        $("#saveModal").modal("show");
+                        return true;
+                    }
+                });
+
+                //다이얼로그 창안에서 취소 버튼 누를 경우
+                $("#close_modal").click(function () {
+                    $("#saveModal").modal("hide");
+                });
+
+                //직접입력 버튼 누를경우
+                $("#template_direct").click(function () {
+                    //이전에 내용이 있다면 출력
+                    display();
+                    //직접 입력 템플릿이 추가되었으니 array배열에 빈 값을 하나 넣어줌
+                    direct_question.push("");
+                    direct_answer.push("");
+
+                    document.getElementById("cd_newessay").innerHTML +=
+                        `<form>
+                            <div class="form-inline mb-1">
+                                <label class="mr-2">${direct_question.length}.  </label>
+                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required>
+                                <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${direct_question.length-1});">
+                            </div>
+                            <textarea class="form-control mb-1" rows=10 name="direct_answer${direct_question.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[${direct_answer.length-1}]=this.value" required>${direct_answer[direct_question.length-1]}</textarea>
+                            <br>
+                        </form>`;
+                    });
+            });
+        </script>
+
         </body>
     </th:block>
 </th:block>
