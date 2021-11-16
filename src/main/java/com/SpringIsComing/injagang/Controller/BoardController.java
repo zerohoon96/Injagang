@@ -1,8 +1,6 @@
 package com.SpringIsComing.injagang.Controller;
 
-import com.SpringIsComing.injagang.DTO.EssayDTO;
-import com.SpringIsComing.injagang.DTO.InterviewDTO;
-import com.SpringIsComing.injagang.DTO.PageRequestDTO;
+import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Service.BoardService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +42,7 @@ public class BoardController {
         log.info("----------essayViewer----------");
 
         /* eb_pk로 해당 Essay 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
-        EssayDTO dto = service.readEssayBoard(eb_pk);
+        EssayBoardDTO dto = service.readEssayBoard(eb_pk);
         model.addAttribute("result", dto);
 
         return "boards/essay-read";
@@ -56,7 +54,7 @@ public class BoardController {
         log.info("----------interviewViewer----------");
 
         /* ib_pk로 해당 Interview 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
-        InterviewDTO dto = service.readInterviewBoard(ib_pk);
+        InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
         model.addAttribute("result", dto);
 
         return "boards/interview-read";

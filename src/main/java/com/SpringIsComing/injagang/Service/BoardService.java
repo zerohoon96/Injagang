@@ -1,14 +1,11 @@
 package com.SpringIsComing.injagang.Service;
 
-import com.SpringIsComing.injagang.DTO.EssayDTO;
-import com.SpringIsComing.injagang.DTO.InterviewDTO;
-import com.SpringIsComing.injagang.DTO.PageRequestDTO;
-import com.SpringIsComing.injagang.DTO.PageResultDTO;
+import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Entity.Interview;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface BoardService {
@@ -24,10 +21,10 @@ public interface BoardService {
     PageResultDTO<InterviewDTO, Interview> getInterviewList(PageRequestDTO requestDTO);
 
     //자소서 게시판의 한 게시물 읽어오기
-    EssayDTO readEssayBoard(Long id);
+    EssayBoardDTO readEssayBoard(Long id);
 
     //면접 게시판의 한 게시물 읽어오기
-    InterviewDTO readInterviewBoard(Long id);
+    InterviewBoardDTO readInterviewBoard(Long id);
 
     //미구현
     default Essay essayDtoToEntity(EssayDTO dto) {
@@ -62,6 +59,7 @@ public interface BoardService {
                 .writer(essay.getWriter().getNickname())
                 .qCnt(cnt)
                 .fCnt(essay.getFeedbacks().size())
+                .rCnt(essay.getReplies().size())
                 .regDate(essay.getDate())
                 .build();
 
@@ -76,6 +74,70 @@ public interface BoardService {
                 .writer(interview.getWriter().getNickname())
                 .fCnt(interview.getFeedbacks().size())
                 .regDate(interview.getDate())
+                .build();
+
+        return dto;
+    }
+
+    //게시물에서 쓸 자소서 DTO
+    default EssayBoardDTO essayBoardEntityToDto(Essay essay) {
+        //자소서 항목 목록 DTO로 변환
+        List<EssayContentDTO> contentList = new ArrayList<>();
+        List<QuestionDTO> questionList = new ArrayList<>();
+        essay.getContents().forEach(essayContent -> {
+
+            essayContent.getQuestions().forEach(question -> {
+                questionList.add(QuestionDTO.builder()
+                                .pk(question.getId())
+                                .nickname(question.getWriter().getNickname())
+                                .content(question.getText())
+                                .contentId(essayContent.getId())
+                                .build());
+            });
+
+            contentList.add(EssayContentDTO.builder()
+                            .pk(essayContent.getId())
+                            .title(essayContent.getTitle())
+                            .text(essayContent.getText())
+                            .build());
+        });
+
+        //feedback목록 DTO로 변환
+        List<EssayFeedbackDTO> feedbackList = new ArrayList<>();
+        essay.getFeedbacks().forEach(feedback -> {
+            feedbackList.add(EssayFeedbackDTO.builder()
+                            .pk(feedback.getId())
+                            .nickname(feedback.getMember().getNickname())
+                            .build());
+        });
+        if(feedbackList.size() != 0)
+            System.out.println("feedbackList is not empty!");
+
+        List<ReplyDTO> replyList = new ArrayList<>();
+        essay.getReplies().forEach(reply -> {
+            replyList.add(ReplyDTO.builder()
+                            .pk(reply.getId())
+                            .content(reply.getContent())
+                            .nickname(reply.getReplyer().getNickname())
+                            .build());
+        });
+
+        EssayBoardDTO dto = EssayBoardDTO.builder()
+                .pk(essay.getId())
+                .title(essay.getTitle())
+                .contentList(contentList)
+                .feedbackList(feedbackList)
+                .questionList(questionList)
+                .replyList(replyList)
+                .fCnt(essay.getFeedbacks().size())
+                .build();
+
+        return dto;
+    }
+
+    //게시물에서 쓸 면접 DTO
+    default InterviewBoardDTO interviewBoardEntityToDto(Interview interview) {
+        InterviewBoardDTO dto = InterviewBoardDTO.builder()
                 .build();
 
         return dto;

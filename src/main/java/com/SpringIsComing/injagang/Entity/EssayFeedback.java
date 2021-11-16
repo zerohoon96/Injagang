@@ -23,7 +23,7 @@ public class EssayFeedback {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_Id")
+    @JoinColumn(name = "ESSAY_ID")
     private Essay essay; //FK
 
     @ManyToOne(fetch = FetchType.LAZY)

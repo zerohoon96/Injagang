@@ -1,9 +1,6 @@
 package com.SpringIsComing.injagang.Service;
 
-import com.SpringIsComing.injagang.DTO.EssayDTO;
-import com.SpringIsComing.injagang.DTO.InterviewDTO;
-import com.SpringIsComing.injagang.DTO.PageRequestDTO;
-import com.SpringIsComing.injagang.DTO.PageResultDTO;
+import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Interview;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
@@ -75,17 +72,17 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     @Transactional
-    public EssayDTO readEssayBoard(Long id) { //임시
+    public EssayBoardDTO readEssayBoard(Long id) {
         Optional<Essay> result = essayRepository.findById(id);
 
-        return result.isPresent() ? essayEntityToDto(result.get()) : null;
+        return result.isPresent() ? essayBoardEntityToDto(result.get()) : null;
     }
 
     @Override
     @Transactional
-    public InterviewDTO readInterviewBoard(Long id) { //임시
+    public InterviewBoardDTO readInterviewBoard(Long id) {
         Optional<Interview> result = interviewRepository.findById(id);
 
-        return result.isPresent() ? interviewEntityToDto(result.get()) : null;
+        return result.isPresent() ? interviewBoardEntityToDto(result.get()) : null;
     }
 }

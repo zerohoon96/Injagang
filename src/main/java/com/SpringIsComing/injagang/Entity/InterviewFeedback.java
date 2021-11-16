@@ -22,7 +22,7 @@ public class InterviewFeedback {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
+    @JoinColumn(name = "INTERVIEW_ID")
     private Interview interview;
 
     @ManyToOne(fetch = FetchType.LAZY)

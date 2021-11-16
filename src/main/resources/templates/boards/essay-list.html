@@ -56,7 +56,8 @@
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
-                <td><a th:href="@{/essay/board/{pk}(pk=${dto.pk})}">[[${dto.title}]]</a></td>
+                <td><a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page}, keyword = ${pageRequestDTO.keyword})}">
+                    [[${dto.title}]]</a><span>[댓글:[[${dto.rCnt}]]]</span></td>
                 <td>[[${dto.qCnt}]]</td>
                 <td>[[${dto.fCnt}]]</td>
                 <td>[[${dto.writer}]]</td>

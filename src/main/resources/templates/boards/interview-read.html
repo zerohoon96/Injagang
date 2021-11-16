@@ -66,11 +66,11 @@
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         피드백([[${result.fCnt}]]개)
                     </a>
-                </div>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"
-                     th:each="dto : ${result.feedbackList}">
-                    <a class="dropdown-item" th:value="${dto.nickname}님의 피드백"
-                       th:href="@{/essay/board/feedback/${dto.pk}"></a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"
+                        th:each="dto : ${result.feedbackList}">
+                        <a class="dropdown-item" th:value="${dto.nickname}님의 피드백"
+                            th:href="@{/essay/board/feedback/${dto.pk}"></a>
+                    </div>
                 </div>
             </div>
             */-->

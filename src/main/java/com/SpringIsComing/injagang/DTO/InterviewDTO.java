@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+//면접 게시판에서 보여줄 목록
 @Data
 @Builder
 @NoArgsConstructor
