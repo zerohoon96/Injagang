@@ -82,7 +82,7 @@
                     left: 50%;
                     /* width: 100vh; height: 100vh; */
                     margin-left: -220px;
-                    margin-top : -170px;
+                    margin-top: -170px;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -111,73 +111,75 @@
                     height: 50px;
                 }
 
-                .input1 {
-                    width: 300px;
-                    height: 30px;
-                    text-align: center;
+                .body {
+                    display: flex;
+                    height: 100%;
+                    background: #f5f6f7;
+                    justify-content: center;
+                    align-items: center;
                 }
-
-                .input2 {
-                    width: 70px;
-                    height: 33px;
-                    text-align: center;
-                }
-
-                .input3 {
-                    width: 150px;
-                    height: 35px;
-                    text-align: center;
+                #content {
+                    display: flex;
+                    flex-direction: column;
+                    width: 460px;
+                    /* justify-content: center; */
+                    align-items: center;
                 }
             </style>
         </head>
         <body>
-        <div class="form-group container-fluid" id="interviewForm">
-            <div id="headLine">
-                <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>
-            </div>
-            <form name="interview" action="/interview/test" method="post">
-                면접 제목<br>
-                <input type="text" name="interviewName" placeholder="면접 제목을 입력하세요" required>
-                <br><br>
-                기본 문제 선택<br>
-                인성 질문
-                <select name="baseQuestion" required>
-                    <option value="" hidden>-- 문제 수 선택 --</option>
-                    <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
-                        <option th.value="${num}"><p th:text="${num}"></p></option>
-                    </th:block>
-                </select><br>
-                전공 질문
-                <select name="csQuestion" required>
-                    <option value="" hidden>-- 문제 수 선택 --</option>
-                    <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
-                        <option th.value="${num}"><p th:text="${num}"></p></option>
-                    </th:block>
-                </select>
+        <div class="body">
+            <div id="content">
+                <div class="form-group container-fluid" id="interviewForm">
+                    <div id="headLine">
+                        <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>
+                    </div>
+                    <form name="interview" action="/interview/test" method="post">
+<!--                        면접 제목<br>-->
+                        <label>면접 제목</label>
+                        <input type="text" name="interviewName" placeholder="면접 제목을 입력하세요" required>
+                        <br><br>
+                        기본 문제 선택<br>
+                        인성 질문
+                        <select name="baseQuestion" required>
+                            <option value="" hidden>-- 문제 수 선택 --</option>
+                            <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                                <option th.value="${num}"><p th:text="${num}"></p></option>
+                            </th:block>
+                        </select><br>
+                        전공 질문
+                        <select name="csQuestion" required>
+                            <option value="" hidden>-- 문제 수 선택 --</option>
+                            <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                                <option th.value="${num}"><p th:text="${num}"></p></option>
+                            </th:block>
+                        </select>
 
-                <br><br>
+                        <br><br>
 
-                예상 질문 댓글<br>
-                <select id="essaySelect" name="essayName" onChange="afterSelect()" required>
-                    <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
-                    <th:block th:each="essay: ${essayMap}">
-                        <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
-                    </th:block>
-                    <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
-                </select>
-                <select id="expectedQuestion" name="expectedQuestion" required>
-                    <option value="">질문 수</option>
-                </select>
-                <br><br>
-                직접 입력하기<br>*앞서 선택한 문제들과 겹칠 수가 있습니다.<br>*영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)
-                <div id="inputQuestion">
-                    <script>
-                        display();
-                    </script>
+                        예상 질문 댓글<br>
+                        <select id="essaySelect" name="essayName" onChange="afterSelect()" required>
+                            <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
+                            <th:block th:each="essay: ${essayMap}">
+                                <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
+                            </th:block>
+                            <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
+                        </select>
+                        <select id="expectedQuestion" name="expectedQuestion" required>
+                            <option value="">질문 수</option>
+                        </select>
+                        <br><br>
+                        직접 입력하기<br>*앞서 선택한 문제들과 겹칠 수가 있습니다.<br>*영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)
+                        <div id="inputQuestion">
+                            <script>
+                                display();
+                            </script>
+                        </div>
+                        <br>
+                        <input class="btn btn-style" type="submit" name="" value="면접 시작">
+                    </form>
                 </div>
-                <br>
-                <input class="btn btn-style" type="submit" name="" value="면접 시작">
-            </form>
+            </div>
         </div>
         </body>
     </th:block>
