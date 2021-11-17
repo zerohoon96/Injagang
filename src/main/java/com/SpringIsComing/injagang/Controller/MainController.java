@@ -241,7 +241,7 @@ public class MainController {
         return "mypage/mail";
     }
 
-
+/*
     @PostConstruct
     public void init(){
         RegisterDTO registerDTO = new RegisterDTO();
@@ -255,6 +255,7 @@ public class MainController {
         memberService.save(registerDTO);
 
     }
+    */
 
 
 

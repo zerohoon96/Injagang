@@ -22,7 +22,7 @@ public class EssayRepositoryTests {
     @Test
     public void insertEssays(){
         IntStream.rangeClosed(1,150).forEach(i -> {
-            long member_id = (long)(Math.random()*50) + 1;
+            Long member_id = (long)(Math.random()*50) + 1;
             Member member = memberRepository.findById(member_id).get();
 
             Essay essay = Essay.builder()

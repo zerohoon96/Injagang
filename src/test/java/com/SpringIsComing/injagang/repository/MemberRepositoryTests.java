@@ -18,10 +18,12 @@ public class MemberRepositoryTests {
     public void insertMembers(){
         IntStream.rangeClosed(1,50).forEach(i -> {
             Member member = Member.builder()
-                    .login_id("user" + i + "@aaa.com")
+                    .loginId("userId"+i)
                     .password("1234")
                     .nickname("USER"+i)
-                    .info("dummy user"+i)
+                    .auth(true)
+                    .email("user" + i + "@aaa.com")
+                    .name("Name..."+i)
                     .build();
 
             repository.save(member);
