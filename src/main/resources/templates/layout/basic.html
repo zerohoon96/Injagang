@@ -11,6 +11,8 @@
 
   <title>인자강 - 인터뷰와 자소서를 강하게! 취준생을 위한 웹페이지</title>
 
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
   <!-- Bootstrap core CSS -->
   <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -20,7 +22,25 @@
   <!-- Bootstrap core JavaScript -->
   <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
   <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-  
+
+    <!-- css style 추가 2021/11/09 -->
+    <style>
+        #board_body{
+            border-collapse: collapse;
+            margin-top: 100px;
+            margin-left: 100px;
+        }
+        #board_body th{
+            text-align: center;
+        }
+        #board_body th, #board_body td{
+            border: 1px solid black;
+            padding: 3px 10px 3px 10px
+        }
+        body{
+          font-family: Roboto;
+        }
+    </style>
 </head>
 
 <body>
