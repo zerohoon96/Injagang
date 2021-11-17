@@ -1,5 +1,6 @@
 package com.SpringIsComing.injagang.repository;
 
+
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayFeedback;
 import com.SpringIsComing.injagang.Entity.Member;
@@ -13,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.stream.IntStream;
 
 @SpringBootTest
-public class FeedbackRepositoryTests {
+public class EssayFeedbackRepositoryTests {
 
     @Autowired
     private EssayFeedbackRepository essayFeedbackRepository;
@@ -40,4 +41,5 @@ public class FeedbackRepositoryTests {
             essayFeedbackRepository.save(essayFeedback);
         });
     }
+
 }

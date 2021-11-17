@@ -62,6 +62,10 @@
     
             <!-- 게시물 내용 부분 -->
             <div class="left-space">
+                <!-- 게시물 제목 -->
+                <div>
+                    <h3>[[${result.title}]]</h3>
+                </div>
                 <div class="form-group" th:each="dto : ${result.contentList}">
                     <br>
                     <label>[[${dto.title}]]</label>
@@ -74,9 +78,16 @@
                         <textarea cols="80" readonly>[[${qdto.content}]]</textarea>
                     </div>
             
-                    <!-- 예상질문 달기  **id는 하나라서 첫번째 항목 밑에만 계속 달림! 수정 필요** -->
-                    <div id="new_question"></div>
-                    <input id="question_input" type="button" value="예상질문 달기" onclick="make_expectedQuestion();">
+                    <!-- 예상질문 달기 -->
+                    <div th:id="${dto.pk}"></div>
+                    <input id="question_input" type="button" value="예상질문 달기"
+                           th:attr="onclick=|make_expectedQuestion('${dto.pk}')|">
+                </div>
+                
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <p>[[${result.text}]]</p>
                 </div>
             </div>
             
@@ -159,8 +170,13 @@
             }
             
             //예상질문 쓰기를 누를 때 - 임시
-            function make_expectedQuestion(){
-                document.getElementById("new_question").innerHTML += `<label>{nickname}님의 댓글</label><br>`+
+            /**
+             * 로그인 정보 이용하여 nickname 보여주기 필요
+             * 확인 버튼 누를 시에 작성한 예상질문을 db에 저장 필요
+             */
+            function make_expectedQuestion(id){
+                console.log(id);
+                document.getElementById(id).innerHTML += `<label>{nickname}님의 댓글</label><br>`+
                 `<textarea cols="80" placeholder="예상질문을 입력해주세요."></textarea>`+
                 `<button style="border: 1px black; background-color: lightgray">확인</button><br>`;
             }

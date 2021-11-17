@@ -50,7 +50,8 @@
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
-                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk})}">[[${dto.title}]]</a></td>
+                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk})}">
+                    [[${dto.title}]]</a><span>[댓글:[[${dto.rCnt}]]]</span></td>
                 <th>[[${dto.fCnt}]]</th>
                 <td>[[${dto.writer}]]</td>
                 <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>

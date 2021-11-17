@@ -1,9 +1,11 @@
 package com.SpringIsComing.injagang.repository;
 
 import com.SpringIsComing.injagang.Entity.Essay;
+import com.SpringIsComing.injagang.Entity.Interview;
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Entity.Reply;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
+import com.SpringIsComing.injagang.Repository.InterviewRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
 import com.SpringIsComing.injagang.Repository.ReplyRepository;
 import org.junit.jupiter.api.Test;
@@ -20,10 +22,12 @@ public class ReplyRepositoryTests {
     @Autowired
     private EssayRepository essayRepository;
     @Autowired
+    private InterviewRepository interviewRepository;
+    @Autowired
     private MemberRepository memberRepository;
 
     @Test
-    public void insertReply() {
+    public void insertEssayBoardReply() {
         //랜덤한 자소서 게시물들에 대하여 총 300개의 댓글 생성
         IntStream.rangeClosed(1, 300).forEach(i -> {
             long essay_id = (long)(Math.random()*150) + 1;
@@ -40,4 +44,23 @@ public class ReplyRepositoryTests {
             replyRepository.save(reply);
         });
     }
+
+    @Test
+    public void insertInterviewBoardReply(){
+        //랜덤한 면접 게시물들에 대하여 총 300개의 댓글 생성
+        IntStream.rangeClosed(1, 300).forEach(i -> {
+            long interview_id = (long)(Math.random()*150) + 1;
+            long member_id = (long)(Math.random()*50) + 1;
+            Interview interview = interviewRepository.findById(interview_id).get();
+            Member member = memberRepository.findById(member_id).get();
+
+            Reply reply = Reply.builder()
+                    .content("Reply......" + i)
+                    .interview(interview)
+                    .replyer(member)
+                    .build();
+
+            replyRepository.save(reply);
+        });
+     }
 }

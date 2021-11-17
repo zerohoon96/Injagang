@@ -73,6 +73,7 @@ public interface BoardService {
                 .title(interview.getTitle())
                 .writer(interview.getWriter().getNickname())
                 .fCnt(interview.getFeedbacks().size())
+                .rCnt(interview.getReplies().size())
                 .regDate(interview.getDate())
                 .build();
 
@@ -125,6 +126,7 @@ public interface BoardService {
         EssayBoardDTO dto = EssayBoardDTO.builder()
                 .pk(essay.getId())
                 .title(essay.getTitle())
+                .text(essay.getText())
                 .contentList(contentList)
                 .feedbackList(feedbackList)
                 .questionList(questionList)
@@ -137,7 +139,40 @@ public interface BoardService {
 
     //게시물에서 쓸 면접 DTO
     default InterviewBoardDTO interviewBoardEntityToDto(Interview interview) {
+        List<VideoDTO> videoList = new ArrayList<>();
+        interview.getVideos().forEach(video -> {
+            videoList.add(VideoDTO.builder()
+                            .pk(video.getId())
+                            .videoName(video.getVideoName())
+                            .url(video.getVideoURL())
+                            .build());
+        });
+
+        List<InterviewFeedbackDTO> feedbackList = new ArrayList<>();
+        interview.getFeedbacks().forEach(feedback -> {
+            feedbackList.add(InterviewFeedbackDTO.builder()
+                            .pk(feedback.getId())
+                            .nickname(feedback.getMember().getNickname())
+                            .build());
+        });
+
+        List<ReplyDTO> replyList = new ArrayList<>();
+        interview.getReplies().forEach(reply -> {
+            replyList.add(ReplyDTO.builder()
+                            .pk(reply.getId())
+                            .content(reply.getContent())
+                            .nickname(reply.getReplyer().getNickname())
+                            .build());
+        });
+
         InterviewBoardDTO dto = InterviewBoardDTO.builder()
+                .pk(interview.getId())
+                .title(interview.getTitle())
+                .text(interview.getText())
+                .videoList(videoList)
+                .feedbackList(feedbackList)
+                .replyList(replyList)
+                .fCnt(interview.getFeedbacks().size())
                 .build();
 
         return dto;

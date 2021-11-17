@@ -28,6 +28,7 @@
         </head>
         
         <div class="essay-content">
+            <!-- 게시물 내용 임시
             <div class="left-space">
                 <div class="form-group">
                     <label >1.면접 질문1</label>
@@ -44,8 +45,30 @@
                     <video src=""></video>
                 </div>
             </div>
+            -->
             
-            <!-- 피드백 보기 버튼 임시 -->
+            <!-- 게시물 내용 -->
+            <div class="left-space">
+                <!-- 게시물 제목 -->
+                <div>
+                    <h3>[[${result.title}]]</h3>
+                </div>
+                
+                <div class="form-group" th:each="dto : ${result.videoList}">
+                    <br>
+                    <label>[[${dto.videoName}]]</label>
+                    <br>
+                    <video th:src="${dto.url}"></video>
+                </div>
+    
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <p>[[${result.text}]]</p>
+                </div>
+            </div>
+            
+            <!--/* 피드백 보기 버튼 임시
             <div class="right-space">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -58,22 +81,20 @@
                     </div>
                 </div>
             </div>
+            */-->
     
             <!-- 실제 사용할 피드백 보기 부분-->
-            <!--/*
             <div class="right-space">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         피드백([[${result.fCnt}]]개)
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"
-                        th:each="dto : ${result.feedbackList}">
-                        <a class="dropdown-item" th:value="${dto.nickname}님의 피드백"
-                            th:href="@{/essay/board/feedback/${dto.pk}"></a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:each="dto : ${result.feedbackList}"
+                            th:href="@{/essay/board/feedback/${pk}(pk=${dto.pk})}" th:text="|${dto.nickname}님의 피드백|"></a>
                     </div>
                 </div>
             </div>
-            */-->
             
             <!-- 피드백하기 버튼 -->
             <div style="float: right; display: inline-block">
@@ -87,23 +108,12 @@
             <div class="reply-space">
                 <h3>댓글</h3>
     
-                <!-- 기존 댓글 표시해줄 부분 임시 -->
-                <label>{nickname4}님의 댓글</label>
-                <br>
-                <textarea cols="80" readonly>잘 봤습니다!</textarea>
-                <br>
-                <label>{nickname5}님의 댓글</label>
-                <br>
-                <textarea cols="80" readonly>좋은 면접 영상이네요.</textarea>
-    
                 <!-- 실제 기존 댓글 표시해줄 부분 -->
-                <!--/*
                 <div th:each="dto : ${result.replyList}">
                     <label>[[${dto.nickname}]]님의 댓글</label>
                     <br>
                     <textarea cols="80" readonly>[[${dto.content}]]</textarea>
                 </div>
-                */-->
     
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
@@ -121,7 +131,7 @@
             function make_reply(){
                 document.getElementById("new_reply").innerHTML+=`<label>{nickname}님의 댓글</label><br>`+
                         `<textarea cols="80" rows="3" placeholder="내용을 입력해주세요."></textarea>`+
-                        `<button style="border: 1px black; background-color: lightgray">확인</button>`;
+                        `<button style="border: 1px black; background-color: lightgray">확인</button><br>`;
             }
         </script>
     </th:block>
