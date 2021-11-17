@@ -26,6 +26,7 @@ public class EssayContent {
     private Essay essay;
 
     @OneToMany(mappedBy = "essayContent")
+    @Builder.Default
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
     private String title; //질문

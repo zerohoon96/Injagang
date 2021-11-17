@@ -7,6 +7,8 @@ import com.SpringIsComing.injagang.Repository.AuthTokenRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
 import com.SpringIsComing.injagang.token.AuthToken;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 
 @Service
 @Transactional
+@Slf4j
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
@@ -25,6 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Long save(RegisterDTO registerDTO) {
+        log.info("tlqkf");
 
         String digest = encoder.encode(registerDTO.getPassword());
 
@@ -126,4 +130,10 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByEmail(email).orElse(null);
 
     }
+
+    @Override
+    public Member findByNickname(String nickname) {
+        return memberRepository.findByNickname(nickname);
+    }
+
 }

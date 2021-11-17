@@ -4,37 +4,66 @@ import com.SpringIsComing.injagang.DTO.ChangePasswordTokenDTO;
 import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
+import com.SpringIsComing.injagang.Entity.Essay;
+import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.Entity.Member;
-import com.SpringIsComing.injagang.Service.AuthTokenService;
-import com.SpringIsComing.injagang.Service.EmailService;
-import com.SpringIsComing.injagang.Service.MemberService;
+import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
 
     private final MemberService memberService;
+    private final EssayService essayService;
+    private final InterviewService interviewService;
+    private final FriendService friendService;
     private final AuthTokenService authTokenService;
 
     /**
      * 마이페이지
      */
-    @GetMapping("/mypage")
-    public String myPage() {
+    @GetMapping("/mypage/{nickname}")
+    public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable("nickname") String curNickname
+                            ,Model model) {
+
+
+        Member loginMember = memberService.findByNickname(nickname);
+        Member targetMember = memberService.findByNickname(curNickname);
+
+        boolean friendCheck = friendService.isFriend(loginMember.getId(), targetMember.getId());
+
+        if (nickname == curNickname) {
+            friendCheck = true;
+        }
+
+        model.addAttribute("essayList",essayService.findEssays(loginMember).stream()
+                                    .map(e -> essayService.toMypageEssayDTO(e)).collect(Collectors.toList()));
+        model.addAttribute("interviewList",interviewService.findInterviews(loginMember).stream()
+                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(Collectors.toList()));
+        model.addAttribute("friendList",friendService.findFriends(loginMember.getId()).stream()
+                .map(f -> friendService.toMypageDTO(f,"쓰레기")).collect(Collectors.toList()));
+
+        if (friendCheck) {
+            model.addAttribute("isFriend", true);
+
+            return "mypage/mypage";
+        }
+
+        model.addAttribute("isFriend", false);
 
         return "mypage/mypage";
     }
@@ -92,7 +121,7 @@ public class MainController {
 
         HttpSession session = request.getSession();
 
-        session.setAttribute(SessionConst.LOGIN_SESSION, loginMember.getId());
+        session.setAttribute(SessionConst.LOGIN_SESSION, loginMember.getNickname());
 
 
 
@@ -143,9 +172,9 @@ public class MainController {
 
         authTokenService.createEmailAuthToken(registerDTO.getLoginId(), registerDTO.getEmail());
 
-        HttpSession session = request.getSession();
-
-        session.setAttribute(SessionConst.LOGIN_SESSION, savedId);
+//        HttpSession session = request.getSession();
+//
+//        session.setAttribute(SessionConst.LOGIN_SESSION, savedId);
 
         return "redirect:/auth/complete";
 

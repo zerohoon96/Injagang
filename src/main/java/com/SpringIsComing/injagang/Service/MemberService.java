@@ -16,4 +16,5 @@ public interface MemberService {
     public void changePassword(Long memberId, String password);
 
     public Member findByEmail(String email);
+    public Member findByNickname(String nickname);
 }

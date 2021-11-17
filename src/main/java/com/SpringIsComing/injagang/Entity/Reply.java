@@ -21,8 +21,12 @@ public class Reply {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
-    private Board board;
+    @JoinColumn(name = "ESSAY_ID")
+    private Essay essay;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "INTERVIEW_ID")
+    private Interview interview;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
