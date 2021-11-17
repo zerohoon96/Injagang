@@ -1,15 +1,12 @@
 package com.SpringIsComing.injagang.Controller;
 
-<<<<<<< HEAD
 import com.SpringIsComing.injagang.DTO.ChangePasswordTokenDTO;
 import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Friend;
-=======
 import com.SpringIsComing.injagang.DTO.*;
->>>>>>> feature-mypage
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
@@ -24,16 +21,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-<<<<<<< HEAD
 import java.util.List;
 import java.util.stream.Collectors;
-=======
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
->>>>>>> feature-mypage
 
 @Controller
 @RequiredArgsConstructor
@@ -49,7 +38,6 @@ public class MainController {
      * 마이페이지
      */
     @GetMapping("/mypage/{nickname}")
-<<<<<<< HEAD
     public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable("nickname") String curNickname
                             ,Model model) {
 
@@ -77,107 +65,6 @@ public class MainController {
         }
 
         model.addAttribute("isFriend", false);
-=======
-    public String myPage(Model model, @PathVariable String nickname) {
-        //세션으로 내 닉네임 저장
-        List<MypageEssayDTO> essayList = new ArrayList<>();
-        List<MypageInterviewDTO> interviewList = new ArrayList<>();
-        List<MypageFriendDTO> friendList = new ArrayList<>();
-        boolean isFriend = false;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        MypageEssayDTO e1 = new MypageEssayDTO();
-        e1.setId(0L);
-        e1.setTitle("자기소개서 1");
-        e1.setFeedbackNum(1);
-        e1.setQuestionNum(1);
-        e1.setCreateTime(LocalDateTime.of(2021,11,17,12,32,0));
-        essayList.add(e1);
-        MypageEssayDTO e2 = new MypageEssayDTO();
-        e2.setId(1L);
-        e2.setTitle("자기소개서 2");
-        e2.setFeedbackNum(2);
-        e2.setQuestionNum(2);
-        e2.setCreateTime(LocalDateTime.of(2021,11,18,12,33,0));
-        essayList.add(e2);
-        MypageEssayDTO e3 = new MypageEssayDTO();
-        e3.setId(2L);
-        e3.setTitle("자기소개서 3");
-        e3.setFeedbackNum(3);
-        e3.setQuestionNum(3);
-        e3.setCreateTime(LocalDateTime.of(2021,11,19,12,33,0));
-        essayList.add(e3);
-
-        MypageInterviewDTO i1 = new MypageInterviewDTO();
-        i1.setId(0L);
-        i1.setTitle("면접 1");
-        i1.setFeedbackNum(1);
-        i1.setQuestionNum(1);
-        i1.setCreateTime(LocalDateTime.of(2021,11,19,12,34,0));
-        interviewList.add(i1);
-        MypageInterviewDTO i2 = new MypageInterviewDTO();
-        i2.setId(1L);
-        i2.setTitle("면접 2");
-        i2.setFeedbackNum(2);
-        i2.setQuestionNum(2);
-        i2.setCreateTime(LocalDateTime.of(2021,11,19,12,34,0));
-        interviewList.add(i2);
-        MypageInterviewDTO i3 = new MypageInterviewDTO();
-        i3.setId(2L);
-        i3.setTitle("면접 3");
-        i3.setFeedbackNum(3);
-        i3.setQuestionNum(3);
-        i3.setCreateTime(LocalDateTime.of(2021,11,19,12,35,0));
-        interviewList.add(i3);
-
-        MypageFriendDTO f1 = new MypageFriendDTO();
-        f1.setId(0L);
-        f1.setNickname("이영훈");
-        friendList.add(f1);
-
-        MypageFriendDTO f2 = new MypageFriendDTO();
-        f2.setId(1L);
-        f2.setNickname("김의현");
-        friendList.add(f2);
-
-        MypageFriendDTO f3 = new MypageFriendDTO();
-        f3.setId(2L);
-        f3.setNickname("황재환");
-        friendList.add(f3);
-
-        MypageFriendDTO f4 = new MypageFriendDTO();
-        f4.setId(3L);
-        f4.setNickname("김수만");
-        friendList.add(f4);
-
-        MypageFriendDTO f5 = new MypageFriendDTO();
-        f5.setId(4L);
-        f5.setNickname("김재우");
-        friendList.add(f5);
-
-        MypageFriendDTO f6 = new MypageFriendDTO();
-        f6.setId(5L);
-        f6.setNickname("임대호");
-        friendList.add(f6);
-
-        MypageFriendDTO f7 = new MypageFriendDTO();
-        f7.setId(6L);
-        f7.setNickname("김병준");
-        friendList.add(f7);
-
-        MypageFriendDTO f8 = new MypageFriendDTO();
-        f8.setId(7L);
-        f8.setNickname("김동규");
-        friendList.add(f8);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        System.out.println(nickname+" 마이페이지!!!!!");
-        model.addAttribute("isFriend", isFriend); //친구 여부에
-        model.addAttribute("nickname", nickname);
-        model.addAttribute("essayList",essayList);
-        model.addAttribute("interviewList",interviewList);
-        model.addAttribute("friendList",friendList);
->>>>>>> feature-mypage
 
         return "mypage/mypage";
     }
