@@ -198,6 +198,9 @@
                     recorder.onstop = function (e) {
                         downloadVideo(idx); //stop 이벤트 발생시 비디오 다운로드
                     };
+                    recorder.ondataavailable = (e) => {
+                        chunks.push(e.data);
+                    };
                     recorder.start();
                     resolve();
                 })
