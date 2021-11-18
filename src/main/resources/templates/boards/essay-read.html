@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        
+        <head>
+            <style>
+                .essay-content{
+                    box-sizing: border-box;
+                    width: 100%;
+                    margin-top: 30px;
+                }
+                .left-space{
+                    display: inline-block;
+                    width:80%;
+                }
+                .right-space{
+                    display: inline-block;
+                    float: right;
+                }
+                textarea{
+                    resize: none;
+                    display: inline-block;
+                    height: auto;
+                }
+            </style>
+        </head>
+        
+        <div class="essay-content">
+            
+            <!-- 임시
+            <div class="left-space">
+                <div class="form-group">
+                    <label >1.당신의 성격이 어떻다고 생각하십니까?(내성적, 외향적)</label>
+                    <input type="text" class="form-control" name="content"
+                           value="----------------답변 내용----------------" readonly>
+                    <label>{nickname1}님의 예상질문</label>
+                    <br>
+                    <textarea cols="80" readonly>왜 내성적이라고 생각하는지 경험을 근거로 말해주세요.</textarea>
+                </div>
+        
+                <div class="form-group">
+                    <label >2.열정을 가지고 꾸준히 노력하여 결과를 일구어낸 경험이 있나요?</label>
+                    <input type="text" class="form-control" name="content"
+                           value="----------------답변 내용----------------" readonly>
+                    <label>{nickname2}님의 예상질문</label>
+                    <br>
+                    <textarea cols="80" readonly>그 경험이 직무 관련하여 어떤 강점이 있을까요?</textarea>
+                </div>
+        
+                <div class="form-group">
+                    <label >3.살면서 가장 힘들었던 일이 무엇이었나요? 그 일을 어떻게 극복하였나요?</label>
+                    <input type="text" class="form-control" name="content"
+                           value="----------------답변 내용----------------" readonly>
+                    <label>{nickname3}님의 예상질문</label>
+                    <br>
+                    <textarea cols="80" readonly>그 일을 극복하는 과정에서 깨달은 점은 무엇인가요?</textarea>
+                </div>
+            </div>
+            -->
+    
+            <!-- 게시물 내용 부분 -->
+            <div class="left-space">
+                <!-- 게시물 제목 -->
+                <div>
+                    <h3>[[${result.title}]]</h3>
+                </div>
+                <div class="form-group" th:each="dto : ${result.contentList}">
+                    <br>
+                    <label>[[${dto.title}]]</label>
+                    <input type="text" class="form-control" name="content" th:value="${dto.text}" readonly>
+            
+                    <!-- 예상질문 부분 -->
+                    <div th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
+                        <label>[[${qdto.nickname}]]님의 예상질문</label>
+                        <br>
+                        <textarea cols="80" readonly>[[${qdto.content}]]</textarea>
+                    </div>
+            
+                    <!-- 예상질문 달기 -->
+                    <div th:id="${dto.pk}"></div>
+                    <input id="question_input" type="button" value="예상질문 달기"
+                           th:attr="onclick=|make_expectedQuestion('${dto.pk}')|">
+                </div>
+                
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <p>[[${result.text}]]</p>
+                </div>
+            </div>
+            
+            <!-- 피드백 보기 부분 임시
+            <div class="right-space">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        피드백(3개)
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">{nickname1}님의 피드백</a>
+                        <a class="dropdown-item" href="#">{nickname2}님이 피드백</a>
+                        <a class="dropdown-item" href="#">{nickname3}님의 피드백</a>
+                    </div>
+                </div>
+            </div>
+            -->
+    
+            <!-- 피드백 보기 부분-->
+            <div class="right-space">
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        피드백([[${result.fCnt}]]개)
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:each="dto : ${result.feedbackList}"
+                           th:href="@{/essay/board/feedback/{pk}(pk=${dto.pk})}" th:text="|${dto.nickname}님의 피드백|">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 첨삭쓰기 버튼 -->
+            <div style="float: right; display: inline-block">
+                <button class="btn btn-primary">
+                    <a th:href="@{/essay/board/feedback}" style="color: white;">첨삭 쓰기</a>
+                </button>
+            </div>
+            <hr>
+            
+            <!-- 댓글 - js로 댓글 달기 -->
+            <div class="reply-space">
+                <h3>댓글</h3>
+                
+                <!--임시 댓글
+                <label>{nickname4}님의 댓글</label>
+                <br>
+                <textarea cols="80" readonly>잘 봤습니다!</textarea>
+                <br>
+                <label>{nickname5}님의 댓글</label>
+                <br>
+                <textarea cols="80" readonly>좋은 자소서네요.</textarea>
+                -->
+                
+                <!-- 기존 댓글 표시 -->
+                <div th:each="dto : ${result.replyList}">
+                    <label>[[${dto.nickname}]]님의 댓글</label>
+                    <br>
+                    <textarea cols="80" readonly>[[${dto.content}]]</textarea>
+                </div>
+    
+                <!-- 댓글 달기 -->
+                <div id="new_reply"></div>
+                <input id="reply_input" type="button" value="댓글 달기" onclick="make_reply(); remove_replyBtn()">
+            </div>
+        </div>
+        
+        <!-- 댓글 달기 기능 -->
+        <script th:inline="javascript">
+            //댓글 달기를 누르면 그 부분 삭제
+            function remove_replyBtn(){
+                $('#reply_input').remove();
+            }
+            
+            //댓글 달기를 누를 때- 임시
+            function make_reply(){
+                document.getElementById("new_reply").innerHTML+=`<label>{nickname}님의 댓글</label><br>`+
+                `<textarea cols="80" rows="3" placeholder="내용을 입력해주세요."></textarea>`+
+                `<button style="border: 1px black; background-color: lightgray">확인</button><br>`;
+            }
+            
+            //예상질문 쓰기를 누를 때 - 임시
+            /**
+             * 로그인 정보 이용하여 nickname 보여주기 필요
+             * 확인 버튼 누를 시에 작성한 예상질문을 db에 저장 필요
+             */
+            function make_expectedQuestion(id){
+                console.log(id);
+                document.getElementById(id).innerHTML += `<label>{nickname}님의 댓글</label><br>`+
+                `<textarea cols="80" placeholder="예상질문을 입력해주세요."></textarea>`+
+                `<button style="border: 1px black; background-color: lightgray">확인</button><br>`;
+            }
+        </script>
+        
+    </th:block>
+</th:block>

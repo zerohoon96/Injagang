@@ -114,12 +114,22 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePassword(Long memberId, String password) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+    public void changePassword(String nickname, String password) {
+        Member findMember = memberRepository.findByNickname(nickname);
 
         String digest = encoder.encode(password);
 
         findMember.changePassword(digest);
+
+    }
+
+    @Override
+    public void changeNickname(String nowNickname, String changeNickname) {
+
+        Member finMember = memberRepository.findByNickname(nowNickname);
+
+        finMember.changeNickname(changeNickname);
+
 
     }
 
@@ -135,5 +145,6 @@ public class MemberServiceImpl implements MemberService {
     public Member findByNickname(String nickname) {
         return memberRepository.findByNickname(nickname);
     }
+
 
 }

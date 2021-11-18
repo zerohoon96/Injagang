@@ -15,12 +15,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Video {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "VIDEO_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
+    @JoinColumn(name = "INTERVIEW_ID")
     private Interview interview;
 
     private String videoURL; //영상 url

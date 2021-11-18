@@ -17,12 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class InterviewFeedback {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IF_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
+    @JoinColumn(name = "INTERVIEW_ID")
     private Interview interview;
 
     @ManyToOne(fetch = FetchType.LAZY)

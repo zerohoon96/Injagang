@@ -17,12 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class EssayContent {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EssayContent_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
+    @JoinColumn(name = "ESSAY_ID")
     private Essay essay;
 
     @OneToMany(mappedBy = "essayContent")
@@ -30,5 +30,5 @@ public class EssayContent {
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
     private String title; //질문
-    private String content; //답변
+    private String text; //답변
 }

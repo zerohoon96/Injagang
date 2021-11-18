@@ -9,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Simple Sidebar - Start Bootstrap Template</title>
+  <title>인자강 - 인터뷰와 자소서를 강하게! 취준생을 위한 웹페이지</title>
 
   <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 
@@ -23,24 +23,6 @@
   <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
   <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
-    <!-- css style 추가 2021/11/09 -->
-    <style>
-        #board_body{
-            border-collapse: collapse;
-            margin-top: 100px;
-            margin-left: 100px;
-        }
-        #board_body th{
-            text-align: center;
-        }
-        #board_body th, #board_body td{
-            border: 1px solid black;
-            padding: 3px 10px 3px 10px
-        }
-        body{
-          font-family: Roboto;
-        }
-    </style>
 </head>
 
 <body>
@@ -49,14 +31,26 @@
 
   <!-- Sidebar -->
   <div class="bg-light border-right" id="sidebar-wrapper">
-      <div class="sidebar-heading" id="main_logo"><h2><b>InJaGang</b></h2></div>
-      <div class="sidebar-heading"> <i>인터뷰와 자소서를 강하게!</i></div>
+      <div class="sidebar-heading">
+          <img src="/인자강.png" alt="Main Logo" width="200" height="120"/>
+      </div>
+      <div class="sidebar-heading"> <i>인터뷰와<br>자소서를<br>강하게!</i></div>
+      <br>
     <div class="list-group list-group-flush">
-      <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
-      <a href="#" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        <!--/*
+        <a th:href="@{/mypage}" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        */-->
+        <a th:href="@{/essay/board}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
+        <a th:href="@{/interview/board}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
+        <!--/*
+        <a th:href="@{/essay}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
+        */-->
+        <a href="#" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        <!--/*
+        <a th:href="@{/interview/init}" class="list-group-item list-group-item-action bg-light">면접 보기</a>
+        */-->
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -65,16 +59,21 @@
   <div id="page-content-wrapper">
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-      <button class="btn btn-primary" id="menu-toggle">사이드바 접기</button>
+      <!--
+        <button class="btn btn-primary" id="menu-toggle">사이드바 토글</button>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      -->
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
           <li class="nav-item active">
             <a class="nav-link" href="#">{nickname}님 환영합니다! <span class="sr-only">(current)</span></a>
+              <!--
+               <a class="nav-link" href="#">[[${nickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
+               -->
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">포인트()</a>
@@ -84,10 +83,10 @@
               알림
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">던질까 말까</a>
-              <a class="dropdown-item" href="#">던질까 말까 던질까 말까</a>
+              <a class="dropdown-item" href="#">{essayName}에 {nickname}님이 피드백을 달았습니다.</a>
+              <a class="dropdown-item" href="#">{interviewName}에 {nickname}님이 피드백을 달았습니다.</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">던 던 던 던 던져! 던져!</a>
+              <a class="dropdown-item" href="#">{quantity}point가 적립되었습니다.</a>
             </div>
           </li>
         </ul>

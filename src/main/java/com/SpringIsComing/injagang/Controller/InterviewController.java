@@ -11,7 +11,7 @@ public class InterviewController {
      * 면접 세팅 화면
      **/
     @GetMapping("/init")
-    String interviewInit() {
-        return "/interview/interview-init";
+    public String interviewInit() {
+        return "interview/init";
     }
 }
