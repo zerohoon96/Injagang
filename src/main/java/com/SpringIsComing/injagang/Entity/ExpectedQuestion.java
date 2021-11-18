@@ -14,7 +14,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class ExpectedQuestion {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ExpecetdQuestion_ID")
     private Long id;
 

@@ -8,6 +8,10 @@
             <title>essay_write_page</title>
 
             <style>
+                .container-fluid {
+                    padding-left: 7%;
+                    padding-right: 7%;
+                }
                 .btn-link {
                     mid-width: 100px;
                     border-radius: 0px;
@@ -21,14 +25,14 @@
 
                 select {
                     text-align: center;
-                    margin: 15px 0px 15px 5px;
+                    margin: 0 auto;
                 }
             </style>
 
         </head>
         <body>
         <!--동적 게시글 작성 양식-->
-        <form id="createTemplate" name="createTemplate" action="/essay/read" method="post">
+        <form id="createTemplate" name="createTemplate" action method="post">
             <div class="form-group container-fluid">
                 <!--템플릿 불러오기 칸-->
                 <select class="form-control" name="template_select" id="template_select" onchange="Change_template();">
@@ -115,7 +119,7 @@
                     document.getElementById("ct_newessay").innerHTML +=
                         `<form>
                             <label> ${+ele + 1}. ${myArray[select][ele]}</label>
-                            <textarea class="form-control" rows=10 name="template_answer${+ele+1}"placeholder="내용을 입력해주세요." required></textarea><br>
+                            <textarea class="form-control" rows=10 name="t${myArray[select][ele]}"placeholder="내용을 입력해주세요." required></textarea><br>
                         </form>`
                 }
             }

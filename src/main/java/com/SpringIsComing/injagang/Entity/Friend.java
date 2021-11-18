@@ -14,7 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Friend {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FRIEND_ID")
     private Long id;
 

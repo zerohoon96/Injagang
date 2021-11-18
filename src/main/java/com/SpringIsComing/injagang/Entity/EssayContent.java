@@ -17,17 +17,33 @@ import java.util.List;
 @AllArgsConstructor
 public class EssayContent {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "EssayContent_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_ID")
+    @JoinColumn(name = "ESSAY_ID")
     private Essay essay;
 
     @OneToMany(mappedBy = "essayContent")
+    @Builder.Default
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
-    private String title; //질문
-    private String content; //답변
+    private String question; //질문
+    private String answer; //답변
+    private boolean template; //템플릿 설정(true : 템플릿, false : 직접읿력)
+
+
+    public static EssayContent createEssayContent(String question, String answer, boolean template) {
+        return EssayContent.builder()
+                .question(question)
+                .answer(answer)
+                .template(template)
+                .build();
+    }
+
+    public void addEssay(Essay essay) {
+        this.essay = essay;
+    }
+
 }
