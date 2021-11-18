@@ -14,8 +14,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class InterviewDTO {
     private Long pk;
+    private Integer access;
     private String title; //제목
     private Integer fCnt, rCnt; //피드백 개수, 댓글 개수
     private String writer; //작성자
-    private LocalDateTime regDate, modDate; //등록, 수정날짜
+    private LocalDateTime date;
 }

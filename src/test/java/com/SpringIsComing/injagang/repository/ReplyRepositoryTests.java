@@ -30,13 +30,13 @@ public class ReplyRepositoryTests {
     public void insertEssayBoardReply() {
         //랜덤한 자소서 게시물들에 대하여 총 300개의 댓글 생성
         IntStream.rangeClosed(1, 300).forEach(i -> {
-            long essay_id = (long)(Math.random()*150) + 1;
+            long essay_id = (long)(Math.random()*100) + 1;
             long member_id = (long)(Math.random()*50) + 1;
             Essay essay = essayRepository.findById(essay_id).get();
             Member member = memberRepository.findById(member_id).get();
 
             Reply reply = Reply.builder()
-                    .content("Reply......" + i)
+                    .content("......Sample Reply......" + i)
                     .essay(essay)
                     .replyer(member)
                     .build();
@@ -55,7 +55,7 @@ public class ReplyRepositoryTests {
             Member member = memberRepository.findById(member_id).get();
 
             Reply reply = Reply.builder()
-                    .content("Reply......" + i)
+                    .content("......Sample Reply......" + i)
                     .interview(interview)
                     .replyer(member)
                     .build();

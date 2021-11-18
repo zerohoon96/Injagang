@@ -26,8 +26,8 @@ public class EssayFeedbackRepositoryTests {
     @Test
     public void insertEssayFeedbacks() {
         //300개의 피드백을 무작위 자소서 게시물에 생성
-        IntStream.rangeClosed(1,300).forEach(i -> {
-            long essay_id = (long)(Math.random()*150) + 1;
+        IntStream.rangeClosed(1,200).forEach(i -> {
+            long essay_id = (long)(Math.random()*100) + 1;
             long member_id = (long)(Math.random()*50) + 1;
             Essay essay = essayRepository.findById(essay_id).get();
             Member member = memberRepository.findById(member_id).get();

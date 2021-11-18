@@ -4,6 +4,9 @@ import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Entity.Interview;
+import com.SpringIsComing.injagang.Repository.EssayRepository;
+import com.SpringIsComing.injagang.Repository.InterviewRepository;
+import com.SpringIsComing.injagang.Repository.MemberRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,10 @@ public interface BoardService {
     Long registerEssay(EssayDTO dto);
 
     Long registerInterview(InterviewDTO dto);
+
+    List<EssayDTO> getEssays(String nickname);
+
+    List<InterviewDTO> getInterviews(String nickname);
 
     //자소서 게시판의 한 페이지 가져오기
     PageResultDTO<EssayDTO, Essay> getEssayList(PageRequestDTO requestDTO);
@@ -26,15 +33,16 @@ public interface BoardService {
     //면접 게시판의 한 게시물 읽어오기
     InterviewBoardDTO readInterviewBoard(Long id);
 
-    //미구현
+    //자소서 게시물 등록할 때 사용
     default Essay essayDtoToEntity(EssayDTO dto) {
+
         Essay entity = Essay.builder()
                 .build();
 
         return entity;
     }
 
-    //미구현
+    //면접 게시물 등록할 때 사용
     default Interview interviewDtoToEntity(InterviewDTO dto){
 
         Interview entity = Interview.builder()
@@ -57,10 +65,11 @@ public interface BoardService {
                 .pk(essay.getId())
                 .title(essay.getTitle())
                 .writer(essay.getWriter().getNickname())
+                .access(essay.getAccess())
                 .qCnt(cnt)
                 .fCnt(essay.getFeedbacks().size())
                 .rCnt(essay.getReplies().size())
-                .regDate(essay.getDate())
+                .date(essay.getDate())
                 .build();
 
         return dto;
@@ -72,9 +81,10 @@ public interface BoardService {
                 .pk(interview.getId())
                 .title(interview.getTitle())
                 .writer(interview.getWriter().getNickname())
+                .access(interview.getAccess())
                 .fCnt(interview.getFeedbacks().size())
                 .rCnt(interview.getReplies().size())
-                .regDate(interview.getDate())
+                .date(interview.getDate())
                 .build();
 
         return dto;

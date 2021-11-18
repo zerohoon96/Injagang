@@ -24,7 +24,7 @@ public class ExpectedQuestionRepositoryTests {
     @Test
     public void insertExpectedQuestions() {
         //모든 EssayContent에 대하여 한 개의 예상질문 생성
-        IntStream.rangeClosed(1,450).forEach(i -> {
+        IntStream.rangeClosed(1,300).forEach(i -> {
             EssayContent essayContent = ecRepository.findById((long)i).get();
             long member_id = (long)(Math.random()*50) + 1;
             Member member = memberRepository.findById(member_id).get();

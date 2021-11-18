@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //회원 Entity
 @Entity
@@ -31,6 +33,14 @@ public class Member {
     private String email;
 
     private boolean auth = false;
+
+    @OneToMany(mappedBy = "writer")
+    @Builder.Default
+    private List<Essay> essays = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writer")
+    @Builder.Default
+    private List<Interview> interviews = new ArrayList<>();
 
     public void changePassword(String password) {
         this.password = password;

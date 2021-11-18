@@ -41,5 +41,25 @@ public class Essay{
     private String essayTitle; //자소서 제목
     private String title; //제목
     private String text; //내용 글
-    private LocalDateTime date; //작성 날짜
+    private LocalDateTime date; //최신 작성 시간
+
+    //공개범위 수정
+    public void setAccess(int val){
+        this.access = val;
+    }
+
+    //게시물 제목 수정
+    public void setTitle(String str){
+        this.title = str;
+    }
+
+    //게시물 내용 글 수정
+    public void setText(String str){
+        this.text = str;
+    }
+
+    //게시물 최신 수정 시간 수정
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
 }
