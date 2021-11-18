@@ -10,6 +10,7 @@
                 .text-align-center {
                     text-align: center;
                 }
+
                 thead {
                     border-top: none;
                 }
@@ -29,26 +30,33 @@
         <div class="row mt-3 justify-content-center">
 
             <div class="col-3 d-flex justify-content-between">
-
                 <span th:text="|자기소개서 : ${essayList.size()}개 작성|"></span>
                 <span th:text="|모의면접 : ${interviewList.size()}회 실행|"></span>
                 <span th:text="|친구 : ${friendList.size()}명|"></span>
-
             </div>
-
-
         </div>
 
+        <div class="row mt-3 justify-content-center">
+            <a th:if="${friendState} == 0" href="/mypage/update" type="button" class="btn btn-outline-secondary">회원 정보 수정</a>
+        </div>
 
         <div class="row justify-content-center mt-5">
-
             <div class="btn-group col-lg-4" role="group" aria-label="Basic outlined example">
-                <button type="button" class="btn btn-outline-secondary" onClick="displayEssay()">자기소개서</button>
-                <button type="button" class="btn btn-outline-secondary" onClick="displayInterview()">면접</button>
-                <button type="button" class="btn btn-outline-secondary" onClick="displayFriend()">친구 목록</button>
+                <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
+                        onClick="displayEssay()">자기소개서
+                </button>
+                <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
+                        onClick="displayInterview()">면접
+                </button>
+                <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
+                        onClick="displayFriend()">친구 목록
+                </button>
+
+                <a th:if="${friendState} == 2" href="/mypage/request-friend" type="button" class="btn btn-outline-secondary">친구 신청</a>
+                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 신청 대기중</a>
+                <a th:if="${friendState} == 4" href="/mypage/request-friend" type="button"
+                   class="btn btn-outline-secondary">친구 수락하기</a>
             </div>
-
-
         </div>
 
         <div class="row justify-content-center mt-3">
@@ -66,8 +74,6 @@
             const essayList = [[${essayList}]];
             const interviewList = [[${interviewList}]];
             const friendList = [[${friendList}]];
-            const isFriend = [[${isFriend}]];
-
             console.log(essayList)
             console.log(interviewList)
             console.log(friendList)
@@ -82,13 +88,14 @@
                 essayList.forEach((essay) => {
                     body.innerHTML +=
                         "<tr>" +
-                        "<td><a href='' style='text-decoration: none'>"+essay.title+"</a></td>" +
-                        "<td class='text-align-center'>"+essay.feedbackNum+"</td>" +
-                        "<td class='text-align-center'>"+essay.questionNum+"</td>" +
-                        "<td class='text-align-center'>"+essay.createTime+"</td>" +
+                        "<td><a href='/essay/" + essay.id + "' style='text-decoration: none'>" + essay.title + "</a></td>" +
+                        "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
+                        "<td class='text-align-center'>" + essay.questionNum + "</td>" +
+                        "<td class='text-align-center'>" + essay.createTime + "</td>" +
                         "</tr>";
                 });
             }
+
             function displayInterview() {
                 head.innerHTML =
                     "<th class='col-5 text-align-center'>모의면접 제목</th>" +
@@ -100,20 +107,21 @@
                 interviewList.forEach((interview) => {
                     body.innerHTML +=
                         "<tr>" +
-                        "<td>"+interview.title+"</a></td>" +
-                        "<td class='text-align-center'>"+interview.questionNum+"</td>" +
-                        "<td class='text-align-center'>"+interview.feedbackNum+"</td>" +
-                        "<td class='text-align-center'>"+interview.createTime+"</td>" +
+                        "<td>" + interview.title + "</a></td>" +
+                        "<td class='text-align-center'>" + interview.questionNum + "</td>" +
+                        "<td class='text-align-center'>" + interview.feedbackNum + "</td>" +
+                        "<td class='text-align-center'>" + interview.createTime + "</td>" +
                         "</tr>";
                 });
 
             }
+
             function displayFriend() {
                 head.innerHTML = "<th class='col-8 text-align-center'>친구 목록</th>";
                 body.innerHTML = "<br>";
-                for(let i=0;i<friendList.length;i++){
-                    body.innerHTML += "<a href='/mypage/"+friendList[i].nickname+"' style='text-decoration: none'>"+friendList[i].nickname+" </a>";
-                    if(i>0 && i%5==0)
+                for (let i = 0; i < friendList.length; i++) {
+                    body.innerHTML += "<a href='/mypage/" + friendList[i].nickname + "' style='text-decoration: none'>" + friendList[i].nickname + " </a>";
+                    if (i > 0 && i % 5 == 0)
                         body.innerHTML += "<br>";
                 }
             }
