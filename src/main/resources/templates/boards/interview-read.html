@@ -58,7 +58,9 @@
                     <br>
                     <label>[[${dto.videoName}]]</label>
                     <br>
-                    <video th:src="${dto.url}"></video>
+                    <video controls>
+                        <source th:src="${dto.url}" type="video/mp4">
+                    </video>
                 </div>
     
                 <!-- 게시물 글 내용 -->

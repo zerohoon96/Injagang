@@ -1,24 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
 <head>
+
+    <script
+            src="https://kit.fontawesome.com/2d323a629b.js"
+            crossorigin="anonymous"></script>
 
 <!-- <link href="login.css" rel="stylesheet"/> -->
 
-<style>
 
-    body{
+
+    <style>
+
+.body{
         display: flex;
-        height: 100%;
-        background: #f5f6f7;
+        /*height: 100vh;*/
+        /*background: #f5f6f7;*/
         justify-content: center;
         /* align-items: center; */
-        font-family: Dotum,'돋움',Helvetica,sans-serif;
+        /*font-family: Dotum,'돋움',Helvetica,sans-serif;*/
     }
 
-
+.container-fluid {
+    /*background-color: #f5f6f7;*/
+    height: 100%;
+}
 .login-box{
-
     display: flex;
     width: 500px;
     flex-direction: column;
@@ -52,6 +62,17 @@
 .padding-bottom-30{
     padding-bottom: 30px;
 }
+.font-size-15{
+    font-size: 15px;
+}
+
+.a-deco{
+    text-decoration : none;
+    color: black;
+}
+    .margin-bottom-5 {
+        margin-bottom: 5px;
+    }
 
 .margin-bottom-10 {
     margin-bottom: 10px;
@@ -60,9 +81,14 @@
     margin-bottom: 50px;
 }
 
+    .margin-left-5 {
+        margin-left: 5px;
+    }
+
 .block{
     display: block;
 }
+
 
 .w-150 {
     width: 150px;
@@ -71,8 +97,15 @@
     width: 300px;
 }
 
-.btn{
-    padding: 10px 14px 10px 14px;
+.margin-top-30{
+    margin-top: 30px;
+}
+
+.input-error {
+    border-color: red;
+}
+.field-error {
+    color: red;
 }
 
 </style>
@@ -81,31 +114,43 @@
 
 <body>
 
+<div class="body">
     <div class="login-box">
-        <a href="#" class="margin-bottom-50"><img src="../../static/인자강.png"></a>
-        
-        <form>
+        <a href="#" class="margin-bottom-50 margin-top-30"><img th:src="@{/인자강.png}" src="../../static/인자강.png"></a>
+        <form action th:object="${member}" method="post">
             <div>
-                <input type="text" class="input w-300 margin-bottom-10" placeholder="아이디">
-                <input type="password" class="input w-300 margin-bottom-10" placeholder="비밀번호">
+                <input type="text" class="input w-300 margin-bottom-10" placeholder="아이디" th:field="*{loginId}">
+                <input type="password" class="input w-300 margin-bottom-10" placeholder="비밀번호"th:field="*{password}">
             </div>
                 
-            <button type="submit" class="margin-bottom-50 w-300 btn " >로그인</button>
-            
-            <div class="flex justify-centent-center">
-                <button class="w-150">회원가입</button>
-                <button class="w-150">아이디/비밀번호 찾기</button>
-     
+            <button type="submit" class="margin-bottom-10 w-300 btn btn-primary" >로그인</button>
+
+
+            <div class="flex w-300 justify-content-around">
+                <a class="font-size-15 a-deco" href="#" th:href="@{/register}">회원가입</a>
+                <a class="font-size-15 a-deco" href="#" th:href="@{/find}">아이디/비밀번호 찾기</a>
+<!--                <a class="font-size-15 a-deco" href="#">비밀번호 찾기</a>-->
             </div>
+
+<!--            <span th:errors="*{loginId}" class="field-error mt-3" >아이디 오류</span>-->
+<!--            <span th:errors="*{password}" class="field-error mt-3">아이디 오류</span>-->
+
+
+
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p  th:each="err : ${#fields.globalErrors()}" class="field-error mt-3" th:text="${err}">글로벌 오류 메시지</p>
+            </div>
+
+
             
         </form>
 
     </div>
 
-
-
+</div>
 </body>
-
+    </th:block>
+</th:block>
 
 
 </html>
