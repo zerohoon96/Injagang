@@ -74,26 +74,28 @@
         <script th:inline="javascript">
             const questions = [[${questions}]];
             const interviewName = [[${interviewName}]];
-            let synth = window.speechSynthesis;
+            const download = document.querySelector("#autoDownload");
+            const endInterview = document.querySelector("#endInterview");
+            const speechMsg = new SpeechSynthesisUtterance();
+            const synth = window.speechSynthesis;
             let video;
             let recorder;
             let chunks = [];
-            const download = document.querySelector("#autoDownload");
-            const endInterview = document.querySelector("#endInterview");
-
-            const speechMsg = new SpeechSynthesisUtterance();
-            speechMsg.rate = 1; // 속도: 0.1 ~ 10
-            speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
-            speechMsg.lang = "ko-KR";
+            // speechMsg.rate = 1; // 속도: 0.1 ~ 10
+            // speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
+            // speechMsg.lang = "ko-KR";
 
 
             function canRead() { //현재 브라우저에서 문제 읽기가 가능한지 판별하고 초기 세팅을 진행하는 함수
                 console.log(questions, interviewName);
-                if (typeof SpeechSynthesisUtterance === "undefined" || typeof window.speechSynthesis === "undefined") {
+                if (typeof SpeechSynthesisUtterance === "undefined" || typeof synth === "undefined") {
                     alert("이 브라우저에서 테스트가 불가능합니다.");
                     endInterview.href = '/interview/aaaa'; //이동할 경로
                     endInterview.click();
                 } else { //가능한 경우 초기 html 추가 및 카메라 화면 설정
+                    speechMsg.rate = 1; // 속도: 0.1 ~ 10
+                    speechMsg.pitch = 0.5; // 음높이: 0 ~ 2
+                    speechMsg.lang = "ko-KR";
                     initGuide();
                     startVideo();
                 }
@@ -137,21 +139,21 @@
                 document.getElementById('everyBtn').innerHTML = "";
 
                 speakSet(questions[idx]).then(function () {
-                    showGuide('/listen.png', '문제를 읽고 있습니다.');
+                    showGuide('/listen.png', '문제를 읽고 있습니다.', idx);
                     return speak(); //말하기 세팅
                 }).then(function () {
                     return waitSpeaking(); //말하기가 종료될 때까지 대기
                 }).then(function () {
                     return startRecording(idx); //말하기 종료 후 영상 녹화 시작
                 }).then(function () {
-                    showGuide('/speak.png', '이제 말하세요!');
+                    showGuide('/speak.png', '이제 말하세요!', idx);
                     return btnControl(idx); //문제를 모두 읽고 다음 문제 버튼 추가
                 }).catch(alert);
             }
 
-            function showGuide(imgPath, msg) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
+            function showGuide(imgPath, msg, idx) { //안내 메세지, 이미지 및 현재 웹캠 화면을 추가하는 함수
                 console.log("*****가이드 세팅*****");
-                document.getElementById('guide').innerHTML = "<p id='p1'><img src=" + imgPath + " style='width:80px; height:80px;'>   " + msg + "</p><br>";
+                document.getElementById('guide').innerHTML = "<p id='p1'><img src=" + imgPath + " style='width:80px; height:80px;'> " + msg + "  (" + (idx+1) + "/" + questions.length +")</p><br>";
             }
 
             function speakSet(text) { //말하기 준비를 하는 함수

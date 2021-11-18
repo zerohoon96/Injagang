@@ -66,7 +66,7 @@ public class InterviewController {
 
         //4. Shuffle
         System.out.println("InterviewController.interviewSubmit");
-        questionList.add("액션이 어떻게 되는지 아세요?");
+        questionList.add("안녕하세요 국민여러분 홍준표에요.");
         questionList.add("무야호");
         model.addAttribute("questions",questionList);
         model.addAttribute("interviewName",allParameters.get("interviewName"));
