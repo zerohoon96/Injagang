@@ -11,6 +11,7 @@ import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,8 @@ public class MainController {
     private final InterviewService interviewService;
     private final FriendService friendService;
     private final AuthTokenService authTokenService;
+    private final PasswordEncoder encoder;
+
 
     /**
      * 마이페이지
@@ -68,6 +71,64 @@ public class MainController {
 
         return "mypage/mypage";
     }
+
+    @GetMapping("/mypage/update")
+    public String updateStart(@SessionAttribute(value = "loginSession", required = false) String nickname,Model model){
+
+        if (nickname == null) {
+            return "redirect:/login";
+        }
+
+        Member loginMember = memberService.findByNickname(nickname);
+        UpdateDTO updateDTO = memberService.toUpdateDTO(loginMember);
+
+        model.addAttribute("member", updateDTO);
+
+        return "mypage/updateInformation";
+
+    }
+
+    @PostMapping("/mypage/update")
+    public String updateStart(@SessionAttribute(value = "loginSession", required = false) String nickname,@Valid @ModelAttribute("memeber") UpdateDTO updateDTO,
+                              BindingResult bindingResult,RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            return "redirect:/login";
+        }
+
+        if (bindingResult.hasErrors()) {
+            return "mypage/updateInformation";
+        }
+
+        if(!updateDTO.getPassword().equals(updateDTO.getPasswordCheck())){
+            bindingResult.rejectValue("password","passwordCheck","비밀번호가 다릅니다.");
+
+            return "mypage/updateInformation";
+        }
+
+
+        if (memberService.nicknameDuplicateCheck(updateDTO.getNickname())) {
+            bindingResult.rejectValue("nickname","duplicateNickname","닉네임이 중복됩니다.");
+
+            return "mypage/updateInformation";
+
+        }
+
+        memberService.changeNickname(nickname, updateDTO.getNickname());
+        memberService.changePassword(updateDTO.getNickname(),updateDTO.getPassword());
+
+        session.removeAttribute(SessionConst.LOGIN_SESSION);
+        session.setAttribute(SessionConst.LOGIN_SESSION, updateDTO.getNickname());
+
+        redirectAttributes.addAttribute("nickname", updateDTO.getNickname());
+
+        return "redirect:/mypage/{nickname}";
+
+    }
+
+
 
     /**
      * 마이페이지에서 수정 버튼 눌렀을때
@@ -159,14 +220,17 @@ public class MainController {
 
         if (!memberService.loginDuplicateCheck(registerDTO.getLoginId())) {
             bindingResult.rejectValue("loginId","duplicateLoginId","아이디가 중복됩니다.");
+            return "mypage/reg";
         }
 
         if (memberService.nicknameDuplicateCheck(registerDTO.getNickname())) {
             bindingResult.rejectValue("nickname","duplicateNickname","닉네임이 중복됩니다.");
+            return "mypage/reg";
         }
 
         if (memberService.emailDuplicateCheck(registerDTO.getEmail())) {
             bindingResult.rejectValue("email","duplicateEmail","이메일이 중복됩니다.");
+            return "mypage/reg";
         }
 
         Long savedId = memberService.save(registerDTO);
@@ -229,7 +293,7 @@ public class MainController {
         }
 
         Member findMember = memberService.confirmEmailForPassword(token);
-        memberService.changePassword(findMember.getId(), changePasswordTokenDTO.getPassword());
+        memberService.changePassword(findMember.getLoginId(), changePasswordTokenDTO.getPassword());
 
         return "redirect:/login";
 

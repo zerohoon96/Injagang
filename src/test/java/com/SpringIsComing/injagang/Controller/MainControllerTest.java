@@ -94,14 +94,28 @@ class MainControllerTest {
                 .writer(findMember)
                 .date(LocalDateTime.now())
                 .build();
+
+        Essay essay2 = Essay.builder()
+                .title("test2")
+                .writer(findMember)
+                .date(LocalDateTime.now())
+                .build();
         essayRepository.save(essay);
+        essayRepository.save(essay2);
 
         Interview interview = Interview.builder()
                 .title("test2")
                 .writer(findMember)
                 .date(LocalDateTime.now())
                 .build();
+
+        Interview interview2 = Interview.builder()
+                .title("test3")
+                .writer(findMember)
+                .date(LocalDateTime.now())
+                .build();
         interviewRepository.save(interview);
+        interviewRepository.save(interview2);
 
 
         Friend friend = Friend.builder()
