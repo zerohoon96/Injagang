@@ -84,7 +84,7 @@ public class EssayController {
     String writeFeedback(Model model,
                          @PathVariable Long essayId,
                          @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
-\        model.addAttribute("essayId", essayId); //아이디를 전달
+        model.addAttribute("essayId", essayId); //아이디를 전달
         return "feedback/essay/write";
     }
 
