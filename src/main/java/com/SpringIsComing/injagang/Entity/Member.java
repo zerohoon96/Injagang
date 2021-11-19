@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 //회원 Entity
 @Entity
@@ -17,12 +14,34 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long id;
 
-    private String login_id; //아이디
+    @Column(unique = true)
+    private String loginId; //아이디
+
     private String password; //비밀번호
-    private String nickname; //닉네임
-    private String info; //인적사항
+
+    private String name;
+
+    @Column(unique = true)
+    private String nickname;
+
+    private String email;
+
+    private boolean auth = false;
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
+
+
+    public void authSuccess() {
+        this.auth = true;
+    }
+
+
+
+
 }
