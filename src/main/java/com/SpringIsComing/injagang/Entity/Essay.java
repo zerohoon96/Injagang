@@ -29,7 +29,7 @@ public class Essay{
     @Builder.Default
     private List<Reply> replies = new ArrayList<>(); //달린 댓글들
 
-    @OneToMany(mappedBy = "essay",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "essay", cascade = CascadeType.ALL)
     @Builder.Default
     private List<EssayContent> contents =  new ArrayList<>(); //자소서 문항들
 

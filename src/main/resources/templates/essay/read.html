@@ -8,55 +8,50 @@
       <title>essay_read_page</title>
       <style>
         .container-fluid {
-          padding-left: 7%;
-          padding-right: 7%;
+          padding-left: 9%;
+          padding-right: 9%;
         }
+
         textarea {
           resize: none;
+          pointer-events: none;
         }
       </style>
     </head>
     <body>
-      <form name="readTemplate" action method="post">
-        <div class="form-group container-fluid" id="readData"></div>
+    <form class="container-fluid" action method="get">
+      <label class="form-control text-center mt-3" th:text="${essay.essayTitle}"></label>
+      <br>
+
+      <!-- 템플릿 입력 내용 -->
+      <div class="form-group" th:if="${tdata.size() > 0}">
+        <h4 class="text-center mt-3" th:text="${essay.title}"></h4>
+        <hr>
+        <div th:each="t, idx : ${tdata}">
+          <label th:text="|${idx.count}. ${t.question}|"></label>
+          <textarea class="form-control mt-1" rows=10 th:text="${t.answer}"></textarea>
+          <br>
+        </div>
         <br>
-        <br>
-      </form>
-      <div class="text-center">
-        <input class="btn btn-primary px-5" id="" type="submit" name="" value="확인">
       </div>
-      <br>
-      <br>
+
+      <!-- 직접 입력 내용 -->
+      <div class="form-group" th:if="${ddata.size() > 0}">
+        <h4 class="text-center mt-3">직접 입력</h4>
+        <hr>
+        <div th:each="d, idx : ${ddata}">
+          <label th:text="|${idx.count}. ${d.question}|"></label>
+          <textarea class="form-control mt-1" rows=10 th:text="${d.answer}"></textarea>
+          <br>
+        </div>
+        <br>
+      </div>
+      <!-- 수정, 확인버튼 -->
+      <div class="form-group">
+      </div>
+    </form>
     </body>
 
-    <script th:inline="javascript">
-      (function () {
-        //db에서 가져와
-
-        let t_title = [[${t_title}]];
-        let t_data = [[${t_data}]];
-        let d_data = [[${d_data}]];
-        let cnt;
-        // 템플릿 데이터가 존재할 경우
-        if (t_title != "t0") {
-          cnt = 0;
-          document.getElementById("readData").innerHTML += `<label class="form-control text-center mt-3">${t_title}</label>`;
-          for (let key in t_data) {
-            cnt += 1;
-            console.log(key);
-            document.getElementById("readData").innerHTML +=
-                    `<br><label>${cnt}. ${key}</label>
-                    <br><textarea rows=10 class="form-control" onfocus="blur()">${t_data[key]}</textarea>` + "<br><br>";
-          }
-        }
-        // 직접 입력 데이터만 존재할 경우
-        cnt = 0;
-        for (let key in d_data) {
-          cnt += 1;
-          document.getElementById("readData").innerHTML += `<br><label >${cnt}. ${key}</label>`
-                  + `<br><textarea rows=10 class="form-control" onfocus="blur()">${d_data[key]}</textarea>` + "<br><br>";
-        }
-      })();
-    </script>
   </th:block>
 </th:block>
+</html>
