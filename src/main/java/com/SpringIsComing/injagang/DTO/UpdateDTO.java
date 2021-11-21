@@ -13,10 +13,13 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class UpdateDTO {
 
+    @NotEmpty(message = "현재 비밀번호를 입력해주세요")
+    private String curPassword;
+
     private String loginId;
 
     @NotEmpty(message = "비밀번호를 입력해주세요")
-    private String password;
+    private String newPassword;
 
     @NotEmpty(message = "비밀번호 확인을 입력해주세요")
     private String passwordCheck;

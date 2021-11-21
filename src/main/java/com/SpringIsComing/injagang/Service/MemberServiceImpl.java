@@ -39,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
                 .name(registerDTO.getName())
                 .nickname(registerDTO.getNickname())
                 .email(registerDTO.getEmail())
+                .auth(true)
                 .build();
 
         Member saved = memberRepository.save(saveMember);
@@ -114,6 +115,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Boolean passwordCheck(Member member, String password) {
+
+
+        return encoder.matches(password, member.getPassword());
+    }
+
+    @Override
     public void changePassword(String nickname, String password) {
         Member findMember = memberRepository.findByNickname(nickname);
 
@@ -145,6 +153,8 @@ public class MemberServiceImpl implements MemberService {
     public Member findByNickname(String nickname) {
         return memberRepository.findByNickname(nickname);
     }
+
+
 
 
 }

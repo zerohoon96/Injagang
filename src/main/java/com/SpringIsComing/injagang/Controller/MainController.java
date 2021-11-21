@@ -4,14 +4,12 @@ import com.SpringIsComing.injagang.DTO.ChangePasswordTokenDTO;
 import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
-import com.SpringIsComing.injagang.Entity.Essay;
-import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,10 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class MainController {
 
@@ -34,7 +32,6 @@ public class MainController {
     private final InterviewService interviewService;
     private final FriendService friendService;
     private final AuthTokenService authTokenService;
-    private final PasswordEncoder encoder;
 
 
     /**
@@ -49,6 +46,7 @@ public class MainController {
         Member targetMember = memberService.findByNickname(curNickname);
 
         boolean friendCheck = friendService.isFriend(loginMember.getId(), targetMember.getId());
+        int friendState = 0;
 
         if (nickname == curNickname) {
             friendCheck = true;
@@ -63,11 +61,13 @@ public class MainController {
 
         if (friendCheck) {
             model.addAttribute("isFriend", true);
+            model.addAttribute("friendState", friendState);
 
             return "mypage/mypage";
         }
 
         model.addAttribute("isFriend", false);
+        model.addAttribute("friendState", friendState);
 
         return "mypage/mypage";
     }
@@ -89,8 +89,15 @@ public class MainController {
     }
 
     @PostMapping("/mypage/update")
-    public String updateStart(@SessionAttribute(value = "loginSession", required = false) String nickname,@Valid @ModelAttribute("memeber") UpdateDTO updateDTO,
-                              BindingResult bindingResult,RedirectAttributes redirectAttributes, HttpServletRequest request) {
+    public String updateStart(@Valid @ModelAttribute("member") UpdateDTO updateDTO,BindingResult bindingResult,
+                              @SessionAttribute(value = "loginSession", required = false) String nickname,
+                              RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        boolean sameNickname = false;
+
+        if (nickname.equals(updateDTO.getNickname())) {
+            sameNickname = true;
+        }
 
         HttpSession session = request.getSession(false);
 
@@ -99,28 +106,45 @@ public class MainController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "mypage/updateInformation";
-        }
-
-        if(!updateDTO.getPassword().equals(updateDTO.getPasswordCheck())){
-            bindingResult.rejectValue("password","passwordCheck","비밀번호가 다릅니다.");
+            log.info("개새끼");
 
             return "mypage/updateInformation";
         }
 
+        log.info("updateDTO = {}",updateDTO);
+        Member loginMember = memberService.findByNickname(nickname);
+        if (!memberService.passwordCheck(loginMember, updateDTO.getCurPassword())) {
+            bindingResult.rejectValue("curPassword","curPasswordCheck","현재 비밀번호가 틀립니다.");
+            log.info("개새끼2");
 
-        if (memberService.nicknameDuplicateCheck(updateDTO.getNickname())) {
+            return "mypage/updateInformation";
+
+        }
+
+        if(!updateDTO.getNewPassword().equals(updateDTO.getPasswordCheck())){
+            bindingResult.rejectValue("newPassword","passwordCheck","비밀번호가 다릅니다.");
+            log.info("개새끼3");
+
+            return "mypage/updateInformation";
+        }
+
+
+        if (memberService.nicknameDuplicateCheck(updateDTO.getNickname()) && !sameNickname) {
             bindingResult.rejectValue("nickname","duplicateNickname","닉네임이 중복됩니다.");
 
+            log.info("개새끼4");
+
             return "mypage/updateInformation";
 
         }
 
-        memberService.changeNickname(nickname, updateDTO.getNickname());
-        memberService.changePassword(updateDTO.getNickname(),updateDTO.getPassword());
+        if (!sameNickname) {
+            memberService.changeNickname(nickname, updateDTO.getNickname());
+            session.removeAttribute(SessionConst.LOGIN_SESSION);
+            session.setAttribute(SessionConst.LOGIN_SESSION, updateDTO.getNickname());
 
-        session.removeAttribute(SessionConst.LOGIN_SESSION);
-        session.setAttribute(SessionConst.LOGIN_SESSION, updateDTO.getNickname());
+        }
+        memberService.changePassword(updateDTO.getNickname(),updateDTO.getNewPassword());
 
         redirectAttributes.addAttribute("nickname", updateDTO.getNickname());
 
@@ -161,7 +185,7 @@ public class MainController {
      * */
     @PostMapping("/login")
     public String loginEnd(@Valid @ModelAttribute("member")LoginDTO loginDTO, BindingResult bindingResult
-                            , HttpServletRequest request
+                            , HttpServletRequest request, RedirectAttributes redirectAttributes
                            ) {
         //입력 확인 후 마이페이지로 이동
 
@@ -184,10 +208,10 @@ public class MainController {
         HttpSession session = request.getSession();
 
         session.setAttribute(SessionConst.LOGIN_SESSION, loginMember.getNickname());
+        redirectAttributes.addAttribute("nickname", loginMember.getNickname());
 
 
-
-        return "redirect:/mypage";
+        return "redirect:/mypage/{nickname}";
 
     }
 
@@ -305,11 +329,11 @@ public class MainController {
         return "mypage/mail";
     }
 
-/*
+
     @PostConstruct
     public void init(){
         RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setEmail("@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO.setEmail("zxcv0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
         registerDTO.setName("황재환");
         registerDTO.setLoginId("zxcv0069");
         registerDTO.setNickname("test");
@@ -319,7 +343,6 @@ public class MainController {
         memberService.save(registerDTO);
 
     }
-    */
 
 
 

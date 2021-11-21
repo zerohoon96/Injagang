@@ -13,6 +13,7 @@ public interface MemberService {
     public Boolean emailDuplicateCheck(String email);
     public void confirmEmail(String token);
     public Member confirmEmailForPassword(String token);
+    public Boolean passwordCheck(Member member,String password);
 
     public void changePassword(String nickname, String password);
 
