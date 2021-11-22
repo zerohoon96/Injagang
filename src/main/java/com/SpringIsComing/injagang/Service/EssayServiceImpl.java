@@ -1,5 +1,6 @@
 package com.SpringIsComing.injagang.Service;
 
+import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
@@ -30,9 +31,14 @@ public class EssayServiceImpl implements EssayService {
         return save.getId();
     }
 
-
     public Essay findEssay(Long essayId) throws Exception {
         return essayRepository.findById(essayId)
                 .orElseThrow(()-> new Exception("id is not find"));
+    }
+
+    public EssayWriteDTO readEssay(Long id) {
+        Optional<Essay> result = essayRepository.findById(id);
+
+        return result.isPresent() ? essayEntityToDto(result.get()) : null;
     }
 }

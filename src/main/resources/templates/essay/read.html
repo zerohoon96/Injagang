@@ -20,14 +20,14 @@
     </head>
     <body>
     <form class="container-fluid" action method="get">
-      <label class="form-control text-center mt-3" th:text="${essay.essayTitle}"></label>
+      <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
       <br>
 
       <!-- 템플릿 입력 내용 -->
-      <div class="form-group" th:if="${tdata.size() > 0}">
-        <h4 class="text-center mt-3" th:text="${essay.title}"></h4>
+      <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
+        <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>
         <hr>
-        <div th:each="t, idx : ${tdata}">
+        <div th:each="t, idx : ${essayDTO.tc}">
           <label th:text="|${idx.count}. ${t.question}|"></label>
           <textarea class="form-control mt-1" rows=10 th:text="${t.answer}"></textarea>
           <br>
@@ -36,10 +36,10 @@
       </div>
 
       <!-- 직접 입력 내용 -->
-      <div class="form-group" th:if="${ddata.size() > 0}">
+      <div class="form-group" th:if="${essayDTO.dc.size() > 0}">
         <h4 class="text-center mt-3">직접 입력</h4>
         <hr>
-        <div th:each="d, idx : ${ddata}">
+        <div th:each="d, idx : ${essayDTO.dc}">
           <label th:text="|${idx.count}. ${d.question}|"></label>
           <textarea class="form-control mt-1" rows=10 th:text="${d.answer}"></textarea>
           <br>
