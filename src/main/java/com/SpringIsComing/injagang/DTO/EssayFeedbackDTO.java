@@ -1,6 +1,5 @@
 package com.SpringIsComing.injagang.DTO;
 
-import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayFeedbackComment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,9 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class EssayFeedbackDTO {
-    private Long id; //feedback id
-    private Essay essay; //자기소개서 내용
-    private List<EssayFeedbackComment> feedbackComments; //피드백 댓글 목록
-    private String comment; //총평
-    private LocalDateTime time; //작성 시작
+    private Long essayId; //essay id
+    private String essayPostName; //essay 게시물 이름
+    private List<String> questions; //자기소개서 질문
+    private List<String> answers; //자기소개서 답변
 }

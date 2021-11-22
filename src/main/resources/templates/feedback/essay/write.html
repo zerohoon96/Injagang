@@ -5,54 +5,86 @@
     <th:block th:fragment="content">
         <head>
             <meta charset="UTF-8">
-            <title>essay_read_page</title>
+            <title>essay_write_page</title>
+
             <style>
+                .container-fluid {
+                    padding-left: 7%;
+                    padding-right: 7%;
+                }
+
                 textarea {
                     resize: none;
+                    background-color:transparent;
                 }
+
             </style>
+
         </head>
         <body>
-        <form name="readTemplate" action="" method="">
-            <div class="form-group container-fluid" id="readData"></div>
-            <br>
-            <br>
+<!--        <script src="http://code.jquery.com/jquery-latest.js"></script>-->
+        <form class="container-fluid" action method="post" th:object="${feedback}">
+            <label class="form-control text-center mt-3" th:text="|${feedback.essayPostName} 게시물을 첨삭하고 있습니다.|"></label>
+            <div th:each="idx : ${#numbers.sequence(0,feedback.getQuestions().size()-1)}">
+                <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
+                <textarea type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
+                          th:onselect="|dragUpdate(${idx+1})|" rows=10 disabled></textarea><br>
+                <input type="text" class="form-control" placeholder="첨삭을 입력하세요"><br>
+                <button type="button" th:onclick="|dragCheck(${idx+1})|">첨삭 추가</button>
+            </div>
+            <label for="totalComment">총평</label>
+            <textarea type="text" id="totalComment" name="comment" class="form-control" rows=3
+                      placeholder="총평을 입력해주세요." required></textarea><br>
+            <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
         </form>
-        <div class="text-center">
-            <input class="btn btn-primary px-5" id="" type="submit" name="" value="확인">
-        </div>
-        <br>
-        <br>
-        </body>
 
-        <script th:inline="javascript">
-            (function () {
-                //db에서 가져와
+        <script type="text/javascript">
+            let curField, curStart, curEnd, curQuestion;
+            let isSelected = false;
+            const selectedObj = window.getSelection();
+            let feedbackList = new Array();
 
-                let t_title = [[${t_title}]];
-                let t_data = [[${t_data}]];
-                let d_data = [[${d_data}]];
-                let cnt;
-                // 템플릿 데이터가 존재할 경우
-                if (t_title != "t0") {
-                    cnt = 0;
-                    document.getElementById("readData").innerHTML += `<label class="form-control text-center mt-3">${t_title}</label>`;
-                    for (let key in t_data) {
-                        cnt += 1;
-                        console.log(key);
-                        document.getElementById("readData").innerHTML +=
-                            `<br><label>${cnt}. ${key}</label>
-                    <br><textarea rows=10 class="form-control" onfocus="blur()">${t_data[key]}</textarea>` + "<br><br>";
-                    }
+            function dragUpdate(idx) { //현재 드래그 결과를 업데이트
+                console.log(idx,'번 문제 drag!!!!!!!!!!!!!!!!!!!!!!');
+                curField = document.getElementById("answer" + idx);
+                curStart = curField.selectionStart;
+                curEnd = curField.selectionEnd - 1;
+                curQuestion = idx;
+                isSelected = true;
+            }
+
+            function dragCheck(idx) { //첨삭하기 버튼을 눌렀을때 첨삭이 가능한지 체크
+                console.log('=================================');
+                // console.log(selectedObj.type);
+                // console.log(selectedObj);
+
+                console.log('111 isSelected : ',isSelected);
+                // console.log('시작 노드 : ',window.getSelection().anchorNode);
+
+                if (window.getSelection) {
+                    console.log('취소!!!!');
+                    window.getSelection().removeAllRanges();
                 }
-                // 직접 입력 데이터만 존재할 경우
-                cnt = 0;
-                for (let key in d_data) {
-                    cnt += 1;
-                    document.getElementById("readData").innerHTML += `<br><label >${cnt}. ${key}</label>`
-                        + `<br><textarea rows=10 class="form-control" onfocus="blur()">${d_data[key]}</textarea>` + "<br><br>";
+                if (!isSelected) {// 1. 드래그가 된 상태인지
+                    alert('문장이 선택되지 않았습니다.');
+                } else if (idx != curQuestion) { // 2. 현재 번호에 맞는 첨삭인지
+                    alert('현재 문제의 문장이 아닙니다.');
+                } else { // 3. 이미  첨삭된 위치와 겹치지 않는지
+                    // feedbackList.forEach(feedback => {
+                    //     if (feedback.getNum() == curQuestion) {
+                    //         if (!(curStart > feedback.getEndIdx()) && !(curEnd < feedback.getStartIdx())) {
+                    //             alert('이미 첨삭된 부분입니다.');
+                    //             return false;
+                    //         }
+                    //     }
+                    // })
+                    console.log('첨삭 가능!!!!!!!!!!!'); //여기서 이제 Ajax로 진행
                 }
-            })();
+
+                isSelected = false;
+                console.log('222 isSelected : ',isSelected);
+            }
         </script>
+        </body>
     </th:block>
 </th:block>

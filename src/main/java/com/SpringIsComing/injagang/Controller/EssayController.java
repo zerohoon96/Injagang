@@ -3,6 +3,7 @@ package com.SpringIsComing.injagang.Controller;
 import com.SpringIsComing.injagang.DTO.EssayFeedbackDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
+import com.SpringIsComing.injagang.Entity.EssayFeedbackComment;
 import com.SpringIsComing.injagang.Service.EssayService;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -84,7 +85,27 @@ public class EssayController {
     String writeFeedback(Model model,
                          @PathVariable Long essayId,
                          @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
-        model.addAttribute("essayId", essayId); //아이디를 전달
+
+        ////////////////////////////////////////////////////////////////////////////////// 테스트 자기소개서 추가.
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+        questions.add("질문1 입니다. 지금 소감은요?");
+        questions.add("질문2 입니다. 지금 보이는건 뭔가요?");
+        questions.add("질문3 입니다. 아니 어쩌라고요");
+        questions.add("질문4 입니다. 히히히히");
+        questions.add("질문5 입니다. ㅋㅋㅋㅋㅋㅋㅋㅋ");
+
+        answers.add("답변1 입니다. 집에 가고 싶군요 히히히히히히히히 키움 히어로즈 화이팅");
+        answers.add("답변2 입니다. 제 앞에 휴지랑 두 개의 맥북이 있군요");
+        answers.add("답변3 입니다. 할말이 없어요 그럼 이만");
+        answers.add("답변4 입니다. 아니 뭐가 문젠가요?");
+        answers.add("답변5 입니다. 훠훠훠 좌장면 좋아하세요?");
+        //////////////////////////////////////////////////////////////////////////////////
+
+        feedback.setQuestions(questions);
+        feedback.setAnswers(answers);
+        feedback.setEssayPostName("삼성 자소서 첨삭 해주세요!!");
+        feedback.setEssayId(essayId);
         return "feedback/essay/write";
     }
 
@@ -93,11 +114,12 @@ public class EssayController {
                          @PathVariable Long essayId,
                          @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
         //레포지토리에 피드백 객체 저장
-        feedback.setId(0L);
-        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
+        return "feedback/essay/write";
+//        feedback.setId(0L);
+//        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
     }
 
-    @GetMapping("/feedback/{feedbackId}") //첨삭 읽기를 눌렀을때 zzzzzzzzzzzzzzzzzzzzzzzzz url 설정!!!! 쿼리 파라메터로 할까?
+    @GetMapping("/feedback/{feedbackId}")
     String readFeedback(Model model, @RequestParam String feedbackId) {
         System.out.println(feedbackId); //id를 사용해서 DTO 첨삭을 담는 DTO 생성
         return "feedback/essay/read";
