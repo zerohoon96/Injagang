@@ -1,0 +1,24 @@
+package com.SpringIsComing.injagang.Controller;
+
+import com.SpringIsComing.injagang.Service.MemberService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+
+@Controller
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final MemberService memberService;
+
+
+    @GetMapping("confirm-email")
+    public String viewConfirmEmail(@Valid @RequestParam String token){
+        memberService.confirmEmail(token);
+
+        return "redirect:/login";
+    }
+}

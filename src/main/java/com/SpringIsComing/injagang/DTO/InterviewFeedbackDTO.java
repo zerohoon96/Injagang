@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EssayFeedbackDTO {
+public class InterviewFeedbackDTO {
     private Long pk;
-    private String nickname; //피드백 단 사람의 닉네임
+    private String nickname;
 }

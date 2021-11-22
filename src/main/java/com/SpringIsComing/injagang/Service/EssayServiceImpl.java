@@ -7,6 +7,12 @@ import com.SpringIsComing.injagang.Repository.EssayRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.SpringIsComing.injagang.Entity.Member;
+import com.SpringIsComing.injagang.Repository.EssayRepository;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 
 import java.util.Optional;
 
@@ -16,6 +22,13 @@ import java.util.Optional;
 public class EssayServiceImpl implements EssayService {
 
     private final EssayRepository essayRepository;
+    
+    @Override
+    public List<Essay> findEssays(Member member) {
+
+        return essayRepository.findEssaysByMember(member);
+
+    }
 
 //    RequiredArgsConstructor -> final이 붙은것들 생성자 만들어줌
 //    생성자는 하나만 있으면 자동으로 추가 해줌
@@ -23,7 +36,6 @@ public class EssayServiceImpl implements EssayService {
 //    public EssayServiceImpl(EssayRepository essayRepository) {
 //        this.essayRepository = essayRepository;
 //    }
-
     @Override
     public Long storeEssay(Essay essay) {
         Essay save = essayRepository.save(essay);

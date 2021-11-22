@@ -3,6 +3,8 @@ package com.SpringIsComing.injagang.Service;
 import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
+import com.SpringIsComing.injagang.DTO.MypageEssayDTO;
+import com.SpringIsComing.injagang.Entity.Member;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +34,18 @@ public interface EssayService {
                 .dc(dData)
                 .build();
         return dto;
+    }
+    
+    List<Essay> findEssays(Member member);
+
+    default MypageEssayDTO toMypageEssayDTO(Essay essay) {
+
+        return MypageEssayDTO.builder()
+                .id(essay.getId())
+                .title(essay.getTitle())
+                .feedbackNum(essay.getFeedbacks().size())
+                .questionNum(essay.getContents().size())
+                .createTime(essay.getDate())
+                .build();
     }
 }

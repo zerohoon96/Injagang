@@ -4,7 +4,9 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
         <h1 class="mt-4">자소서 게시판</h1>
+        
         <!-- 임시 테이블 -->
+        <!--
         <table class="table table-striped">
             <thead>
             <tr>
@@ -39,22 +41,23 @@
             </tr>
             </tbody>
         </table>
+        -->
         
-        <!--실제 활용할 테이블-->
-        <!--/*
-        <table id="board_body" class="table table-striped">
+        <!-- 게시판 글목록 테이블 -->
+        <table id="board_body" class="table table-striped col-12">
             <thead>
             <tr>
-                <th>제목</th>
-                <th>예상질문</th>
-                <th>피드백</th>
-                <th>글쓴이</th>
-                <th>날짜</th>
+                <th scope="col">제목</th>
+                <th scope="col">예상질문</th>
+                <th scope="col">피드백</th>
+                <th scope="col">글쓴이</th>
+                <th scope="col">날짜</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
-                <td><a href="@{/essay/board/pk(pk=${dto.pk})}">[[${dto.title}]]</a></td>
+                <td><a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page}, keyword = ${pageRequestDTO.keyword})}">
+                    [[${dto.title}]]</a><span>[댓글:[[${dto.rCnt}]]]</span></td>
                 <td>[[${dto.qCnt}]]</td>
                 <td>[[${dto.fCnt}]]</td>
                 <td>[[${dto.writer}]]</td>
@@ -62,7 +65,6 @@
             </tr>
             </tbody>
         </table>
-        */-->
         
         <!-- 글쓰기 버튼 -->
         <div style="float: right; margin-bottom: 30px;">
@@ -71,22 +73,50 @@
             </a>
         </div>
         
-        <!-- 페이지 버튼 들어갈 자리 -->
-        <!--/*
+        <!-- 페이지 네비게이터 -->
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/essay/board(page=${result.start - 1},
+                keyword=${pageRequestDTO.keyword}) }" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page ? 'active' : ''} "
+                th:each="page : ${result.pageList}">
+                <a class="page-link" th:href="@{/essay/board(page=${page},
+                keyword=${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/essay/board(page=${result.end + 1},
+                keyword=${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
         
-        */-->
-        
-        <!-- 임시 검색창 -->
-        <form action="//essay-list" method="get" id="searchForm">
+        <!-- 검색창 -->
+        <form action="boards/essay-list" method="get" id="searchForm">
             <div class="input-group" style="margin: auto">
                 <input type="hidden" name="page" value="1">
-                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <input class="form-control" name="keyword">
                 <div class="input-group-append" id="button-addon4">
                     <button class="btn btn-outline-secondary btn-search" type="button">검색</button>
                     <button class="btn btn-outline-secondary btn-clear" type="button">초기화</button>
                 </div>
             </div>
         </form>
+        
+        <!-- 검색 기능 -->
+        <script th:inline="javascript">
+            let searchForm = $("#searchForm");
+            $('.btn-search').click(function(e){
+                searchForm.submit();
+            });
+        
+            $('.btn-clear').click(function(e){
+                searchForm.empty().submit();
+            });
+        </script>
         
     </th:block>
 </th:block>
