@@ -1,5 +1,6 @@
 package com.SpringIsComing.injagang.Controller;
 
+import com.SpringIsComing.injagang.DTO.EssayFeedbackDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
@@ -10,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+<<<<<<< HEAD
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+=======
+>>>>>>> feature-essay
 
 import java.util.*;
 
@@ -111,4 +115,29 @@ public class EssayController {
 
         return "essay/read";
     }
+
+    @GetMapping("/feedback/{essayId}/write") //첨삭 쓰기를 눌렀을때
+    String writeFeedback(Model model,
+                         @PathVariable Long essayId,
+                         @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
+        model.addAttribute("essayId", essayId); //아이디를 전달
+        return "feedback/essay/write";
+    }
+
+    @PostMapping("/feedback/{essayId}/write") //첨삭 저장을 눌렀을때
+    String addFeedback(Model model,
+                         @PathVariable Long essayId,
+                         @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
+        //레포지토리에 피드백 객체 저장
+        feedback.setId(0L);
+        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
+    }
+
+    @GetMapping("/feedback/{feedbackId}") //첨삭 읽기를 눌렀을때 zzzzzzzzzzzzzzzzzzzzzzzzz url 설정!!!! 쿼리 파라메터로 할까?
+    String readFeedback(Model model, @RequestParam String feedbackId) {
+        System.out.println(feedbackId); //id를 사용해서 DTO 첨삭을 담는 DTO 생성
+        return "feedback/essay/read";
+    }
+
+
 }
