@@ -28,8 +28,8 @@ public class EssayContentRepositoryTests {
             //각 자소서 게시물 당 3개의 항목
             IntStream.rangeClosed(1,3).forEach(j -> {
                 EssayContent essayContent = EssayContent.builder()
-                        .title("----------Sample 질문----------")
-                        .text("=========================\n==========예시 답변==========\n=========================")
+                        .question("----------Sample 질문----------")
+                        .answer("=========================\n==========예시 답변==========\n=========================")
                         .essay(essay)
                         .build();
 

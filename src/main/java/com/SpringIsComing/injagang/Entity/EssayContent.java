@@ -29,6 +29,6 @@ public class EssayContent {
     @Builder.Default
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
-    private String title; //질문
-    private String text; //답변
+    private String question; //질문
+    private String answer; //답변
 }

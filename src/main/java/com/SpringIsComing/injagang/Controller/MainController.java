@@ -126,7 +126,7 @@ public class MainController {
 
 
 
-        return "redirect:/mypage";
+        return "redirect:/mypage/"+ loginMember.getNickname();
 
     }
 

@@ -33,7 +33,7 @@ public interface BoardService {
     //면접 게시판의 한 게시물 읽어오기
     InterviewBoardDTO readInterviewBoard(Long id);
 
-    //자소서 게시물 등록할 때 사용
+    //사용 안함
     default Essay essayDtoToEntity(EssayDTO dto) {
 
         Essay entity = Essay.builder()
@@ -42,7 +42,7 @@ public interface BoardService {
         return entity;
     }
 
-    //면접 게시물 등록할 때 사용
+    //사용 안함
     default Interview interviewDtoToEntity(InterviewDTO dto){
 
         Interview entity = Interview.builder()
@@ -103,13 +103,14 @@ public interface BoardService {
                                 .nickname(question.getWriter().getNickname())
                                 .content(question.getText())
                                 .contentId(essayContent.getId())
+                                .date(question.getDate())
                                 .build());
             });
 
             contentList.add(EssayContentDTO.builder()
                             .pk(essayContent.getId())
-                            .title(essayContent.getTitle())
-                            .text(essayContent.getText())
+                            .title(essayContent.getQuestion())
+                            .text(essayContent.getAnswer())
                             .build());
         });
 
@@ -130,6 +131,7 @@ public interface BoardService {
                             .pk(reply.getId())
                             .content(reply.getContent())
                             .nickname(reply.getReplyer().getNickname())
+                            .date(reply.getDate())
                             .build());
         });
 
@@ -171,6 +173,7 @@ public interface BoardService {
             replyList.add(ReplyDTO.builder()
                             .pk(reply.getId())
                             .content(reply.getContent())
+                            .date(reply.getDate())
                             .nickname(reply.getReplyer().getNickname())
                             .build());
         });

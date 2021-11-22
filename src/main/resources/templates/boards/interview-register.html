@@ -3,6 +3,80 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
+        <h2 class="mt-4">면접 게시판 글쓰기</h2>
     
+        <form th:action="@{/interview/board/add}" th:method="post">
+            <div class="form-group">
+                <label> 제목</label>
+                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+            </div>
+            <br>
+        
+            <div class="form-group">
+                <label>Content</label>
+                <textarea class="form-control" rows="10" name="text"></textarea>
+            </div>
+            
+            <!-- 면접 영상 업로드하기 -->
+            <div class="form-group">
+                <label><b>면접 영상 업로드</b></label>
+                <input name="uploadFiles" type="file" multiple>
+                <button type="button" class="uploadBtn">업로드</button>
+            </div>
+            
+            <div class="uploadResult"></div>
+            <div id="videoUrls"></div>
+            
+            <br>
+            <button type="submit" class="btn btn-primary registerInterview" style="float: right">
+                게시물 저장
+            </button>
+        </form>
+        
+        <script th:inline="javascript">
+            let urls = [];
+            //업로드한 비디오 보여주기
+            function showUploadedVideos(arr){
+                console.log(arr);
+                let divArea = $('.uploadResult');
+    
+                for (let i = 0; i < arr.length; i++) {
+                    divArea.append("<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>");
+                    urls.push(arr[i].videoURL);
+                }
+                
+                document.getElementById('videoUrls').innerHTML =
+                        '<input name="videoUrls" value='+urls+' style="display: none">';
+            }
+            
+            $('.uploadBtn').click(function () {
+                let formData = new FormData();
+                let inputFile = $("input[type='file']");
+                let files = inputFile[0].files;
+    
+                for (let i = 0; i < files.length; i++) {
+                        console.log(files[i]);
+                        formData.append("uploadFiles", files[i]);
+                }
+    
+                //실제 업로드 부분
+                //upload ajax
+                $.ajax({
+                    url: '/uploadAjax',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (result){
+                        showUploadedVideos(result);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log(textStatus);
+                    }
+                });
+            });
+        </script>
+        
     </th:block>
 </th:block>

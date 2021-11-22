@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 //면접 영상 Entity
 @Entity
@@ -25,4 +26,5 @@ public class Video {
 
     private String videoURL; //영상 url
     private String videoName; //영상 제목
+    private LocalDateTime date;
 }

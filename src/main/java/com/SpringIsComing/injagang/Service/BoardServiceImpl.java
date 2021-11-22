@@ -5,10 +5,12 @@ import com.SpringIsComing.injagang.Entity.*;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Repository.InterviewRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
+import com.SpringIsComing.injagang.Repository.VideoRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,11 +31,15 @@ public class BoardServiceImpl implements BoardService{
     private final MemberRepository memberRepository;
     private final EssayRepository essayRepository;
     private final InterviewRepository interviewRepository;
+    private final VideoRepository videoRepository;
 
     @Override
     public Long registerEssay(EssayDTO dto) {
         log.info("registerEssay => dto to entity & repository save");
 
+        /**
+         * 기존에 있던 자소서를 불러와 제목, 내용, 공개범위, 시각 정보를 추가하고 db에 저장
+         */
         Essay entity = essayRepository.findById(dto.getPk()).get();
         entity.setAccess(2); //공개범위 수정
         entity.setTitle(dto.getTitle());
@@ -48,8 +54,32 @@ public class BoardServiceImpl implements BoardService{
     public Long registerInterview(InterviewDTO dto) {
         log.info("registerInterview => dto to entity & repository save");
 
-        Interview entity = interviewDtoToEntity(dto);
+        /**
+         * dto의 정보를 바탕으로 새로운 interview 객체 생성
+         */
+        Member member = memberRepository.findByNickname(dto.getWriter());
+
+        Interview entity = Interview.builder()
+                .title(dto.getTitle())
+                .text(dto.getText())
+                .access(2)
+                .writer(member)
+                .date(LocalDateTime.now())
+                .build();
+
         interviewRepository.save(entity);
+
+        for (String videoUrl : dto.getVideoUrls()) {
+            String videoName = videoUrl.split("_")[1]; //원본 파일명
+            Video video = Video.builder()
+                    .videoURL(videoUrl)
+                    .videoName(videoName)
+                    .date(LocalDateTime.now())
+                    .interview(entity)
+                    .build();
+
+            videoRepository.save(video);
+        }
 
         return entity.getId();
     }
