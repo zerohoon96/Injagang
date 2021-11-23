@@ -35,16 +35,20 @@ public class BoardController {
 
     private final BoardService service;
 
+    //자소서 게시판
     @GetMapping("/essay/board")
-    public String essayBoard(@ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model){
+    public String essayBoard(@SessionAttribute("loginSession") String nickname,
+                             @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model){
         log.info("==========essayBoard==========");
 
         model.addAttribute("result", service.getEssayList(pageRequestDTO));
         return "boards/essay-list";
     }
 
+    //면접 게시판
     @GetMapping("/interview/board")
-    public String interviewBoard(@ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) {
+    public String interviewBoard(@SessionAttribute("loginSession") String nickname,
+                                 @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) {
         log.info("==========interviewBoard==========");
 
         model.addAttribute("result", service.getInterviewList(pageRequestDTO));
@@ -61,6 +65,7 @@ public class BoardController {
         /* eb_pk로 해당 Essay 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         EssayBoardDTO dto = service.readEssayBoard(eb_pk);
         model.addAttribute("result", dto);
+        model.addAttribute("nickname", nickname);
 
         return "boards/essay-read";
     }
@@ -75,10 +80,8 @@ public class BoardController {
         /* ib_pk로 해당 Interview 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
         model.addAttribute("result", dto);
+        model.addAttribute("nickname", nickname);
 
-        for (VideoDTO videoDTO : dto.getVideoList()) {
-            log.info("url: " + videoDTO.getUrl());
-        }
         return "boards/interview-read";
     }
 
@@ -95,7 +98,7 @@ public class BoardController {
     //자소서 글쓰기 완료 버튼 눌렀을 때
     @PostMapping("/essay/board/add")
     public String registerEssayBoardPost(@SessionAttribute("loginSession") String nickname,
-                                         @ModelAttribute("dto") EssayDTO dto, RedirectAttributes redirectAttributes) {
+                                         @ModelAttribute("dto") EssayDTO dto) {
         log.info("----------registerEssayBoardPost----------");
 
         /**
@@ -120,8 +123,7 @@ public class BoardController {
     public String registerEssayInterviewPost(@SessionAttribute("loginSession") String nickname,
                                              @RequestParam("title") String title,
                                              @RequestParam("text") String text,
-                                             @RequestParam("videoUrls") List<String> files,
-                                             RedirectAttributes redirectAttributes) throws Exception{
+                                             @RequestParam("videoUrls") List<String> files) throws Exception{
         log.info("----------registerInterviewBoardPost----------");
         log.info("title: " + title + " text: " + text);
 
@@ -146,5 +148,43 @@ public class BoardController {
 
         service.registerInterview(dto);
         return "redirect:/interview/board";
+    }
+
+    //자소서 게시물에서 예상질문 쓰기
+    @PostMapping("/essay/question")
+    public String registerEssayQuestion(@SessionAttribute("loginSession") String nickname,
+                                        @RequestParam("essay_pk") Long essay_pk,
+                                        @RequestParam("content_pk") Long content_pk,
+                                        @RequestParam("questionContent")String content) {
+        log.info("==========registerEssayQuestion==========");
+        log.info("content: " + content);
+
+        //예상질문 저장 후 리다이렉트
+        service.registerExpectedQuestion(content_pk, content, nickname);
+        return "redirect:/essay/board/" + essay_pk;
+    }
+
+    //자소서 게시물에서 댓글 쓰기
+    @PostMapping("/essay/reply")
+    public String registerEssayReply(@SessionAttribute("loginSession") String nickname,
+                                     @RequestParam("essay_pk") Long essay_pk,
+                                     @RequestParam("replyContent") String content) {
+        log.info("==========registerEssayReply==========");
+        log.info("content: " + content);
+
+        service.registerEssayReply(essay_pk, content, nickname);
+        return "redirect:/essay/board/" + essay_pk;
+    }
+
+    //면접 게시물에서 댓글 쓰기
+    @PostMapping("/interview/reply")
+    public String registerInterviewReply(@SessionAttribute("loginSession") String nickname,
+                                         @RequestParam("pk") Long pk,
+                                         @RequestParam("content") String content) {
+        log.info("==========registerInterviewReply==========");
+        log.info("content: " + content);
+
+        service.registerInterviewReply(pk, content, nickname);
+        return "redirect:/interview/board/" + pk;
     }
 }

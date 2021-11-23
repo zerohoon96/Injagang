@@ -33,6 +33,15 @@ public interface BoardService {
     //면접 게시판의 한 게시물 읽어오기
     InterviewBoardDTO readInterviewBoard(Long id);
 
+    //자소서 게시물에서 예상질문 달기
+    void registerExpectedQuestion(Long content_pk, String content, String nickname);
+
+    //자소서 게시물에서 댓글 달기
+    void registerEssayReply(Long essay_pk, String content, String nickname);
+
+    //면접 게시물에서 댓글 달기
+    void registerInterviewReply(Long pk, String content, String nickname);
+
     //사용 안함
     default Essay essayDtoToEntity(EssayDTO dto) {
 

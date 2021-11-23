@@ -2,15 +2,11 @@ package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.*;
-import com.SpringIsComing.injagang.Repository.EssayRepository;
-import com.SpringIsComing.injagang.Repository.InterviewRepository;
-import com.SpringIsComing.injagang.Repository.MemberRepository;
-import com.SpringIsComing.injagang.Repository.VideoRepository;
+import com.SpringIsComing.injagang.Repository.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,10 +26,14 @@ public class BoardServiceImpl implements BoardService{
 
     private final MemberRepository memberRepository;
     private final EssayRepository essayRepository;
+    private final EssayContentRepository essayContentRepository;
     private final InterviewRepository interviewRepository;
     private final VideoRepository videoRepository;
+    private final ReplyRepository replyRepository;
+    private final ExpectedQuestionRepository questionRepository;
 
     @Override
+    @Transactional
     public Long registerEssay(EssayDTO dto) {
         log.info("registerEssay => dto to entity & repository save");
 
@@ -51,6 +51,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
+    @Transactional
     public Long registerInterview(InterviewDTO dto) {
         log.info("registerInterview => dto to entity & repository save");
 
@@ -85,6 +86,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     //로그인한 사람이 쓴 자소서 DTO들을 찾아 리턴
+    @Transactional
     public List<EssayDTO> getEssays(String nickname) {
         Member member = memberRepository.findByNickname(nickname);
         List<Essay> essayList = member.getEssays();
@@ -104,6 +106,7 @@ public class BoardServiceImpl implements BoardService{
     }
 
     //로그인한 사람이 쓴 면접 DTO들을 찾아 리턴
+    @Transactional
     public List<InterviewDTO> getInterviews (String nickname) {
         Member member = memberRepository.findByNickname(nickname);
         List<Interview> interviewList = member.getInterviews();
@@ -164,6 +167,54 @@ public class BoardServiceImpl implements BoardService{
         Optional<Interview> result = interviewRepository.findById(id);
 
         return result.isPresent() ? interviewBoardEntityToDto(result.get()) : null;
+    }
+
+    @Override
+    @Transactional
+    public void registerExpectedQuestion(Long content_pk, String content, String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        EssayContent essayContent = essayContentRepository.findById(content_pk).get();
+
+        ExpectedQuestion question = ExpectedQuestion.builder()
+                .writer(member)
+                .essayContent(essayContent)
+                .text(content)
+                .date(LocalDateTime.now())
+                .build();
+
+        questionRepository.save(question);
+    }
+
+    @Override
+    @Transactional
+    public void registerEssayReply(Long essay_pk, String content, String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        Essay essay = essayRepository.findById(essay_pk).get();
+
+        Reply reply = Reply.builder()
+                .replyer(member)
+                .essay(essay)
+                .content(content)
+                .date(LocalDateTime.now())
+                .build();
+
+        replyRepository.save(reply);
+    }
+
+    @Override
+    @Transactional
+    public void registerInterviewReply(Long pk, String content, String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        Interview interview = interviewRepository.findById(pk).get();
+
+        Reply reply = Reply.builder()
+                .replyer(member)
+                .interview(interview)
+                .content(content)
+                .date(LocalDateTime.now())
+                .build();
+
+        replyRepository.save(reply);
     }
 
     private BooleanBuilder getSearchEssay(PageRequestDTO requestDTO) { //Querydsl 처리
