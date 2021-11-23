@@ -15,27 +15,27 @@
 
                 textarea {
                     resize: none;
-                    background-color:transparent;
                 }
 
             </style>
 
         </head>
         <body>
-<!--        <script src="http://code.jquery.com/jquery-latest.js"></script>-->
         <form class="container-fluid" action method="post" th:object="${feedback}">
             <label class="form-control text-center mt-3" th:text="|${feedback.essayPostName} 게시물을 첨삭하고 있습니다.|"></label>
+            <button type="button" onclick="showGuide()">첨삭 방법</button>
             <div th:each="idx : ${#numbers.sequence(0,feedback.getQuestions().size()-1)}">
                 <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
                 <textarea type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
                           th:onselect="|dragUpdate(${idx+1})|" rows=10 disabled></textarea><br>
-                <input type="text" class="form-control" placeholder="첨삭을 입력하세요"><br>
+                <textarea type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3></textarea><br>
                 <button type="button" th:onclick="|dragCheck(${idx+1})|">첨삭 추가</button>
             </div>
             <label for="totalComment">총평</label>
             <textarea type="text" id="totalComment" name="comment" class="form-control" rows=3
-                      placeholder="총평을 입력해주세요." required></textarea><br>
+                      placeholder="총평을 입력해주세요." required></textarea>
             <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
+            <br>
         </form>
 
         <script type="text/javascript">
@@ -44,45 +44,40 @@
             const selectedObj = window.getSelection();
             let feedbackList = new Array();
 
+            function showGuide() {
+                alert('1. 첨삭할 문장을 드래그합니다.\n' +
+                    '2. 드래그 후에 문제별로 할당된 첨삭란에 첨삭을 입력하세요\n' +
+                    '3. 첨삭을 입력한 후에 첨삭 추가 버튼을 눌러서 저장합니다.\n' +
+                    '4. 총평을 입력하고 저장 버튼을 눌러서 첨삭을 종료하세요.');
+            }
             function dragUpdate(idx) { //현재 드래그 결과를 업데이트
                 console.log(idx,'번 문제 drag!!!!!!!!!!!!!!!!!!!!!!');
                 curField = document.getElementById("answer" + idx);
                 curStart = curField.selectionStart;
                 curEnd = curField.selectionEnd - 1;
                 curQuestion = idx;
-                isSelected = true;
+                isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장만 드래그 위해 사용)
             }
 
             function dragCheck(idx) { //첨삭하기 버튼을 눌렀을때 첨삭이 가능한지 체크
-                console.log('=================================');
+                // console.log('=================================');
                 // console.log(selectedObj.type);
-                // console.log(selectedObj);
-
-                console.log('111 isSelected : ',isSelected);
-                // console.log('시작 노드 : ',window.getSelection().anchorNode);
-
-                if (window.getSelection) {
-                    console.log('취소!!!!');
-                    window.getSelection().removeAllRanges();
+                if (selectedObj.type == "Caret") { //드래그 상태가 아닌 경우 취소
+                    isSelected = false;
                 }
-                if (!isSelected) {// 1. 드래그가 된 상태인지
-                    alert('문장이 선택되지 않았습니다.');
-                } else if (idx != curQuestion) { // 2. 현재 번호에 맞는 첨삭인지
-                    alert('현재 문제의 문장이 아닙니다.');
-                } else { // 3. 이미  첨삭된 위치와 겹치지 않는지
-                    // feedbackList.forEach(feedback => {
-                    //     if (feedback.getNum() == curQuestion) {
-                    //         if (!(curStart > feedback.getEndIdx()) && !(curEnd < feedback.getStartIdx())) {
-                    //             alert('이미 첨삭된 부분입니다.');
-                    //             return false;
-                    //         }
-                    //     }
-                    // })
-                    console.log('첨삭 가능!!!!!!!!!!!'); //여기서 이제 Ajax로 진행
+                if (isSelected) { //선택 되었는지
+                    if (idx == curQuestion) {
+                        console.log('여기서 위치 겹치는지 체크~~~');
+                    }
+                    else {
+                        alert('현재 문항의 문장이 아닙니다.');
+                    }
                 }
-
+                else {
+                    alert('답변 문장이 선택되지 않았습니다.');
+                }
+                selectedObj.removeAllRanges(); //모든 레인지 삭제
                 isSelected = false;
-                console.log('222 isSelected : ',isSelected);
             }
         </script>
         </body>
