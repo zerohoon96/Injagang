@@ -49,12 +49,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="dto : ${result.dtoList}">
-                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk})}">
-                    [[${dto.title}]]</a><span>[댓글:[[${dto.rCnt}]]]</span></td>
+            <tr th:each="dto : ${result.dtoList}" th:if="${dto.access} == 2">
+                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
+                type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
+                    [[${dto.title}]]</a></span><span>[댓글:[[${dto.rCnt}]]]</span></td>
                 <th>[[${dto.fCnt}]]</th>
                 <td>[[${dto.writer}]]</td>
-                <td>[[${#temporals.format(dto.regDate, 'yyyy/MM/dd')}]]</td>
+                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH/mm')}]]</td>
             </tr>
             </tbody>
         </table>
@@ -70,27 +71,34 @@
         <ul class="pagination h-100 justify-content-center align-items-center">
             <li class="page-item " th:if="${result.prev}">
                 <a class="page-link" th:href="@{/interview/board(page=${result.start - 1},
-                keyword=${pageRequestDTO.keyword}) }" tabindex="-1">Previous</a>
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}) }" tabindex="-1">Previous</a>
             </li>
 
             <li th:class=" 'page-item ' + ${result.page == page ? 'active' : ''} "
                 th:each="page : ${result.pageList}">
                 <a class="page-link" th:href="@{/interview/board(page=${page},
-                keyword=${pageRequestDTO.keyword})}">
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
                     [[${page}]]
                 </a>
             </li>
 
             <li class="page-item" th:if="${result.next}">
                 <a class="page-link" th:href="@{/interview/board(page=${result.end + 1},
-                keyword=${pageRequestDTO.keyword})}">Next</a>
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">Next</a>
             </li>
         </ul>
         
-        <!-- 임시 검색창 -->
-        <form action="//essay-list" method="get" id="searchForm">
+        <!-- 검색창 -->
+        <form action="/interview/board" method="get" id="searchForm">
             <div class="input-group" style="margin: auto">
                 <input type="hidden" name="page" value="1">
+                <div class="input-group-prepend">
+                    <select class="custom-select" name="type">
+                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
+                        <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                        <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                    </select>
+                </div>
                 <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
                 <div class="input-group-append" id="button-addon4">
                     <button class="btn btn-outline-secondary btn-search" type="button">검색</button>

@@ -22,14 +22,14 @@ public class EssayContentRepositoryTests {
 
     @Test
     public void insertEssayContents() {
-        IntStream.rangeClosed(1,150).forEach(i -> {
+        IntStream.rangeClosed(1,100).forEach(i -> {
             Essay essay = essayRepository.findById((long)i).get();
 
             //각 자소서 게시물 당 3개의 항목
             IntStream.rangeClosed(1,3).forEach(j -> {
                 EssayContent essayContent = EssayContent.builder()
-                        .title("----------질문----------")
-                        .text("==========답변==========")
+                        .question("----------Sample 질문----------")
+                        .answer("=========================\n==========예시 답변==========\n=========================")
                         .essay(essay)
                         .build();
 

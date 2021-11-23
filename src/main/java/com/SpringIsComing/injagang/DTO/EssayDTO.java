@@ -8,16 +8,19 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//자소서 게시판에서 보여줄 목록
+//자소서 게시판에 보여줄 때, 게시물 작성할 때 사용
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class EssayDTO {
     private Long pk;
+    private Integer access;
     private String title;
+    private String text;
+    private String essayTitle;
     private Integer qCnt, fCnt, rCnt;
     private String writer;
-    private LocalDateTime regDate, modDate;
+    private LocalDateTime date;
     private List<String> contentTitle, contentText; //자소서 각 항목의 질문, 내용
 }

@@ -4,6 +4,11 @@
       username: sa
       password:
       driver-class-name: org.h2.Driver
+    servlet:
+      multipart:
+        location: ~/upload
+        maxFileSize: 100MB
+        maxRequestSize: 100MB
 
 
     jpa:
@@ -31,3 +36,9 @@
     servlet:
       session:
         tracking-modes: cookie
+
+  com:
+    SpringIsComing:
+      injagang:
+        upload:
+          path: /Users/smod/upload

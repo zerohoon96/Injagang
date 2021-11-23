@@ -73,7 +73,7 @@
             
                     <!-- 예상질문 부분 -->
                     <div th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
-                        <label>[[${qdto.nickname}]]님의 예상질문</label>
+                        <label>[[${qdto.nickname}]]님의 예상질문([[${qdto.date}]])</label>
                         <br>
                         <textarea cols="80" readonly>[[${qdto.content}]]</textarea>
                     </div>
@@ -89,6 +89,9 @@
                 <div>
                     <p>[[${result.text}]]</p>
                 </div>
+                
+                <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때 -->
+                
             </div>
             
             <!-- 피드백 보기 부분 임시
@@ -144,7 +147,7 @@
                 
                 <!-- 기존 댓글 표시 -->
                 <div th:each="dto : ${result.replyList}">
-                    <label>[[${dto.nickname}]]님의 댓글</label>
+                    <label>[[${dto.nickname}]]님의 댓글([[${dto.date}]])</label>
                     <br>
                     <textarea cols="80" readonly>[[${dto.content}]]</textarea>
                 </div>

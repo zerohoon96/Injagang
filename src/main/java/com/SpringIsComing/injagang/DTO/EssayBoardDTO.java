@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 public class EssayBoardDTO {
     private Long pk;
     private String title; //게시물 제목
+    private String essayTitle; //자소서 제목
     private String text; //게시물 글
     private List<EssayContentDTO> contentList; //항목들
     private List<EssayFeedbackDTO> feedbackList; //피드백들

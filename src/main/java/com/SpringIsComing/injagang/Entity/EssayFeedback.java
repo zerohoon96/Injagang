@@ -36,5 +36,5 @@ public class EssayFeedback {
 
     private String content; //총평
 
-    LocalDateTime date; //글쓴 날짜
+    private LocalDateTime date; //글쓴 날짜
 }

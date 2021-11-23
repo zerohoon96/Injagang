@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -27,4 +28,5 @@ public class ExpectedQuestion {
     private Member writer; //글쓴이
 
     private String text; //내용
+    private LocalDateTime date;
 }
