@@ -13,9 +13,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class EssayFeedbackDTO {
+public class EssayFeedbackInfoDTO {
     private Long essayId; //essay id
     private String essayPostName; //essay 게시물 이름
     private List<String> questions; //자기소개서 질문
     private List<String> answers; //자기소개서 답변
+    private List<EssayFeedbackCommentInfoDTO> commentList;
 }
