@@ -43,7 +43,7 @@
         */-->
         <a th:href="@{/essay/board}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
         <a th:href="@{/interview/board}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
-        <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
+        <a th:href="@{/essay/write}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
         <!--/*
         <a th:href="@{/essay}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
         */-->
@@ -51,6 +51,8 @@
         <!--/*
         <a th:href="@{/interview/init}" class="list-group-item list-group-item-action bg-light">면접 보기</a>
         */-->
+        <a th:href="@{/essay/add}" class="list-group-item list-group-item-action bg-light">템플릿 추가</a>
+
     </div>
   </div>
   <!-- /#sidebar-wrapper -->

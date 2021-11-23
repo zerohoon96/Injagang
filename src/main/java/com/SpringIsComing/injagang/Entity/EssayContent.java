@@ -21,6 +21,7 @@ public class EssayContent {
     @Column(name = "EssayContent_ID")
     private Long id;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ESSAY_ID")
     private Essay essay;

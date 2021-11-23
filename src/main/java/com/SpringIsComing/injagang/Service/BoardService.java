@@ -98,8 +98,8 @@ public interface BoardService {
 
             contentList.add(EssayContentDTO.builder()
                             .pk(essayContent.getId())
-                            .title(essayContent.getTitle())
-                            .text(essayContent.getText())
+                            .title(essayContent.getQuestion())
+                            .text(essayContent.getAnswer())
                             .build());
         });
 

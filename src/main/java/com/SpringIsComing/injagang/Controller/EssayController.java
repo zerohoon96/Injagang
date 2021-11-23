@@ -4,9 +4,13 @@ import com.SpringIsComing.injagang.DTO.EssayFeedbackDTO;
 import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
+import com.SpringIsComing.injagang.Entity.EssayTemplate;
+import com.SpringIsComing.injagang.Entity.EssayTemplateContent;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
+import com.SpringIsComing.injagang.Repository.TemplateRepository;
 import com.SpringIsComing.injagang.Service.EssayService;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
+import com.SpringIsComing.injagang.Service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -23,6 +27,7 @@ import java.util.*;
 public class EssayController {
 
     private final EssayServiceImpl es;
+    private final TemplateService ts;
 
     /**
      ** 자소서 입력
@@ -99,14 +104,14 @@ public class EssayController {
         return "feedback/essay/write";
     }
 
-    @PostMapping("/feedback/{essayId}/write") //첨삭 저장을 눌렀을때
-    String addFeedback(Model model,
-                         @PathVariable Long essayId,
-                         @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
-        //레포지토리에 피드백 객체 저장
-        feedback.setId(0L);
-        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
-    }
+//    @PostMapping("/feedback/{essayId}/write") //첨삭 저장을 눌렀을때
+//    String addFeedback(Model model,
+//                         @PathVariable Long essayId,
+//                         @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
+//        //레포지토리에 피드백 객체 저장
+//        feedback.setId(0L);
+//        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
+//    }
 
     @GetMapping("/feedback/{feedbackId}") //첨삭 읽기를 눌렀을때 zzzzzzzzzzzzzzzzzzzzzzzzz url 설정!!!! 쿼리 파라메터로 할까?
     String readFeedback(Model model, @RequestParam String feedbackId) {
@@ -115,4 +120,35 @@ public class EssayController {
     }
 
 
+    //템플릿 추가
+    @GetMapping("/add")
+    String addInit() {
+        return "essay/add";
+    }
+
+    //추가된 템플릿 repository에 저장
+    @PostMapping("/add")
+    String savaTemplate(@RequestParam Map<String, String> addInput) {
+
+        List<EssayTemplateContent> etc = new ArrayList<>();
+        String templateTitle="";
+        List<String> question = new ArrayList<>();
+        Iterator<String> tmp_addInput = addInput.keySet().iterator();
+
+        while(tmp_addInput.hasNext()) {
+            String key = tmp_addInput.next();
+            if (key.equals("inputTemplateTitle")) {
+                templateTitle = addInput.get(key);
+            }
+            else {
+                question.add(addInput.get(key));
+                etc.add(EssayTemplateContent.createEssayTemplateContent(addInput.get(key)));
+            }
+        }
+
+        ts.storeEssayTemplate(EssayTemplate.createEssayTemplate(templateTitle, etc));
+        
+
+        return "redirect:/essay/add";
+    }
 }
