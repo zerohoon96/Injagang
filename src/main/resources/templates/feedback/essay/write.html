@@ -5,12 +5,16 @@
     <th:block th:fragment="content">
         <head>
             <meta charset="UTF-8">
-            <title>essay_write_page</title>
+            <title>Essay feedback write page</title>
 
             <style>
                 .container-fluid {
                     padding-left: 7%;
                     padding-right: 7%;
+                }
+
+                .width-80 {
+                    width: 80%;
                 }
 
                 textarea {
@@ -25,36 +29,53 @@
         </head>
         <body>
         <form class="container-fluid" action method="post" th:object="${feedback}">
-            <label class="form-control text-center mt-3" th:text="|${feedback.essayPostName} 게시물을 첨삭하고 있습니다.|"></label><br>
+            <label class="form-control text-center mt-3" th:text="|${essayPostName} 게시물을 첨삭하고 있습니다.|"></label><br>
             <button type="button" onclick="showGuide()">첨삭 방법</button>
+
             <div th:each="idx : ${#numbers.sequence(0,feedback.getQuestions().size()-1)}">
                 <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
                 <textarea type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
                           th:onselect="|dragUpdate(${idx+1})|" rows=10 disabled></textarea><br>
+
                 <div th:id="|start${idx+1}|"></div>
                 <div th:id="|length${idx+1}|"></div>
                 <div th:id="|comment${idx+1}|"></div>
 
-                <div th:id="|display${idx+1}|"></div>
-                <textarea th:id="|input${idx+1}|" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3 th:onchange="|updateBuf(${idx+1})|"></textarea><br>
+
+                <textarea th:id="|input${idx+1}|" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3
+                          th:onchange="|updateBuf(${idx+1})|"></textarea><br>
                 <button type="button" th:onclick="|dragCheck(${idx+1})|">첨삭 추가</button>
                 <br><br>
             </div>
             <label for="totalComment">총평</label>
-            <textarea type="text" id="totalComment" name="comment" class="form-control" rows=3
+            <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3
                       placeholder="총평을 입력해주세요." required></textarea>
             <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
             <br>
         </form>
 
         <script type="text/javascript">
-            let curField, curStart, curLength, curQuestion, startCur = 0, lengthCur = 0, commentCur = 0;
-            let isSelected = false;
-            let start = [], length = [], comment = [];
             const selectedObj = window.getSelection();
-            let commentBuf = new Array([[${feedback.getQuestions().size()}]]);
+            let curField, curStart, curLength, curQuestion;
+            let isSelected = false;
+            let start, length, comment, commentBuf;
 
-            function showGuide() {
+            initSetting();
+
+            function initSetting() { //초기 세팅 진행
+                start = new Array([[${feedback.getQuestions().size()}]]);
+                length = new Array([[${feedback.getQuestions().size()}]]);
+                comment = new Array([[${feedback.getQuestions().size()}]]);
+                commentBuf = new Array([[${feedback.getQuestions().size()}]]);
+
+                for (let i = 0; i < start.length; i++) {
+                    start[i] = [];
+                    length[i] = [];
+                    comment[i] = [];
+                }
+            }
+
+            function showGuide() { //첨삭 방법을 소개하는 팝업
                 alert('1. 문제별로 할당된 첨삭란에 첨삭을 입력합니다.\n' +
                     '2. 첨삭을 입력하고 첨삭 대상 문장을 드래그하세요.\n' +
                     '3. 드래그 후에 첨삭 추가 버튼을 누르면 첨삭이 저장됩니다.\n' +
@@ -68,7 +89,7 @@
                 curStart = curField.selectionStart;
                 curLength = curField.selectionEnd - curField.selectionStart;
                 curQuestion = idx;
-                isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장만 드래그 위해 사용)
+                isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장이 있는 textArea 만 드래그 위해 사용)
             }
 
             function dragCheck(idx) { //첨삭하기 버튼을 눌렀을때 처리
@@ -78,8 +99,10 @@
                 if (isSelected) { //선택 되었는지
                     if (idx == curQuestion) {
                         console.log('여기서 위치 겹치는지 체크~~~');
-                        if (1) {
+                        if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) {
                             addFeedback(idx);
+                        } else {
+                            alert('첨삭을 입력하세요.');
                         }
                     } else {
                         alert('현재 문항의 문장이 아닙니다.');
@@ -92,27 +115,49 @@
             }
 
             function updateBuf(idx) {
-                commentBuf[idx-1] = document.getElementById('input' + idx).value;
-                console.log("============================================");
-                commentBuf.forEach(data => console.log(data));
-                console.log(commentBuf);
-                console.log("============================================");
+                commentBuf[idx - 1] = document.getElementById('input' + idx).value;
             }
+
             function addFeedback(idx) {
                 //문제별 첨삭 리스트에 드래그 결과 추가
-                start.push(curStart);
-                length.push(curLength);
-                comment.push(commentBuf[idx-1]);
-                document.getElementById('input' + idx).value = '';
+                start[idx - 1].push(curStart);
+                length[idx - 1].push(curLength);
+                comment[idx - 1].push(commentBuf[idx - 1]);
+
+                document.getElementById('input' + idx).value = commentBuf[idx - 1] = '';
 
                 //해당 innerHtml += (인덱스 정보 + 피드백 내용)
-                document.getElementById('start' + idx).innerHTML += '<input type="hidden" name="feedback.commentList[idx-1].start" value='+start[startCur++]+'>';
-                document.getElementById('length' + idx).innerHTML += '<input type="hidden" name="feedback.commentList[idx-1].length" value='+length[lengthCur++]+'>';
-                document.getElementById('comment' + idx).innerHTML += '<textarea name="feedback.commentList[idx-1].comment" rows="3" readonly>'+comment[commentCur++]+'</textarea><br>';
+                document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (start[idx - 1].length - 1) + '].start">';
+                document.getElementById('length' + idx).innerHTML += '<input type="hidden" id="length' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (length[idx - 1].length - 1) + '].length">';
+                document.getElementById('comment' + idx).innerHTML += '<textarea class="width-80" name="everyComment[' + (idx - 1) + '].commentList[' + (comment[idx - 1].length - 1) + '].comment" rows="3" readonly>' + comment[idx - 1][comment[idx - 1].length - 1] + '</textarea> ' +
+                    '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + (start[idx - 1].length - 1) + ')">삭제</button><br>';
+                document.getElementById('start' + idx + (start[idx - 1].length - 1)).value = start[idx - 1][start[idx - 1].length - 1];
+                document.getElementById('length' + idx + (start[idx - 1].length - 1)).value = length[idx - 1][start[idx - 1].length - 1];
+
             }
 
-            function deleteFeedback(idx) {
-                //
+            function deleteFeedback(curIdx, deleteIdx) { //피드백 1개 삭제
+                start[curIdx - 1].splice(deleteIdx, 1);
+                length[curIdx - 1].splice(deleteIdx, 1);
+                comment[curIdx - 1].splice(deleteIdx, 1);
+                displayFeedback(curIdx); //작성한 피드백 다시 출력
+            }
+
+            function displayFeedback(idx) { //피드백 display
+
+                //기존값 초기화 (문제별 원래 저장된 부분)
+                document.getElementById('start' + idx).innerHTML = '';
+                document.getElementById('length' + idx).innerHTML = '';
+                document.getElementById('comment' + idx).innerHTML = '';
+
+                for (let i = 0; i < start[idx - 1].length; i++) {
+                    document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].start">';
+                    document.getElementById('length' + idx).innerHTML += '<input type="hidden" id="length' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].length">';
+                    document.getElementById('comment' + idx).innerHTML += '<textarea class="width-80" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea> ' +
+                        '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button><br>';
+                    document.getElementById('start' + idx + i).value = start[idx - 1][i];
+                    document.getElementById('length' + idx + i).value = length[idx - 1][i];
+                }
             }
         </script>
         </body>

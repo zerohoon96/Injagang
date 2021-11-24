@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.EssayFeedbackInfoDTO;
+import com.SpringIsComing.injagang.DTO.EssayFeedbackQuestionDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
@@ -102,17 +103,22 @@ public class EssayController {
 
         feedback.setQuestions(questions);
         feedback.setAnswers(answers);
-        feedback.setEssayPostName("삼성 자소서 첨삭 해주세요!!");
-        feedback.setEssayId(essayId);
+        model.addAttribute("essayPostName","삼성 자소서 첨삭 해주세요!");
         return "feedback/essay/write";
     }
 
     @PostMapping("/feedback/{essayId}/write") //첨삭 저장을 눌렀을때
     String addFeedback(Model model,
                          @PathVariable Long essayId,
-                         @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+                         @ModelAttribute EssayFeedbackInfoDTO feedback) {
         //레포지토리에 피드백 객체 저장
-        return "feedback/essay/write";
+        System.out.println("essayId : "+essayId);
+//        System.out.println(feedback);
+        for (EssayFeedbackQuestionDTO data: feedback.getEveryComment()) {
+            System.out.println(data);
+        }
+//        System.out.println(feedback.getEveryComment());
+        return "feedback/essay/z";
 //        feedback.setId(0L);
 //        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
     }
@@ -123,5 +129,13 @@ public class EssayController {
         return "feedback/essay/read";
     }
 
-
+    @GetMapping("/test")
+    String z(Model model) {
+        return "essay/tmp";
+    }
+    @PostMapping("/test")
+    String zz(Model model) {
+        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+        return "feedback/essay/z";
+    }
 }

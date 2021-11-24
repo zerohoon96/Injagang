@@ -5,11 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+//@Builder
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Data
-public class EssayFeedbackCommentInfoDTO {
+public class EssayFeedbackCommentDTO { //한 개의 첨삭
     private int start;
     private int length;
     private String comment;
