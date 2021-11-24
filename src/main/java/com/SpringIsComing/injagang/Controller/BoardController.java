@@ -85,6 +85,78 @@ public class BoardController {
         return "boards/interview-read";
     }
 
+    //자소서 게시물의 제목, 글 수정 화면
+    @GetMapping("/essay/board/update/{pk}")
+    public String updateEssayBoard(@SessionAttribute("loginSession") String nickname,
+                                   @PathVariable("pk") Long eb_pk, Model model) {
+        log.info("==========essayBoardUpdate==========");
+
+        EssayBoardDTO dto = service.readEssayBoard(eb_pk);
+        model.addAttribute("result", dto);
+        model.addAttribute("nickname", nickname);
+
+        return "boards/essay-update";
+    }
+
+    @PostMapping("/essay/board/update/{pk}")
+    public String updateEssayBoardPost(@SessionAttribute("loginSession") String nickname,
+                                       @PathVariable("pk") Long eb_pk,
+                                       @RequestParam("title") String title,
+                                       @RequestParam("text") String text) {
+        log.info("==========essayBoardUpdatePost==========");
+        log.info("title: " + title);
+        log.info("text: " + text);
+
+        service.updateEssayBoard(eb_pk, title, text);
+
+        return "redirect:/essay/board/" + eb_pk;
+    }
+
+    //면접 게시물의 제목, 글 수정 화면
+    @GetMapping("/interview/board/update/{pk}")
+    public String updateInterviewBoard(@SessionAttribute("loginSession") String nickname,
+                                       @PathVariable("pk") Long ib_pk, Model model) {
+        log.info("==========interviewBoardUpdate==========");
+
+        InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
+        model.addAttribute("result", dto);
+        model.addAttribute("nickname", nickname);
+
+        return "boards/interview-update";
+    }
+
+    @PostMapping("/interview/board/update/{pk}")
+    public String updateInterviewBoardPost(@SessionAttribute("loginSession") String nickname,
+                                           @PathVariable("pk") Long ib_pk,
+                                           @RequestParam("title") String title,
+                                           @RequestParam("text") String text) {
+        log.info("==========interviewBoardUpdatePost==========");
+        log.info("title: " + title);
+        log.info("text: " + text);
+
+        service.updateInterviewBoard(ib_pk, title, text);
+
+        return "redirect:/interview/board/" + ib_pk;
+    }
+
+    //자소서 게시물 삭제 - 객체를 삭제하지는 않음
+    @GetMapping("/essay/board/delete/{pk}")
+    public String deleteEssayBoard(@PathVariable Long pk) {
+        log.info("==========deleteEssayBoard==========");
+
+        service.deleteEssayBoard(pk);
+        return "redirect:/essay/board";
+    }
+
+    //면접 게시물 삭제 - 객체를 삭제하지는 않음
+    @GetMapping("/interview/board/delete/{pk}")
+    public String deleteInterviewBoard(@PathVariable Long pk) {
+        log.info("==========deleteEssayBoard==========");
+
+        service.deleteInterviewBoard(pk);
+        return "redirect:/interview/board";
+    }
+
     //자소서 게시판 글쓰기 화면
     @GetMapping("/essay/board/add")
     public String registerEssayBoard(@SessionAttribute("loginSession") String nickname, Model model) {

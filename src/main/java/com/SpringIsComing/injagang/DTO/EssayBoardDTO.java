@@ -17,6 +17,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class EssayBoardDTO {
     private Long pk;
+    private String writer; //글쓴이 닉네임
     private String title; //게시물 제목
     private String essayTitle; //자소서 제목
     private String text; //게시물 글

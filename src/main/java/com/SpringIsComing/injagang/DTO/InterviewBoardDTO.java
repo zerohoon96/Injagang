@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class InterviewBoardDTO {
     private Long pk;
+    private String writer; //글쓴이 닉네임
     private String title; //게시물 제목
     private String text; //게시물 내용
     private List<VideoDTO> videoList;

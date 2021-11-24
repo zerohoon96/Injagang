@@ -42,6 +42,18 @@ public interface BoardService {
     //면접 게시물에서 댓글 달기
     void registerInterviewReply(Long pk, String content, String nickname);
 
+    //자소서 게시물 제목, 글 수정하기
+    void updateEssayBoard(Long pk, String title, String text);
+
+    //면접 게시물 제목, 글 수정하기
+    void updateInterviewBoard(Long pk, String title, String text);
+
+    //자소서 게시물 삭제하기
+    void deleteEssayBoard(Long pk);
+
+    //면접 게시물 삭제하기
+    void deleteInterviewBoard(Long pk);
+
     //사용 안함
     default Essay essayDtoToEntity(EssayDTO dto) {
 
@@ -146,6 +158,7 @@ public interface BoardService {
 
         EssayBoardDTO dto = EssayBoardDTO.builder()
                 .pk(essay.getId())
+                .writer(essay.getWriter().getNickname())
                 .title(essay.getTitle())
                 .text(essay.getText())
                 .contentList(contentList)
@@ -189,6 +202,7 @@ public interface BoardService {
 
         InterviewBoardDTO dto = InterviewBoardDTO.builder()
                 .pk(interview.getId())
+                .writer(interview.getWriter().getNickname())
                 .title(interview.getTitle())
                 .text(interview.getText())
                 .videoList(videoList)

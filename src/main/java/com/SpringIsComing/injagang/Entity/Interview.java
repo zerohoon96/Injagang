@@ -41,4 +41,28 @@ public class Interview {
     private String title; //제목
     private String text; //내용 글
     private LocalDateTime date; //작성 날짜
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setDate(LocalDateTime date){
+        this.date = date;
+    }
+
+    public void clearReplies(){
+        this.replies = new ArrayList<>();
+    }
+
+    public void clearFeedbacks(){
+        this.feedbacks = new ArrayList<>();
+    }
+
+    public void clearVideos() {
+        this.videos = new ArrayList<>();
+    }
 }

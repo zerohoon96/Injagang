@@ -45,10 +45,21 @@
                 </div>
     
                 <!-- 게시물 글 내용 -->
-                <br>
+                <br><br>
                 <div>
-                    <p>[[${result.text}]]</p>
+                    <textarea rows="10" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
                 </div>
+    
+                <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만 -->
+                <div th:if="${nickname == result.writer}" style="float: right">
+                    <button class="btn btn-secondary" type="button">
+                        <a th:href="@{/interview/board/update/{pk}(pk=${result.pk})}" style="color: white">게시물 수정</a>
+                    </button>
+                    <button class="btn btn-secondary" type="button" style="background-color: red">
+                        <a th:href="@{/interview/board/delete/{pk}(pk=${result.pk})}" style="color: white">게시물 삭제</a>
+                    </button>
+                </div>
+                
             </div>
     
             <!-- 피드백 보기 부분-->

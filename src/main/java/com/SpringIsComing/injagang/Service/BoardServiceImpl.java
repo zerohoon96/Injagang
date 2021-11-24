@@ -27,7 +27,9 @@ public class BoardServiceImpl implements BoardService{
     private final MemberRepository memberRepository;
     private final EssayRepository essayRepository;
     private final EssayContentRepository essayContentRepository;
+    private final EssayFeedbackRepository essayFeedbackRepository;
     private final InterviewRepository interviewRepository;
+    private final InterviewFeedbackRepository interviewFeedbackRepository;
     private final VideoRepository videoRepository;
     private final ReplyRepository replyRepository;
     private final ExpectedQuestionRepository questionRepository;
@@ -167,6 +169,72 @@ public class BoardServiceImpl implements BoardService{
         Optional<Interview> result = interviewRepository.findById(id);
 
         return result.isPresent() ? interviewBoardEntityToDto(result.get()) : null;
+    }
+
+    @Override
+    @Transactional
+    public void updateEssayBoard(Long pk, String title, String text) {
+        Essay essay = essayRepository.findById(pk).get();
+        essay.setTitle(title);
+        essay.setText(text);
+        essay.setDate(LocalDateTime.now());
+
+        essayRepository.save(essay);
+    }
+
+    @Override
+    @Transactional
+    public void updateInterviewBoard(Long pk, String title, String text) {
+        Interview interview = interviewRepository.findById(pk).get();
+        interview.setTitle(title);
+        interview.setText(text);
+        interview.setDate(LocalDateTime.now());
+
+        interviewRepository.save(interview);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEssayBoard(Long pk) {
+        Essay essay = essayRepository.findById(pk).get();
+        essay.setAccess(0);
+        essay.setTitle("");
+        essay.setText("");
+
+        List<Reply> replies = essay.getReplies();
+        List<EssayFeedback> feedbacks = essay.getFeedbacks();
+        for (Reply reply : replies) {
+            replyRepository.delete(reply);
+        }
+        for (EssayFeedback feedback : feedbacks) {
+            essayFeedbackRepository.delete(feedback);
+        }
+
+        essay.clearReplies();
+        essay.clearFeedbacks();
+    }
+
+    @Override
+    @Transactional
+    public void deleteInterviewBoard(Long pk) {
+        Interview interview = interviewRepository.findById(pk).get();
+        interview.setTitle("");
+        interview.setText("");
+
+        List<Reply> replies = interview.getReplies();
+        List<InterviewFeedback> feedbacks = interview.getFeedbacks();
+        List<Video> videos = interview.getVideos();
+        for (Reply reply : replies) {
+            replyRepository.delete(reply);
+        }
+        for (InterviewFeedback feedback : feedbacks) {
+            interviewFeedbackRepository.delete(feedback);
+        }
+        for (Video video : videos) {
+            videoRepository.delete(video);
+        }
+
+        interviewRepository.delete(interview);
     }
 
     @Override

@@ -62,4 +62,14 @@ public class Essay{
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
+
+    //자소서에 달린 댓글들 모두 삭제
+    public void clearReplies(){
+        this.replies = new ArrayList<>();
+    }
+
+    //자소서에 달린 피드백들 모두 삭제
+    public void clearFeedbacks(){
+        this.feedbacks = new ArrayList<>();
+    }
 }
