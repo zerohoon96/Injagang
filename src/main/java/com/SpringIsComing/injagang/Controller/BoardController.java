@@ -9,20 +9,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 @Slf4j
@@ -186,7 +181,6 @@ public class BoardController {
     public String registerInterviewBoard(@SessionAttribute("loginSession") String nickname, Model model) {
         log.info("----------registerInterviewBoard----------");
 
-        model.addAttribute("interviewList", service.getInterviews(nickname));
         return "boards/interview-register";
     }
 
@@ -258,5 +252,63 @@ public class BoardController {
 
         service.registerInterviewReply(pk, content, nickname);
         return "redirect:/interview/board/" + pk;
+    }
+
+    //면접 게시물에서 피드백 쓰기
+    @PostMapping("/interview/feedback")
+    public String registerInterviewFeedbackPost(@SessionAttribute("loginSession") String nickname,
+                                        @RequestParam("interview_pk") Long interview_pk,
+                                        @RequestParam("video_pk") Long video_pk,
+                                        @RequestParam("feedbackContent")String content) {
+        log.info("==========registerInterviewFeedback==========");
+        log.info("content: " + content);
+
+        //예상질문 저장 후 리다이렉트
+        service.registerInterviewFeedback(video_pk, content, nickname);
+        return "redirect:/interview/board/" + interview_pk;
+    }
+
+    //자소서 게시물에서 자기가 쓴 예상질문 삭제하기
+    @PostMapping("/essay/question/delete")
+    public String deleteEssayBoardQuestion(@SessionAttribute("loginSession") String nickname,
+                                      @RequestParam Long eb_pk, @RequestParam Long question_pk) {
+
+        log.info("==========deleteEssayBoardQuestion==========");
+
+        service.deleteEssayQuestion(question_pk);
+        return "redirect:/essay/board/" + eb_pk;
+    }
+
+    //자소서 게시물에서 자기가 쓴 댓글 삭제하기
+    @PostMapping("/essay/reply/delete")
+    public String deleteEssayBoardReply(@SessionAttribute("loginSession") String nickname,
+                                   @RequestParam Long eb_pk, @RequestParam Long reply_pk) {
+        log.info("==========deleteEssayBoardReply==========");
+        log.info("reply_pk: " + reply_pk);
+
+        service.deleteBoardReply(reply_pk);
+        return "redirect:/essay/board/" + eb_pk;
+    }
+
+    //면접 게시물에서 자기가 쓴 댓글 삭제하기
+    @PostMapping("interview/reply/delete")
+    public String deleteInterviewBoardReply(@SessionAttribute("loginSession") String nickname,
+                                       @RequestParam Long ib_pk, @RequestParam Long reply_pk) {
+
+        log.info("==========deleteInterviewBoardReply==========");
+
+        service.deleteBoardReply(reply_pk);
+        return "redirect:/interview/board/" + ib_pk;
+    }
+
+    //면접 게시물에서 자기가 쓴 피드백 삭제하기
+    @PostMapping("interview/feedback/delete")
+    public String deleteInterviewBoardFeedback(@SessionAttribute("loginSession") String nickname,
+                                               @RequestParam Long ib_pk, @RequestParam Long feedback_pk) {
+
+        log.info("==========deleteInterviewBoardFeedback==========");
+
+        service.deleteInterviewFeedback(feedback_pk);
+        return "redirect:/interview/board/" + ib_pk;
     }
 }

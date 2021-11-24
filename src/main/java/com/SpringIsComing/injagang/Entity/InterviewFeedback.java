@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 //면접 첨삭 Entity
@@ -22,13 +23,13 @@ public class InterviewFeedback {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "INTERVIEW_ID")
-    private Interview interview;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    private String comment; //문항별 첨삭 내용
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "VIDEO_ID")
+    private Video video;
+
+    private String comment; //피드백 내용
     private LocalDateTime date; //글쓴 날짜
 }

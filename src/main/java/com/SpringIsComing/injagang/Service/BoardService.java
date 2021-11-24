@@ -19,8 +19,6 @@ public interface BoardService {
 
     List<EssayDTO> getEssays(String nickname);
 
-    List<InterviewDTO> getInterviews(String nickname);
-
     //자소서 게시판의 한 페이지 가져오기
     PageResultDTO<EssayDTO, Essay> getEssayList(PageRequestDTO requestDTO);
 
@@ -42,6 +40,9 @@ public interface BoardService {
     //면접 게시물에서 댓글 달기
     void registerInterviewReply(Long pk, String content, String nickname);
 
+    //면접 게시물에서 피드백 달기
+    void registerInterviewFeedback(Long video_pk, String content, String nickname);
+
     //자소서 게시물 제목, 글 수정하기
     void updateEssayBoard(Long pk, String title, String text);
 
@@ -53,6 +54,15 @@ public interface BoardService {
 
     //면접 게시물 삭제하기
     void deleteInterviewBoard(Long pk);
+
+    //면접 게시물에 달린 예상질문 삭제하기
+    void deleteEssayQuestion(Long question_pk);
+
+    //게시물에 달린 댓글 삭제하기
+    void deleteBoardReply(Long reply_pk);
+
+    //면접 게시물에 달린 피드백 삭제하기
+    void deleteInterviewFeedback(Long feedback_pk);
 
     //사용 안함
     default Essay essayDtoToEntity(EssayDTO dto) {
@@ -98,12 +108,13 @@ public interface BoardService {
 
     //게시판에서 쓸 면접 DTO
     default InterviewDTO interviewEntityToDto(Interview interview) {
+        int cnt = interview.getVideos().stream().mapToInt(video -> video.getFeedbacks().size()).sum();
+
         InterviewDTO dto = InterviewDTO.builder()
                 .pk(interview.getId())
                 .title(interview.getTitle())
                 .writer(interview.getWriter().getNickname())
-                .access(interview.getAccess())
-                .fCnt(interview.getFeedbacks().size())
+                .fCnt(cnt)
                 .rCnt(interview.getReplies().size())
                 .date(interview.getDate())
                 .build();
@@ -174,20 +185,23 @@ public interface BoardService {
     //게시물에서 쓸 면접 DTO
     default InterviewBoardDTO interviewBoardEntityToDto(Interview interview) {
         List<VideoDTO> videoList = new ArrayList<>();
-        interview.getVideos().forEach(video -> {
-            videoList.add(VideoDTO.builder()
-                            .pk(video.getId())
-                            .videoName(video.getVideoName())
-                            .url(video.getVideoURL())
-                            .build());
-        });
-
         List<InterviewFeedbackDTO> feedbackList = new ArrayList<>();
-        interview.getFeedbacks().forEach(feedback -> {
-            feedbackList.add(InterviewFeedbackDTO.builder()
-                            .pk(feedback.getId())
-                            .nickname(feedback.getMember().getNickname())
-                            .build());
+        interview.getVideos().forEach(video -> {
+
+            video.getFeedbacks().forEach(feedback -> {
+                feedbackList.add(InterviewFeedbackDTO.builder()
+                                .pk(feedback.getId())
+                                .videoId(video.getId())
+                                .comment(feedback.getComment())
+                                .nickname(feedback.getMember().getNickname())
+                                .build());
+            });
+
+            videoList.add(VideoDTO.builder()
+                    .pk(video.getId())
+                    .videoName(video.getVideoName())
+                    .url(video.getVideoURL())
+                    .build());
         });
 
         List<ReplyDTO> replyList = new ArrayList<>();
@@ -200,6 +214,7 @@ public interface BoardService {
                             .build());
         });
 
+        int cnt = interview.getVideos().stream().mapToInt(video -> video.getFeedbacks().size()).sum();
         InterviewBoardDTO dto = InterviewBoardDTO.builder()
                 .pk(interview.getId())
                 .writer(interview.getWriter().getNickname())
@@ -208,7 +223,7 @@ public interface BoardService {
                 .videoList(videoList)
                 .feedbackList(feedbackList)
                 .replyList(replyList)
-                .fCnt(interview.getFeedbacks().size())
+                .fCnt(cnt)
                 .build();
 
         return dto;

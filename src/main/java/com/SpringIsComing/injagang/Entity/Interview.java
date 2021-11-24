@@ -33,11 +33,6 @@ public class Interview {
     @Builder.Default
     private List<Video> videos = new ArrayList<>(); //면접 녹화 영상들
 
-    @OneToMany(mappedBy = "interview")
-    @Builder.Default
-    private List<InterviewFeedback> feedbacks = new ArrayList<>(); //피드백들
-
-    private Integer access; //공개 범위(0,null: private, 1: 친구공개, 2:게시판 등록)
     private String title; //제목
     private String text; //내용 글
     private LocalDateTime date; //작성 날짜
@@ -56,13 +51,5 @@ public class Interview {
 
     public void clearReplies(){
         this.replies = new ArrayList<>();
-    }
-
-    public void clearFeedbacks(){
-        this.feedbacks = new ArrayList<>();
-    }
-
-    public void clearVideos() {
-        this.videos = new ArrayList<>();
     }
 }

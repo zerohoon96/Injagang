@@ -30,8 +30,6 @@ public class InterviewRepositoryTests {
                     .text("Interview Content..." + i)
                     .writer(member)
                     .date(LocalDateTime.now())
-                    .interviewTitle("Sample Interview Title..."+i)
-                    .access(2) //게시판에 올린 것으로 설정
                     .build();
 
             interviewRepository.save(interview);

@@ -11,5 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InterviewFeedbackDTO {
     private Long pk;
+    private Long videoId;
     private String nickname;
+    private String comment; //피드백 내용
 }

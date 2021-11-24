@@ -49,7 +49,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="dto : ${result.dtoList}" th:if="${dto.access} == 2">
+            <tr th:each="dto : ${result.dtoList}">
                 <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
                 type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
                     [[${dto.title}]]</a></span><span>[댓글:[[${dto.rCnt}]]]</span></td>

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 //면접 영상 Entity
 @Entity
@@ -23,6 +25,10 @@ public class Video {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "INTERVIEW_ID")
     private Interview interview;
+
+    @OneToMany(mappedBy = "video")
+    @Builder.Default
+    private List<InterviewFeedback> feedbacks = new ArrayList<>();
 
     private String videoURL; //영상 url
     private String videoName; //영상 제목

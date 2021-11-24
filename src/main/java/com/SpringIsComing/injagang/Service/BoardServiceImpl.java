@@ -65,7 +65,6 @@ public class BoardServiceImpl implements BoardService{
         Interview entity = Interview.builder()
                 .title(dto.getTitle())
                 .text(dto.getText())
-                .access(2)
                 .writer(member)
                 .date(LocalDateTime.now())
                 .build();
@@ -100,24 +99,6 @@ public class BoardServiceImpl implements BoardService{
                 dtoList.add(EssayDTO.builder()
                         .pk(essay.getId())
                         .essayTitle(essay.getEssayTitle())
-                        .build());
-            }
-        }
-
-        return dtoList;
-    }
-
-    //로그인한 사람이 쓴 면접 DTO들을 찾아 리턴
-    @Transactional
-    public List<InterviewDTO> getInterviews (String nickname) {
-        Member member = memberRepository.findByNickname(nickname);
-        List<Interview> interviewList = member.getInterviews();
-        List<InterviewDTO> dtoList = new ArrayList<>();
-
-        for (Interview interview : interviewList) {
-            //공개 권한이 private이나 친구공개인 경우에만 선택
-            if(interview.getAccess() == null || interview.getAccess() < 2) {
-                dtoList.add(InterviewDTO.builder()
                         .build());
             }
         }
@@ -222,19 +203,37 @@ public class BoardServiceImpl implements BoardService{
         interview.setText("");
 
         List<Reply> replies = interview.getReplies();
-        List<InterviewFeedback> feedbacks = interview.getFeedbacks();
         List<Video> videos = interview.getVideos();
         for (Reply reply : replies) {
             replyRepository.delete(reply);
         }
-        for (InterviewFeedback feedback : feedbacks) {
-            interviewFeedbackRepository.delete(feedback);
-        }
         for (Video video : videos) {
             videoRepository.delete(video);
+            List<InterviewFeedback> feedbacks = video.getFeedbacks();
+            for (InterviewFeedback feedback : feedbacks) {
+                interviewFeedbackRepository.delete(feedback);
+            }
         }
 
         interviewRepository.delete(interview);
+    }
+
+    @Override
+    @Transactional
+    public void deleteEssayQuestion(Long question_pk) {
+        questionRepository.deleteById(question_pk);
+    }
+
+    @Override
+    @Transactional
+    public void deleteBoardReply(Long reply_pk) {
+        replyRepository.deleteById(reply_pk);
+    }
+
+    @Override
+    @Transactional
+    public void deleteInterviewFeedback(Long feedback_pk) {
+        interviewFeedbackRepository.deleteById(feedback_pk);
     }
 
     @Override
@@ -283,6 +282,22 @@ public class BoardServiceImpl implements BoardService{
                 .build();
 
         replyRepository.save(reply);
+    }
+
+    @Override
+    @Transactional
+    public void registerInterviewFeedback(Long pk, String content, String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        Video video = videoRepository.findById(pk).get();
+
+        InterviewFeedback feedback = InterviewFeedback.builder()
+                .video(video)
+                .member(member)
+                .comment(content)
+                .date(LocalDateTime.now())
+                .build();
+
+        interviewFeedbackRepository.save(feedback);
     }
 
     private BooleanBuilder getSearchEssay(PageRequestDTO requestDTO) { //Querydsl 처리

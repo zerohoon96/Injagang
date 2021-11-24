@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <h1 class="mt-4">피드백 달기</h1>
+        <textarea rows="1" style="color: gray; border: none; size: 20px; width: 100%" readonly><[[${writer}]]님의 게시물></textarea>
+        
+        
+    </th:block>
+</th:block>
