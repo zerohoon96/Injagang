@@ -87,7 +87,7 @@
                 console.log(idx, '번 문제 drag!!!!!!!!!!!!!!!!!!!!!!');
                 curField = document.getElementById("answer" + idx);
                 curStart = curField.selectionStart;
-                curLength = curField.selectionEnd - curField.selectionStart;
+                curLength = curField.selectionEnd - curField.selectionStart - 1; //시작에서 이 값을 더하면 끝이 됨
                 curQuestion = idx;
                 isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장이 있는 textArea 만 드래그 위해 사용)
             }
@@ -96,14 +96,32 @@
                 if (selectedObj.type == "Caret") { //드래그 상태가 아닌 경우 취소
                     isSelected = false;
                 }
-                if (isSelected) { //선택 되었는지
-                    if (idx == curQuestion) {
-                        console.log('여기서 위치 겹치는지 체크~~~');
-                        if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) {
-                            addFeedback(idx);
-                        } else {
-                            alert('첨삭을 입력하세요.');
+                if (isSelected) { //선택 되었는지 검사
+                    if (idx == curQuestion) { //현재 문제인지 검사
+                        let curEnd = curStart + curLength;
+                        let fail = false;
+                        for(let i = 0; i < start[idx - 1].length; i++) {
+                            console.log('======================');
+                            console.log('기존 : ',start[idx - 1][i], start[idx - 1][i] + length[idx - 1][i]);
+                            console.log('현재 : ',curStart, curEnd)
+                            console.log('======================');
+                            if(!(curStart > start[idx - 1][i] + length[idx - 1][i]) && !(curEnd < start[idx - 1][i])){
+                                fail=true;
+                                break;
+                            }
                         }
+                        if(start[idx - 1].length == 0 || !fail) { //이미 첨삭된 부분과 겹치는지 검사
+                            if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
+                                addFeedback(idx); //피드백 추가
+                            } else {
+                                alert('첨삭을 입력하세요.');
+                            }
+                        }
+                        else {
+                            alert('이미 선택된 부분입니다.');
+                        }
+                        console.log('여기서 위치 겹치는지 체크~~~');
+
                     } else {
                         alert('현재 문항의 문장이 아닙니다.');
                     }
