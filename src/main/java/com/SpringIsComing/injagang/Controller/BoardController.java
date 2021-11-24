@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.*;
+import com.SpringIsComing.injagang.Service.AlarmService;
 import com.SpringIsComing.injagang.Service.BoardService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class BoardController {
     private String uploadPath;
 
     private final BoardService service;
+    private final AlarmService alarmService;
 
     //자소서 게시판
     @GetMapping("/essay/board")
@@ -37,6 +39,7 @@ public class BoardController {
         log.info("==========essayBoard==========");
 
         model.addAttribute("result", service.getEssayList(pageRequestDTO));
+        model.addAttribute("nickname", nickname);
         return "boards/essay-list";
     }
 
@@ -47,6 +50,7 @@ public class BoardController {
         log.info("==========interviewBoard==========");
 
         model.addAttribute("result", service.getInterviewList(pageRequestDTO));
+        model.addAttribute("nickname", nickname);
         return "boards/interview-list";
     }
 
@@ -159,6 +163,7 @@ public class BoardController {
 
         //현재 로그인 되어있는 nickname으로 그 사람이 쓴 자소서 리스트 불러오기
         model.addAttribute("essayList", service.getEssays(nickname));
+        model.addAttribute("nickname", nickname);
         return "boards/essay-register";
     }
 
@@ -181,6 +186,7 @@ public class BoardController {
     public String registerInterviewBoard(@SessionAttribute("loginSession") String nickname, Model model) {
         log.info("----------registerInterviewBoard----------");
 
+        model.addAttribute("nickname", nickname);
         return "boards/interview-register";
     }
 
@@ -239,6 +245,7 @@ public class BoardController {
         log.info("content: " + content);
 
         service.registerEssayReply(essay_pk, content, nickname);
+        alarmService.addEssayReplyAlarm(essay_pk, nickname);
         return "redirect:/essay/board/" + essay_pk;
     }
 
@@ -251,6 +258,7 @@ public class BoardController {
         log.info("content: " + content);
 
         service.registerInterviewReply(pk, content, nickname);
+        alarmService.addInterviewReplyAlarm(pk, nickname);
         return "redirect:/interview/board/" + pk;
     }
 
@@ -263,8 +271,8 @@ public class BoardController {
         log.info("==========registerInterviewFeedback==========");
         log.info("content: " + content);
 
-        //예상질문 저장 후 리다이렉트
         service.registerInterviewFeedback(video_pk, content, nickname);
+        alarmService.addInterviewFeedbackAlarm(interview_pk, nickname);
         return "redirect:/interview/board/" + interview_pk;
     }
 

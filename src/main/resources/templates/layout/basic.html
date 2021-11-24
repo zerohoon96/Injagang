@@ -35,10 +35,10 @@
       <div class="sidebar-heading"> <i>인터뷰와<br>자소서를<br>강하게!</i></div>
       <br>
       <div class="list-group list-group-flush">
-        <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
-        <!--/*
-        <a th:href="@{/mypage}" class="list-group-item list-group-item-action bg-light">MyPage</a>
-        */-->
+        <!--
+          <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        -->
+        <a th:href="@{/mypage/{nickname}(nickname=${nickname})}" class="list-group-item list-group-item-action bg-light">MyPage</a>
         <a th:href="@{/essay/board}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
         <a th:href="@{/interview/board}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
@@ -68,26 +68,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" href="#">{nickname}님 환영합니다! <span class="sr-only">(current)</span></a>
-              <!--
-               <a class="nav-link" href="#">[[${nickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
-               -->
+              <a class="nav-link" th:href="@{/mypage/{nickname}(nickname=${nickname})}">[[${nickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">포인트()</a>
+              <a class="nav-link" href="#">포인트(...)</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 알림
               </a>
               <div class="dropdown-menu dropdown-menu-right" id="navbarDropdownList" aria-labelledby="navbarDropdown">
-                <div id="deleteDiv">
-
-                </div>
-<!--                <a class="dropdown-item" href="#">{essayName}에 {nickname}님이 피드백을 달았습니다.</a>-->
-<!--                <a class="dropdown-item" href="#">{interviewName}에 {nickname}님이 피드백을 달았습니다.</a>-->
-<!--                <div class="dropdown-divider"></div>-->
-<!--                <a class="dropdown-item" href="#">{quantity}point가 적립되었습니다.</a>-->
+              
               </div>
             </li>
           </ul>
@@ -146,7 +137,7 @@
 
 
       $.ajax({
-        url: "/readAlarm",
+        url: "/alarmRead",
         type: "POST",
         data: JSON.stringify(alarmId),
         dataType: "json",

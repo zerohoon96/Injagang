@@ -360,80 +360,20 @@ public class MainController {
     }
 
 
+    /*
     @PostConstruct
     public void init(){
         RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setEmail("zxcv0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-        registerDTO.setName("황재환");
-        registerDTO.setLoginId("zxcv0069");
-        registerDTO.setNickname("test");
+        registerDTO.setEmail("abcdefg123@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO.setName("김수만");
+        registerDTO.setLoginId("dkandkdlel");
+        registerDTO.setNickname("smkim");
         registerDTO.setPassword("test");
         registerDTO.setPasswordCheck("test");
 
         memberService.save(registerDTO);
-
-        RegisterDTO registerDTO2 = new RegisterDTO();
-        registerDTO2.setEmail("qwer0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-        registerDTO2.setName("이영훈");
-        registerDTO2.setLoginId("zxcv0069gg");
-        registerDTO2.setNickname("20훈");
-        registerDTO2.setPassword("test");
-        registerDTO2.setPasswordCheck("test");
-
-        memberService.save(registerDTO2);
-
-        RegisterDTO registerDTO3 = new RegisterDTO();
-        registerDTO3.setEmail("asdf0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-        registerDTO3.setName("김수만");
-        registerDTO3.setLoginId("zxcv0069ㅌㅌ");
-        registerDTO3.setNickname("수만휘");
-        registerDTO3.setPassword("test");
-        registerDTO3.setPasswordCheck("test");
-
-        memberService.save(registerDTO3);
-
-        RegisterDTO registerDTO4 = new RegisterDTO();
-        registerDTO4.setEmail("zzzzz@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-        registerDTO4.setName("기므현");
-        registerDTO4.setLoginId("zxcv00694");
-        registerDTO4.setNickname("기므현");
-        registerDTO4.setPassword("test");
-        registerDTO4.setPasswordCheck("test");
-
-        memberService.save(registerDTO4);
-
-
-        Member test = memberService.findByNickname("test");
-//        Member 기므현 = memberService.findByNickname("기므현");
-        friendService.addFriend("test", "기므현");
-        friendService.addFriend("test", "20훈");
-        friendService.addFriend("test", "수만휘");
-
-        alarmService.addFriendRequestAlarm("test", "기므현");
-        alarmService.addFriendRequestAlarm("test", "20훈");
-        alarmService.addFriendRequestAlarm("test", "수만휘");
-
-        Essay essay = Essay.builder()
-                .title("test1")
-                .writer(test)
-                .date(LocalDateTime.now())
-                .build();
-
-        Long save = essayService.save(essay);
-
-        Essay essay2 = Essay.builder()
-                .title("test2")
-                .writer(test)
-                .date(LocalDateTime.now())
-                .build();
-
-        Long save1 = essayService.save(essay2);
-
-        alarmService.addEssayReplyAlarm(save1, "test");
-        alarmService.addEssayReplyAlarm(save, "test");
-
     }
-
+*/
 
 
 }
