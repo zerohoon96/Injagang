@@ -39,9 +39,9 @@
                 <!--템플릿 불러오기 칸-->
                 <select class="form-control" name="template_select" id="template_select" onchange="Change_template();">
                     <option value="emptyTemplate">템플릿 선택</option>
-                    <option value="t1">템플릿 1</option>
-                    <option value="t2">템플릿 2</option>
-                    <option value="t3">템플릿 3</option>
+                    <option th:each="templateTitle : ${templateDTO.templateTitle}"
+                            th:value="${templateTitle}"
+                            th:text="${templateTitle}"></option>
                 </select>
                 <br>
             </div>
@@ -83,13 +83,13 @@
             </div>
         </form>
 
-        <script type="text/javascript">
+        <script th:inline="javascript">
             //test하기위해 잠깐 직접 선언함
-            let myArray = {
-                "t1" : ["질문1", "질문2", "질문3", "질문4"],
-                "t2" : ["질문1", "질문2", "질문3"],
-                "t3" : ["성격", "내 여자친구는 구미호"]
-            }
+            // let myArray = {
+            //     "t1" : ["질문1", "질문2", "질문3", "질문4"],
+            //     "t2" : ["질문1", "질문2", "질문3"],
+            //     "t3" : ["성격", "내 여자친구는 구미호"]
+            // }
 
             //직접입력 부분에서 추가 할 경우 다른 내용은 저장해 두어야 하기 때문에
 
@@ -98,30 +98,31 @@
             //직접 입력부분의 내용 입력
             let direct_answer = new Array(0);
             let select = "emptyTemplate";
-
             //템플릿을 몇번째 실행할건지 선택
             function Change_template()
             {
-                var id = document.getElementById("template_select");
+                let id = document.getElementById("template_select");
                 select = id.options[id.selectedIndex].value;
-
-                buildTemplate(myArray);
+                buildTemplate();
             }
 
             //선택한 템플릿 질문 갯수만큼 화면 생성
             //ex) 삼성공채 하반기 - 질문5개 => 작성 포맷이 5개 생성
-            function buildTemplate(myArray) {
+            function buildTemplate() {
                 //불러오기전 이전의 내용(화면) 초기화
                 document.getElementById("ct_newessay").innerHTML="";
 
                 if (select == "emptyTemplate") return;
 
                 //템플릿 질문 갯수만큼 생성
-                for (let ele in myArray[select]) {
+
+                let templateIdx = [[${templateDTO.templateTitle}]].indexOf(select);
+                let question = [[${templateDTO.questions}]][templateIdx];
+                for (let ele in question) {
                     document.getElementById("ct_newessay").innerHTML +=
                         `<form>
-                            <label> ${+ele + 1}. ${myArray[select][ele]}</label>
-                            <textarea class="form-control" rows=10 id="template_answer${+ele}" name="t${myArray[select][ele]}"placeholder="내용을 입력해주세요."></textarea><br>
+                            <label> ${+ele + 1}. ${question[ele]}</label>
+                            <textarea class="form-control" rows=10 id="template_answer${+ele}" name="t${question[ele]}"placeholder="내용을 입력해주세요."></textarea><br>
                         </form>`
                 }
             }

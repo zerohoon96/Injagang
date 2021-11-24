@@ -16,7 +16,7 @@ public class EssayTemplateContent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ETC_ID")
-    private String id;
+    private Long id;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -39,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
                 .name(registerDTO.getName())
                 .nickname(registerDTO.getNickname())
                 .email(registerDTO.getEmail())
+                .auth(true) //sdfasldfnsldfknasdlfkndsa;faksndflkn
                 .build();
 
         Member saved = memberRepository.save(saveMember);

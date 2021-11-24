@@ -50,7 +50,6 @@ public class EssayServiceImpl implements EssayService {
 
     public EssayWriteDTO readEssay(Long id) {
         Optional<Essay> result = essayRepository.findById(id);
-
         return result.isPresent() ? essayEntityToDto(result.get()) : null;
     }
 }

@@ -241,11 +241,10 @@ public class MainController {
         return "mypage/mail";
     }
 
-/*
     @PostConstruct
     public void init(){
         RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setEmail("@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO.setEmail("rladml91gus@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
         registerDTO.setName("황재환");
         registerDTO.setLoginId("zxcv0069");
         registerDTO.setNickname("test");
@@ -255,7 +254,6 @@ public class MainController {
         memberService.save(registerDTO);
 
     }
-*/
 
 
 

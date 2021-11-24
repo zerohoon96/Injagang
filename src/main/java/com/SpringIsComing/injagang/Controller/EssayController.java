@@ -2,6 +2,7 @@ package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.EssayFeedbackDTO;
 import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
+import com.SpringIsComing.injagang.DTO.TemplateDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Entity.EssayTemplate;
@@ -11,6 +12,7 @@ import com.SpringIsComing.injagang.Repository.TemplateRepository;
 import com.SpringIsComing.injagang.Service.EssayService;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
 import com.SpringIsComing.injagang.Service.TemplateService;
+import com.SpringIsComing.injagang.Service.TemplateServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -27,13 +29,16 @@ import java.util.*;
 public class EssayController {
 
     private final EssayServiceImpl es;
-    private final TemplateService ts;
+    private final TemplateServiceImpl ts;
 
     /**
      ** 자소서 입력
      */
     @GetMapping("/write")
-    String essayInit() {
+    String essayInit(Model model) {
+        TemplateDTO dto = ts.readTemplate();
+        model.addAttribute("templateDTO", dto);
+
         return "essay/write";
     }
 
@@ -150,5 +155,10 @@ public class EssayController {
         
 
         return "redirect:/essay/add";
+    }
+
+    @GetMapping("/dragtest")
+    String dragInit() {
+        return "essay/dragtest";
     }
 }
