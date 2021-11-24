@@ -72,6 +72,7 @@
                 </div>
                 
             </div>
+            <br>
             <hr>
 
             <!-- 댓글 -->
@@ -106,7 +107,7 @@
             }
 
             function remove_feedbackBtn() {
-                $('#feedbackBtn').remove();
+                $('.feedbackBtn').remove();
             }
             
             //댓글 달기를 누를 때
@@ -120,7 +121,7 @@
             
             //피드백 달기를 누를 때
             function make_feedback(pk, id, nickname){
-                document.getElementById(pk).innerHTML += `<form action="/interview/feedback" method="post">`+
+                document.getElementById(id).innerHTML += `<form action="/interview/feedback" method="post">`+
                         '<label>'+nickname+'님의 피드백</label><br>'+
                         `<textarea name="feedbackContent" cols="80" placeholder="예상질문을 입력해주세요."></textarea>`+
                         `<input type="text" name="interview_pk" style="display: none" value="`+pk+`">`+
