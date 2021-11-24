@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <h1 class="mt-4">면접 게시판</h1>
+        <!-- 임시 테이블 -->
+        <!--
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>제목</th>
+                <th>피드백</th>
+                <th>글쓴이</th>
+                <th>날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><a href="#">2021 삼성전자 대비 면접 피드백 부탁드립니다.</a></td>
+                <td>3</td>
+                <td>김수만</td>
+                <td>2021.11.09</td>
+            </tr>
+            <tr>
+                <td><a href="#">2021년 LG전자 하반기 대비 모의 면접 - 평가 부탁드려요~</a></td>
+                <td>2</td>
+                <td>이영훈</td>
+                <td>2021.11.03</td>
+            </tr>
+            <tr>
+                <td><a href="#">얼마 안 남은 면접 대비해서 녹화해 봤습니다. 일침 날려주세요</a></td>
+                <td>4</td>
+                <td>김의현</td>
+                <td>2021.11.01</td>
+            </tr>
+            </tbody>
+        </table>
+        -->
+        
+        <!-- 게시판 글목록 테이블-->
+        <table id="board_body" class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">제목</th>
+                <th scope="col">피드백</th>
+                <th scope="col">글쓴이</th>
+                <th scope="col">날짜</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dto : ${result.dtoList}">
+                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
+                type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
+                    [[${dto.title}]]</a></span><span>[댓글:[[${dto.rCnt}]]]</span></td>
+                <th>[[${dto.fCnt}]]</th>
+                <td>[[${dto.writer}]]</td>
+                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH/mm')}]]</td>
+            </tr>
+            </tbody>
+        </table>
+        
+        <!-- 글쓰기 버튼 -->
+        <div style="float: right; margin-bottom: 30px;">
+            <a th:href="@{/interview/board/add}">
+                <button type="button" class="btn btn-outline-primary">글쓰기</button>
+            </a>
+        </div>
+    
+        <!-- 페이지 버튼 들어갈 자리 -->
+        <ul class="pagination h-100 justify-content-center align-items-center">
+            <li class="page-item " th:if="${result.prev}">
+                <a class="page-link" th:href="@{/interview/board(page=${result.start - 1},
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword}) }" tabindex="-1">Previous</a>
+            </li>
+
+            <li th:class=" 'page-item ' + ${result.page == page ? 'active' : ''} "
+                th:each="page : ${result.pageList}">
+                <a class="page-link" th:href="@{/interview/board(page=${page},
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">
+                    [[${page}]]
+                </a>
+            </li>
+
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/interview/board(page=${result.end + 1},
+                type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">Next</a>
+            </li>
+        </ul>
+        
+        <!-- 검색창 -->
+        <form action="/interview/board" method="get" id="searchForm">
+            <div class="input-group" style="margin: auto">
+                <input type="hidden" name="page" value="1">
+                <div class="input-group-prepend">
+                    <select class="custom-select" name="type">
+                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
+                        <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                        <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                    </select>
+                </div>
+                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <div class="input-group-append" id="button-addon4">
+                    <button class="btn btn-outline-secondary btn-search" type="button">검색</button>
+                    <button class="btn btn-outline-secondary btn-clear" type="button">초기화</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- 검색 기능 -->
+        <script th:inline="javascript">
+            let searchForm = $("#searchForm");
+            $('.btn-search').click(function(e){
+                searchForm.submit();
+            });
+        
+            $('.btn-clear').click(function(e){
+                searchForm.empty().submit();
+            });
+        </script>
+    
+    </th:block>
+</th:block>

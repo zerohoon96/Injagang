@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+        <h2 class="mt-4">자소서 게시판 글쓰기</h2>
+    
+        <form th:action="@{/essay/board/add}" th:method="post">
+            <!-- 게시물 제목 입력 -->
+            <div class="form-group">
+                <label> 제목</label>
+                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+            </div>
+            <br>
+            
+            <!-- 마이페이지에서 자소서 불러오기 -->
+            <label>불러올 자소서 선택</label>
+            <br>
+            <select th:name="pk">
+                <option th:each="dto : ${essayList}" th:value="${dto.pk}" th:utext="${dto.essayTitle}"></option>
+            </select>
+            <br>
+    
+            <!-- 게시물 내용 글 입력 -->
+            <div class="form-group">
+                <label>Content</label>
+                <textarea class="form-control" rows="10" name="text"></textarea>
+            </div>
+            
+            <!-- 제출 버튼 -->
+            <button type="submit" class="btn btn-primary">게시물 저장</button>
+        </form>
+    </th:block>
+</th:block>

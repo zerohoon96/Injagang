@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+    
+        <head>
+            <style>
+                .essay-content{
+                    box-sizing: border-box;
+                    width: 100%;
+                    margin-top: 30px;
+                }
+                textarea{
+                    resize: none;
+                    display: inline-block;
+                    height: auto;
+                }
+            </style>
+        </head>
+        
+        <div class="essay-content">
+            
+            <!-- 게시물 내용 부분 -->
+            <div class="left-space">
+                
+                <form id="updateForm" th:action="@{/essay/board/update/{pk}(pk=${result.pk})}" th:method="post">
+                <!-- 게시물 제목 -->
+                <div>
+                    <label>제목 수정</label>
+                    <input name="title" class="form-control" th:value="${result.title}">
+                </div>
+                
+                <!-- 자소서 문항 내용 -->
+                <div class="form-group" th:each="dto : ${result.contentList}">
+                    <br>
+                    <label>[[${dto.title}]]</label>
+                    <input type="text" class="form-control" name="content" th:value="${dto.text}" readonly>
+                
+                    <!-- 예상질문 부분 -->
+                    <div th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
+                        <label>[[${qdto.nickname}]]님의 예상질문([[${qdto.date}]])</label>
+                        <br>
+                        <textarea cols="80" readonly>[[${qdto.content}]]</textarea>
+                    </div>
+                </div>
+            
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <label>글 수정</label>
+                    <br>
+                    <textarea cols="80" name="text" class="form-control">[[${result.text}]]</textarea>
+                </div>
+                </form>
+                <br>
+                
+                <!-- 수정 완료 버튼-->
+                <button class="btn btn-primary" type="submit" form="updateForm">수정 완료</button>
+        
+            </div>
+            <br><hr>
+            
+            <!-- 댓글 영역 -->
+            <div class="reply-space">
+                <h3>댓글</h3>
+                <div th:each="dto : ${result.replyList}">
+                    <label>[[${dto.nickname}]]님의 댓글([[${dto.date}]])</label>
+                    <br>
+                    <textarea cols="80" readonly>[[${dto.content}]]</textarea>
+                </div>
+            </div>
+            
+        </div>
+        
+    </th:block>
+</th:block>
