@@ -34,11 +34,11 @@
 
             <div th:each="idx : ${#numbers.sequence(0,feedback.getQuestions().size()-1)}">
                 <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
-                <textarea type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
-                          th:onselect="|dragUpdate(${idx+1})|" rows=10 disabled></textarea><br>
-
+                <div type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
+                     th:onmouseup="|dragUpdate(${idx+1})|" th:onmousedown="|dragStart(${idx+1})|"></div>
+                <br>
                 <div th:id="|start${idx+1}|"></div>
-                <div th:id="|length${idx+1}|"></div>
+                <div th:id="|end${idx+1}|"></div>
                 <div th:id="|comment${idx+1}|"></div>
 
 
@@ -56,22 +56,24 @@
 
         <script type="text/javascript">
             const selectedObj = window.getSelection();
-            let curField, curStart, curLength, curQuestion;
+            let curField, curStart, curEnd, curQuestion;
             let isSelected = false;
-            let start, length, comment, commentBuf;
+            let start, end, comment, commentBuf, container;
 
             initSetting();
 
             function initSetting() { //초기 세팅 진행
                 start = new Array([[${feedback.getQuestions().size()}]]);
-                length = new Array([[${feedback.getQuestions().size()}]]);
+                end = new Array([[${feedback.getQuestions().size()}]]);
                 comment = new Array([[${feedback.getQuestions().size()}]]);
                 commentBuf = new Array([[${feedback.getQuestions().size()}]]);
+                container = new Array([[${feedback.getQuestions().size()}]]);
 
                 for (let i = 0; i < start.length; i++) {
                     start[i] = [];
-                    length[i] = [];
+                    end[i] = [];
                     comment[i] = [];
+                    container[i] = [];
                 }
             }
 
@@ -83,50 +85,96 @@
                     '5. 총평을 입력하고 저장 버튼을 눌러서 첨삭을 종료하세요.');
             }
 
-            function dragUpdate(idx) { //현재 드래그 결과를 업데이트
-                console.log(idx, '번 문제 drag!!!!!!!!!!!!!!!!!!!!!!');
-                curField = document.getElementById("answer" + idx);
-                curStart = curField.selectionStart;
-                curLength = curField.selectionEnd - curField.selectionStart - 1; //시작에서 이 값을 더하면 끝이 됨
-                curQuestion = idx;
-                isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장이 있는 textArea 만 드래그 위해 사용)
+            function getCaretCharacterOffsetWithin(element) {
+                var caretOffset = 0;
+                var doc = element.ownerDocument || element.document;
+                var win = doc.defaultView || doc.parentWindow;
+                var sel;
+                if (typeof window.getSelection != "undefined") {
+                    var range = window.getSelection().getRangeAt(0);
+                    var selected = range.toString().length; // *
+                    var preCaretRange = range.cloneRange();
+                    preCaretRange.selectNodeContents(element);
+                    preCaretRange.setEnd(range.endContainer, range.endOffset);
+
+                    caretOffset = preCaretRange.toString().length - selected; // *
+                } else if ((sel = doc.selection) && sel.type != "Control") {
+                    var textRange = sel.createRange();
+                    var preCaretTextRange = doc.body.createTextRange();
+                    preCaretTextRange.moveToElementText(element);
+                    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+                    caretOffset = preCaretTextRange.text.length;
+                }
+                return caretOffset;
+            }
+
+            function dragUpdate(idx) { //드래그가 종료됐을때 현재 드래그 결과를 업데이트
+                console.log('[end] click start : ', idx, ' startPoint : ', startPoint);
+                if(startPoint != idx) { //올바른 드래그가 아님
+                    isSelected = false;
+                }
+                else {
+                    let range = selectedObj.getRangeAt(0);
+                    if(container[idx - 1].length == 0) {
+                        container[idx - 1].push(range.startContainer);
+                        container[idx - 1].push(range.endContainer);
+                    }
+                    // console.log(selectedObj);
+                    console.log(range);
+                    console.log('start and end container!!! ',range.startContainer, range.endContainer);
+                    curStart = getCaretCharacterOffsetWithin(document.getElementById("answer" + idx));
+                    curEnd = curStart + selectedObj.getRangeAt(0).toString().length - 1;
+                    // curEnd = range.endOffset - range.startOffset + curStart - 1;
+                    curQuestion = idx;
+                    console.log(curStart, curEnd);
+                    isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장이 있는 textArea 만 드래그 위해 사용)
+                }
+            }
+
+            let startPoint = 0;
+
+            function dragStart(idx) {
+                console.log('[start] click start : ', idx, ' startPoint : ', startPoint);
+                if (startPoint == idx) { //드래그가 아직 종료되지 않은 경우 실패
+                    console.log('not finished!!!');
+                    selectedObj.removeAllRanges();
+                }
+                console.log('click start~');
+                startPoint = idx;
             }
 
             function dragCheck(idx) { //첨삭하기 버튼을 눌렀을때 처리
-                if (selectedObj.type == "Caret") { //드래그 상태가 아닌 경우 취소
+                if (selectedObj.type == "Caret" || startPoint != idx) { //드래그 상태가 아니거나 드래그 시작 문제가 끝 문제가 다른 경우 실패 (다른 문제에서 드래그 시작 or 현재 문제에서 드래그 시작 → 다른 문제에서 끝 or 문제 이외의 부분에서 끝)
                     isSelected = false;
                 }
+                startPoint = 0;
                 if (isSelected) { //선택 되었는지 검사
-                    if (idx == curQuestion) { //현재 문제인지 검사
-                        let curEnd = curStart + curLength;
-                        let fail = false;
-                        for(let i = 0; i < start[idx - 1].length; i++) {
-                            console.log('======================');
-                            console.log('기존 : ',start[idx - 1][i], start[idx - 1][i] + length[idx - 1][i]);
-                            console.log('현재 : ',curStart, curEnd)
-                            console.log('======================');
-                            if(!(curStart > start[idx - 1][i] + length[idx - 1][i]) && !(curEnd < start[idx - 1][i])){
-                                fail=true;
-                                break;
-                            }
-                        }
-                        if(start[idx - 1].length == 0 || !fail) { //이미 첨삭된 부분과 겹치는지 검사
-                            if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
-                                addFeedback(idx); //피드백 추가
-                            } else {
-                                alert('첨삭을 입력하세요.');
-                            }
-                        }
-                        else {
-                            alert('이미 선택된 부분입니다.');
-                        }
-                        console.log('여기서 위치 겹치는지 체크~~~');
+                    let fail = false;
+                    for (let i = 0; i < start[idx - 1].length; i++) {
+                        console.log('원래 : ', start[idx - 1][i], end[idx - 1][i]);
+                        console.log('현재 : ', curStart, curEnd);
 
-                    } else {
-                        alert('현재 문항의 문장이 아닙니다.');
+                        if (!(curStart > end[idx - 1][i]) && !(curEnd < start[idx - 1][i])) {
+                            fail = true;
+                            break;
+                        }
                     }
+                    if (start[idx - 1].length == 0 || !fail) { //이미 첨삭된 부분과 겹치는지 검사
+                        if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
+                            addFeedback(idx); //피드백 추가
+                            document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능
+                            document.execCommand('hiliteColor', false, "#E5CCFF"); //표시
+                            document.getElementById('answer' + idx).contentEditable = 'false'; //edit 불가능
+                            // console.log(document.getElementById('answer' + idx).innerHTML);
+                        } else {
+                            alert('첨삭을 입력하세요.');
+                        }
+                    } else {
+                        alert('이미 선택된 부분입니다.');
+                    }
+                    console.log('여기서 위치 겹치는지 체크~~~');
                 } else {
-                    alert('답변 문장이 선택되지 않았습니다.');
+                    alert('문장을 올바르게 선택하세요.');
                 }
                 selectedObj.removeAllRanges(); //모든 레인지 삭제
                 isSelected = false;
@@ -139,24 +187,29 @@
             function addFeedback(idx) {
                 //문제별 첨삭 리스트에 드래그 결과 추가
                 start[idx - 1].push(curStart);
-                length[idx - 1].push(curLength);
+                end[idx - 1].push(curEnd);
                 comment[idx - 1].push(commentBuf[idx - 1]);
 
                 document.getElementById('input' + idx).value = commentBuf[idx - 1] = '';
 
                 //해당 innerHtml += (인덱스 정보 + 피드백 내용)
                 document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (start[idx - 1].length - 1) + '].start">';
-                document.getElementById('length' + idx).innerHTML += '<input type="hidden" id="length' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (length[idx - 1].length - 1) + '].length">';
+                document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (end[idx - 1].length - 1) + '].end">';
                 document.getElementById('comment' + idx).innerHTML += '<textarea class="width-80" name="everyComment[' + (idx - 1) + '].commentList[' + (comment[idx - 1].length - 1) + '].comment" rows="3" readonly>' + comment[idx - 1][comment[idx - 1].length - 1] + '</textarea> ' +
                     '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + (start[idx - 1].length - 1) + ')">삭제</button><br>';
                 document.getElementById('start' + idx + (start[idx - 1].length - 1)).value = start[idx - 1][start[idx - 1].length - 1];
-                document.getElementById('length' + idx + (start[idx - 1].length - 1)).value = length[idx - 1][start[idx - 1].length - 1];
-
+                document.getElementById('end' + idx + (start[idx - 1].length - 1)).value = end[idx - 1][start[idx - 1].length - 1];
             }
 
             function deleteFeedback(curIdx, deleteIdx) { //피드백 1개 삭제
+                let node = container[curIdx - 1]; /////////////////////////////////////////////////이거 체크!!!
+                let range = document.createRange();
+                console.log('node : ',node[0], node[1]);
+                range.setStart(node[0], start[curIdx - 1]);
+                range.setEnd(node[1], end[curIdx - 1] + 1);
+                console.log('새 range 생성 결과 : ',range);
                 start[curIdx - 1].splice(deleteIdx, 1);
-                length[curIdx - 1].splice(deleteIdx, 1);
+                end[curIdx - 1].splice(deleteIdx, 1);
                 comment[curIdx - 1].splice(deleteIdx, 1);
                 displayFeedback(curIdx); //작성한 피드백 다시 출력
             }
@@ -165,16 +218,16 @@
 
                 //기존값 초기화 (문제별 원래 저장된 부분)
                 document.getElementById('start' + idx).innerHTML = '';
-                document.getElementById('length' + idx).innerHTML = '';
+                document.getElementById('end' + idx).innerHTML = '';
                 document.getElementById('comment' + idx).innerHTML = '';
 
                 for (let i = 0; i < start[idx - 1].length; i++) {
                     document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].start">';
-                    document.getElementById('length' + idx).innerHTML += '<input type="hidden" id="length' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].length">';
+                    document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].end">';
                     document.getElementById('comment' + idx).innerHTML += '<textarea class="width-80" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea> ' +
                         '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button><br>';
                     document.getElementById('start' + idx + i).value = start[idx - 1][i];
-                    document.getElementById('length' + idx + i).value = length[idx - 1][i];
+                    document.getElementById('end' + idx + i).value = end[idx - 1][i];
                 }
             }
         </script>

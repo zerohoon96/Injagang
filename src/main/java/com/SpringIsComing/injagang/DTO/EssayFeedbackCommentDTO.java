@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class EssayFeedbackCommentDTO { //한 개의 첨삭
     private int start;
-    private int length;
+    private int end;
     private String comment;
 }
