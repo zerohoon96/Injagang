@@ -140,6 +140,18 @@ public class MemberServiceImpl implements MemberService {
 
 
     }
+//    @Override
+//    public void addFriend(String loginNickname, String targetNickname) {
+//        Member loginMember = memberRepository.findByNickname(loginNickname);
+//        Member targetMember = memberRepository.findByNickname(targetNickname);
+//
+//        log.info("무유유");
+//
+//        loginMember.addFriend(targetMember);
+//
+//        log.info("식빵={}", loginMember.getFriends().size());
+//
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -154,7 +166,12 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findByNickname(nickname);
     }
 
-
+    @Override
+    public Member findById(Long Id) {
+        return memberRepository.findById(Id).orElseThrow(
+                () -> new IllegalArgumentException("멤버 없당--")
+        );
+    }
 
 
 }

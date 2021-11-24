@@ -22,4 +22,11 @@ public class EssayServiceImpl implements EssayService{
         return essayRepository.findEssaysByMember(member);
 
     }
+
+    @Override
+    public Long save(Essay essay) {
+        Essay save = essayRepository.save(essay);
+        return save.getId();
+    }
+
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
-    @Query("select i from Interview i join i.writer m on m = :m")
+    @Query("select i from Interview i join fetch i.writer where i.writer = :m")
     List<Interview> findInterviewsByMember(@Param("m") Member member);
 
 }

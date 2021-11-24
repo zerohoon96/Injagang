@@ -12,7 +12,5 @@ import lombok.NoArgsConstructor;
 public class MypageFriendDTO {
 
 
-    private Long id;
-
     private String nickname;
 }

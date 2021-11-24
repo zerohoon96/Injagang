@@ -10,6 +10,8 @@ public interface EssayService {
 
     List<Essay> findEssays(Member member);
 
+    Long save(Essay essay);
+
     default MypageEssayDTO toMypageEssayDTO(Essay essay) {
 
         return MypageEssayDTO.builder()

@@ -13,9 +13,8 @@ import java.util.List;
 @Repository
 public interface EssayRepository extends JpaRepository<Essay, Long> {
 
-    @Query("select e from Essay e join e.writer m on m = :m")
+    @Query("select e from Essay e join fetch e.writer where e.writer = :m")
     List<Essay> findEssaysByMember(@Param("m") Member member);
-
 
 }
 

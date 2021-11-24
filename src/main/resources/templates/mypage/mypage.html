@@ -52,9 +52,9 @@
                         onClick="displayFriend()">친구 목록
                 </button>
 
-                <a th:if="${friendState} == 2" href="/mypage/request-friend" type="button" class="btn btn-outline-secondary">친구 신청</a>
+                <a th:if="${friendState} == 2" href="/mypage/request-friendRequest" type="button" class="btn btn-outline-secondary">친구 신청</a>
                 <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 신청 대기중</a>
-                <a th:if="${friendState} == 4" href="/mypage/request-friend" type="button"
+                <a th:if="${friendState} == 4" href="/mypage/request-friendRequest" type="button"
                    class="btn btn-outline-secondary">친구 수락하기</a>
             </div>
         </div>
@@ -68,6 +68,7 @@
                 </table>
             </div>
         </div>
+
         <script th:inline="javascript">
             const head = document.getElementById('head');
             const body = document.getElementById('body');
@@ -125,6 +126,7 @@
                         body.innerHTML += "<br>";
                 }
             }
+
         </script>
         </body>
 

@@ -1,24 +1,27 @@
 package com.SpringIsComing.injagang.Service;
 
-import com.SpringIsComing.injagang.DTO.MypageEssayDTO;
 import com.SpringIsComing.injagang.DTO.MypageFriendDTO;
 import com.SpringIsComing.injagang.Entity.Friend;
+import com.SpringIsComing.injagang.Entity.Member;
 
 import java.util.List;
 
 public interface FriendService {
 
-    List<Friend> findFriends(Long id);
+    List<Friend> findFriends(Member member);
 
-    boolean isFriend(Long loginId, Long targetId);
+    boolean existRequest(Long loginId, Long targetId);
 
-    default MypageFriendDTO toMypageDTO(Friend friend, String nickname) {
+    void addFriend(String loginNickname, String targetNickname);
+
+
+    default MypageFriendDTO toMypageDTO(Friend friend) {
 
 
         return MypageFriendDTO.builder()
-                .id(friend.getId())
-                .nickname(nickname)
+                .nickname(friend.getNickname())
                 .build();
 
     }
+
 }

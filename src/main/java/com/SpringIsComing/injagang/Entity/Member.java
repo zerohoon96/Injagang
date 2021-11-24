@@ -1,11 +1,10 @@
 package com.SpringIsComing.injagang.Entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 //회원 Entity
 @Entity
@@ -30,6 +29,7 @@ public class Member {
 
     private String email;
 
+    @Builder.Default
     private boolean auth = false;
 
     public void changePassword(String password) {
@@ -40,13 +40,14 @@ public class Member {
         this.nickname = nickname;
     }
 
-
-
     public void authSuccess() {
         this.auth = true;
     }
 
 
-
+//    public void addFriend(Member member) {
+//        this.friends.add(member);
+//        member.getFriends().add(this);
+//    }
 
 }

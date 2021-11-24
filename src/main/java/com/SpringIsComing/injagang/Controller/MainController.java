@@ -5,6 +5,8 @@ import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
 import com.SpringIsComing.injagang.DTO.*;
+import com.SpringIsComing.injagang.Entity.Essay;
+import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
@@ -20,7 +22,11 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.stream.Collectors;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static java.util.stream.Collectors.*;
 
 @Controller
 @Slf4j
@@ -32,6 +38,7 @@ public class MainController {
     private final InterviewService interviewService;
     private final FriendService friendService;
     private final AuthTokenService authTokenService;
+    private final AlarmService alarmService;
 
 
     /**
@@ -45,28 +52,51 @@ public class MainController {
         Member loginMember = memberService.findByNickname(nickname);
         Member targetMember = memberService.findByNickname(curNickname);
 
-        boolean friendCheck = friendService.isFriend(loginMember.getId(), targetMember.getId());
+        log.info("curname = {}", curNickname);
+        log.info("target = {}",loginMember);
+
+        List<Friend> loginFriends = friendService.findFriends(loginMember);
+        List<Friend> targetFriends = friendService.findFriends(targetMember);
+
+
         int friendState = 0;
 
-        if (nickname == curNickname) {
-            friendCheck = true;
+        if (!nickname.equals(curNickname)) {
+            boolean toRequest = friendService.existRequest(loginMember.getId(), targetMember.getId());
+            boolean fromRequest = friendService.existRequest(targetMember.getId(), loginMember.getId());
+
+            if (!toRequest && !fromRequest) {
+                friendState = 2;
+            }
+
+            if (toRequest) {
+                friendState = 3;
+            }
+
+            if (fromRequest) {
+                friendState = 4;
+            }
+
         }
 
-        model.addAttribute("essayList",essayService.findEssays(loginMember).stream()
-                                    .map(e -> essayService.toMypageEssayDTO(e)).collect(Collectors.toList()));
-        model.addAttribute("interviewList",interviewService.findInterviews(loginMember).stream()
-                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(Collectors.toList()));
-        model.addAttribute("friendList",friendService.findFriends(loginMember.getId()).stream()
-                .map(f -> friendService.toMypageDTO(f,"쓰레기")).collect(Collectors.toList()));
-
-        if (friendCheck) {
-            model.addAttribute("isFriend", true);
-            model.addAttribute("friendState", friendState);
-
-            return "mypage/mypage";
+        for (Friend friend : loginFriends) {
+            log.info("김건부={}",friend.getNickname());
+            if (friend.getNickname().equals(targetMember.getNickname())) {
+                friendState = 1;
+                break;
+            }
         }
 
-        model.addAttribute("isFriend", false);
+
+        model.addAttribute("essayList",essayService.findEssays(targetMember).stream()
+                                    .map(e -> essayService.toMypageEssayDTO(e)).collect(toList()));
+        model.addAttribute("interviewList",interviewService.findInterviews(targetMember).stream()
+                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList()));
+
+        model.addAttribute("friendList", targetFriends.stream()
+                .map(f -> friendService.toMypageDTO(f)).collect(toList()));
+
+        log.info("깐부={}",friendState);
         model.addAttribute("friendState", friendState);
 
         return "mypage/mypage";
@@ -101,9 +131,9 @@ public class MainController {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null) {
-            return "redirect:/login";
-        }
+//        if (session == null) {
+//            return "redirect:/login";
+//        }
 
         if (bindingResult.hasErrors()) {
             log.info("개새끼");
@@ -341,6 +371,66 @@ public class MainController {
         registerDTO.setPasswordCheck("test");
 
         memberService.save(registerDTO);
+
+        RegisterDTO registerDTO2 = new RegisterDTO();
+        registerDTO2.setEmail("qwer0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO2.setName("이영훈");
+        registerDTO2.setLoginId("zxcv0069gg");
+        registerDTO2.setNickname("20훈");
+        registerDTO2.setPassword("test");
+        registerDTO2.setPasswordCheck("test");
+
+        memberService.save(registerDTO2);
+
+        RegisterDTO registerDTO3 = new RegisterDTO();
+        registerDTO3.setEmail("asdf0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO3.setName("김수만");
+        registerDTO3.setLoginId("zxcv0069ㅌㅌ");
+        registerDTO3.setNickname("수만휘");
+        registerDTO3.setPassword("test");
+        registerDTO3.setPasswordCheck("test");
+
+        memberService.save(registerDTO3);
+
+        RegisterDTO registerDTO4 = new RegisterDTO();
+        registerDTO4.setEmail("zzzzz@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO4.setName("기므현");
+        registerDTO4.setLoginId("zxcv00694");
+        registerDTO4.setNickname("기므현");
+        registerDTO4.setPassword("test");
+        registerDTO4.setPasswordCheck("test");
+
+        memberService.save(registerDTO4);
+
+
+        Member test = memberService.findByNickname("test");
+//        Member 기므현 = memberService.findByNickname("기므현");
+        friendService.addFriend("test", "기므현");
+        friendService.addFriend("test", "20훈");
+        friendService.addFriend("test", "수만휘");
+
+        alarmService.addFriendRequestAlarm("test", "기므현");
+        alarmService.addFriendRequestAlarm("test", "20훈");
+        alarmService.addFriendRequestAlarm("test", "수만휘");
+
+        Essay essay = Essay.builder()
+                .title("test1")
+                .writer(test)
+                .date(LocalDateTime.now())
+                .build();
+
+        Long save = essayService.save(essay);
+
+        Essay essay2 = Essay.builder()
+                .title("test2")
+                .writer(test)
+                .date(LocalDateTime.now())
+                .build();
+
+        Long save1 = essayService.save(essay2);
+
+        alarmService.addEssayReplyAlarm(save1, "test");
+        alarmService.addEssayReplyAlarm(save, "test");
 
     }
 
