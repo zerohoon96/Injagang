@@ -22,4 +22,13 @@ public class WebConfig implements WebMvcConfigurer {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
     }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry interceptorRegistry) {
+
+        interceptorRegistry.addInterceptor(new LoginInterceptor())
+                .order(1)
+                .addPathPatterns("/**")
+                .excludePathPatterns("/login", "/logout", "/css/**", "/vendor/**","/*.png");
+    }
 }

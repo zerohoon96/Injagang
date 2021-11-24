@@ -2,41 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:fragment="setContent(content)">
-<head>
+  <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-  <title>인자강 - 인터뷰와 자소서를 강하게! 취준생을 위한 웹페이지</title>
+    <title>인자강 - 인터뷰와 자소서를 강하게! 취준생을 위한 웹페이지</title>
 
-  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
-  <!-- Bootstrap core CSS -->
-  <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/simple-sidebar.css}" rel="stylesheet">
 
-  <!-- Custom styles for this template -->
-  <link th:href="@{/css/simple-sidebar.css}" rel="stylesheet">
+    <!-- Bootstrap core JavaScript -->
+    <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 
-  <!-- Bootstrap core JavaScript -->
-  <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
-  <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  </head>
 
-</head>
+  <body>
 
-<body>
+  <div class="d-flex" id="wrapper">
 
-<div class="d-flex" id="wrapper">
-
-  <!-- Sidebar -->
-  <div class="bg-light border-right" id="sidebar-wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">
-          <img src="/인자강.png" alt="Main Logo" width="200" height="120"/>
+        <img src="/인자강.png" alt="Main Logo" width="200" height="120"/>
       </div>
       <div class="sidebar-heading"> <i>인터뷰와<br>자소서를<br>강하게!</i></div>
       <br>
-    <div class="list-group list-group-flush">
+      <div class="list-group list-group-flush">
         <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
         <!--/*
         <a th:href="@{/mypage}" class="list-group-item list-group-item-action bg-light">MyPage</a>
@@ -51,65 +49,120 @@
         <!--/*
         <a th:href="@{/interview/init}" class="list-group-item list-group-item-action bg-light">면접 보기</a>
         */-->
+      </div>
     </div>
-  </div>
-  <!-- /#sidebar-wrapper -->
+    <!-- /#sidebar-wrapper -->
 
-  <!-- Page Content -->
-  <div id="page-content-wrapper">
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-      <!--
-        <button class="btn btn-primary" id="menu-toggle">사이드바 토글</button>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <!--
+          <button class="btn btn-primary" id="menu-toggle">사이드바 토글</button>
 
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        -->
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">{nickname}님 환영합니다! <span class="sr-only">(current)</span></a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">{nickname}님 환영합니다! <span class="sr-only">(current)</span></a>
               <!--
                <a class="nav-link" href="#">[[${nickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
                -->
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">포인트()</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              알림
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">{essayName}에 {nickname}님이 피드백을 달았습니다.</a>
-              <a class="dropdown-item" href="#">{interviewName}에 {nickname}님이 피드백을 달았습니다.</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">{quantity}point가 적립되었습니다.</a>
-            </div>
-          </li>
-        </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">포인트()</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                알림
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" id="navbarDropdownList" aria-labelledby="navbarDropdown">
+                <div id="deleteDiv">
+
+                </div>
+<!--                <a class="dropdown-item" href="#">{essayName}에 {nickname}님이 피드백을 달았습니다.</a>-->
+<!--                <a class="dropdown-item" href="#">{interviewName}에 {nickname}님이 피드백을 달았습니다.</a>-->
+<!--                <div class="dropdown-divider"></div>-->
+<!--                <a class="dropdown-item" href="#">{quantity}point가 적립되었습니다.</a>-->
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        <th:block th:replace="${content}"></th:block>
       </div>
-    </nav>
-
-    <div class="container-fluid">
-      <th:block th:replace="${content}"></th:block>
     </div>
+    <!-- /#page-content-wrapper -->
+
   </div>
-  <!-- /#page-content-wrapper -->
+  <!-- /#wrapper -->
 
-</div>
-<!-- /#wrapper -->
-
-<!-- Menu Toggle Script -->
-<script>
-    $("#menu-toggle").click(function(e) {
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e){
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+
+    $('#navbarDropdown').on('click', function(){
+
+      $.ajax({
+        url: "/showAlarm",
+        type: "GET",
+        success: function(data){
+
+          $("#navbarDropdownList").empty();
+
+          for(var i=0; i<data.length; i++){
+            if(data[i].type == 1){
+              $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/essay/board/"+data[i].contentId +"\""+" onClick=\"readAlarm("+data[i].id+")\""+">"+data[i].content+"</a>");
+            } else if (data[i].type == 2) {
+              $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/interview/board/" + data[i].contentId + "\""+" onClick=\"readAlarm("+data[i].id+")\""+">" + data[i].content + "</a>");
+            } else {
+              $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/mypage/"+data[i].nickname +"\""+" onClick=\"readAlarm("+data[i].id+")\""+">"+data[i].content+"</a>");
+            }
+
+
+          }
+        },
+        error: function(){
+          // alert("restController err");
+        }
+      });
+    });
+
+    function readAlarm(id) {
+
+      console.log("시41발발")
+
+      let alarmId = new Object();
+      alarmId.id = id;
+
+
+      $.ajax({
+        url: "/readAlarm",
+        type: "POST",
+        data: JSON.stringify(alarmId),
+        dataType: "json",
+        contentType : "application/json; charset=utf-8",
+        success: function(data){
+          alert(data);
+
+        }
+      });
+
+    }
+
+
+
   </script>
 
-</body>
+  </body>
 </th:block>
 </html>

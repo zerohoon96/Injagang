@@ -1,9 +1,6 @@
 package com.SpringIsComing.injagang.Entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -32,6 +29,7 @@ public class Member {
 
     private String email;
 
+    @Builder.Default
     private boolean auth = false;
 
     @OneToMany(mappedBy = "writer")
@@ -46,12 +44,18 @@ public class Member {
         this.password = password;
     }
 
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public void authSuccess() {
         this.auth = true;
     }
 
 
-
+//    public void addFriend(Member member) {
+//        this.friends.add(member);
+//        member.getFriends().add(this);
+//    }
 
 }

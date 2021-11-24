@@ -1,6 +1,8 @@
 package com.SpringIsComing.injagang.Service;
 
+import com.SpringIsComing.injagang.DTO.MypageFriendDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
+import com.SpringIsComing.injagang.DTO.UpdateDTO;
 import com.SpringIsComing.injagang.Entity.Member;
 
 public interface MemberService {
@@ -13,8 +15,29 @@ public interface MemberService {
     public void confirmEmail(String token);
     public Member confirmEmailForPassword(String token);
 
-    public void changePassword(Long memberId, String password);
+
+    public Boolean passwordCheck(Member member,String password);
+    public void changePassword(String nickname, String password);
 
     public Member findByEmail(String email);
     public Member findByNickname(String nickname);
+
+    public Member findById(Long Id);
+
+    public void changeNickname(String nowNickname, String changeNickname);
+
+
+    default UpdateDTO toUpdateDTO(Member member) {
+
+        return UpdateDTO.builder()
+                .loginId(member.getLoginId())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .build();
+
+    }
+
+
+
+
 }

@@ -4,13 +4,14 @@ import com.SpringIsComing.injagang.DTO.ChangePasswordTokenDTO;
 import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
+import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Friend;
-import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,10 +22,14 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class MainController {
 
@@ -33,6 +38,8 @@ public class MainController {
     private final InterviewService interviewService;
     private final FriendService friendService;
     private final AuthTokenService authTokenService;
+    private final AlarmService alarmService;
+
 
     /**
      * 마이페이지
@@ -45,29 +52,137 @@ public class MainController {
         Member loginMember = memberService.findByNickname(nickname);
         Member targetMember = memberService.findByNickname(curNickname);
 
-        boolean friendCheck = friendService.isFriend(loginMember.getId(), targetMember.getId());
+        log.info("curname = {}", curNickname);
+        log.info("target = {}",loginMember);
 
-        if (nickname == curNickname) {
-            friendCheck = true;
+        List<Friend> loginFriends = friendService.findFriends(loginMember);
+        List<Friend> targetFriends = friendService.findFriends(targetMember);
+
+
+        int friendState = 0;
+
+        if (!nickname.equals(curNickname)) {
+            boolean toRequest = friendService.existRequest(loginMember.getId(), targetMember.getId());
+            boolean fromRequest = friendService.existRequest(targetMember.getId(), loginMember.getId());
+
+            if (!toRequest && !fromRequest) {
+                friendState = 2;
+            }
+
+            if (toRequest) {
+                friendState = 3;
+            }
+
+            if (fromRequest) {
+                friendState = 4;
+            }
+
         }
 
-        model.addAttribute("essayList",essayService.findEssays(loginMember).stream()
-                                    .map(e -> essayService.toMypageEssayDTO(e)).collect(Collectors.toList()));
-        model.addAttribute("interviewList",interviewService.findInterviews(loginMember).stream()
-                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(Collectors.toList()));
-        model.addAttribute("friendList",friendService.findFriends(loginMember.getId()).stream()
-                .map(f -> friendService.toMypageDTO(f,"쓰레기")).collect(Collectors.toList()));
-
-        if (friendCheck) {
-            model.addAttribute("isFriend", true);
-
-            return "mypage/mypage";
+        for (Friend friend : loginFriends) {
+            log.info("김건부={}",friend.getNickname());
+            if (friend.getNickname().equals(targetMember.getNickname())) {
+                friendState = 1;
+                break;
+            }
         }
 
-        model.addAttribute("isFriend", false);
+
+        model.addAttribute("essayList",essayService.findEssays(targetMember).stream()
+                                    .map(e -> essayService.toMypageEssayDTO(e)).collect(toList()));
+        model.addAttribute("interviewList",interviewService.findInterviews(targetMember).stream()
+                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList()));
+
+        model.addAttribute("friendList", targetFriends.stream()
+                .map(f -> friendService.toMypageDTO(f)).collect(toList()));
+
+        log.info("깐부={}",friendState);
+        model.addAttribute("friendState", friendState);
 
         return "mypage/mypage";
     }
+
+    @GetMapping("/mypage/update")
+    public String updateStart(@SessionAttribute(value = "loginSession", required = false) String nickname,Model model){
+
+        if (nickname == null) {
+            return "redirect:/login";
+        }
+
+        Member loginMember = memberService.findByNickname(nickname);
+        UpdateDTO updateDTO = memberService.toUpdateDTO(loginMember);
+
+        model.addAttribute("member", updateDTO);
+
+        return "mypage/updateInformation";
+
+    }
+
+    @PostMapping("/mypage/update")
+    public String updateStart(@Valid @ModelAttribute("member") UpdateDTO updateDTO,BindingResult bindingResult,
+                              @SessionAttribute(value = "loginSession", required = false) String nickname,
+                              RedirectAttributes redirectAttributes, HttpServletRequest request) {
+
+        boolean sameNickname = false;
+
+        if (nickname.equals(updateDTO.getNickname())) {
+            sameNickname = true;
+        }
+
+        HttpSession session = request.getSession(false);
+
+//        if (session == null) {
+//            return "redirect:/login";
+//        }
+
+        if (bindingResult.hasErrors()) {
+            log.info("개새끼");
+
+            return "mypage/updateInformation";
+        }
+
+        log.info("updateDTO = {}",updateDTO);
+        Member loginMember = memberService.findByNickname(nickname);
+        if (!memberService.passwordCheck(loginMember, updateDTO.getCurPassword())) {
+            bindingResult.rejectValue("curPassword","curPasswordCheck","현재 비밀번호가 틀립니다.");
+            log.info("개새끼2");
+
+            return "mypage/updateInformation";
+
+        }
+
+        if(!updateDTO.getNewPassword().equals(updateDTO.getPasswordCheck())){
+            bindingResult.rejectValue("newPassword","passwordCheck","비밀번호가 다릅니다.");
+            log.info("개새끼3");
+
+            return "mypage/updateInformation";
+        }
+
+
+        if (memberService.nicknameDuplicateCheck(updateDTO.getNickname()) && !sameNickname) {
+            bindingResult.rejectValue("nickname","duplicateNickname","닉네임이 중복됩니다.");
+
+            log.info("개새끼4");
+
+            return "mypage/updateInformation";
+
+        }
+
+        if (!sameNickname) {
+            memberService.changeNickname(nickname, updateDTO.getNickname());
+            session.removeAttribute(SessionConst.LOGIN_SESSION);
+            session.setAttribute(SessionConst.LOGIN_SESSION, updateDTO.getNickname());
+
+        }
+        memberService.changePassword(updateDTO.getNickname(),updateDTO.getNewPassword());
+
+        redirectAttributes.addAttribute("nickname", updateDTO.getNickname());
+
+        return "redirect:/mypage/{nickname}";
+
+    }
+
+
 
     /**
      * 마이페이지에서 수정 버튼 눌렀을때
@@ -100,7 +215,7 @@ public class MainController {
      * */
     @PostMapping("/login")
     public String loginEnd(@Valid @ModelAttribute("member")LoginDTO loginDTO, BindingResult bindingResult
-                            , HttpServletRequest request
+                            , HttpServletRequest request, RedirectAttributes redirectAttributes
                            ) {
         //입력 확인 후 마이페이지로 이동
 
@@ -123,10 +238,10 @@ public class MainController {
         HttpSession session = request.getSession();
 
         session.setAttribute(SessionConst.LOGIN_SESSION, loginMember.getNickname());
+        redirectAttributes.addAttribute("nickname", loginMember.getNickname());
 
 
-
-        return "redirect:/mypage/"+ loginMember.getNickname();
+        return "redirect:/mypage/{nickname}";
 
     }
 
@@ -159,14 +274,17 @@ public class MainController {
 
         if (!memberService.loginDuplicateCheck(registerDTO.getLoginId())) {
             bindingResult.rejectValue("loginId","duplicateLoginId","아이디가 중복됩니다.");
+            return "mypage/reg";
         }
 
         if (memberService.nicknameDuplicateCheck(registerDTO.getNickname())) {
             bindingResult.rejectValue("nickname","duplicateNickname","닉네임이 중복됩니다.");
+            return "mypage/reg";
         }
 
         if (memberService.emailDuplicateCheck(registerDTO.getEmail())) {
             bindingResult.rejectValue("email","duplicateEmail","이메일이 중복됩니다.");
+            return "mypage/reg";
         }
 
         Long savedId = memberService.save(registerDTO);
@@ -229,7 +347,7 @@ public class MainController {
         }
 
         Member findMember = memberService.confirmEmailForPassword(token);
-        memberService.changePassword(findMember.getId(), changePasswordTokenDTO.getPassword());
+        memberService.changePassword(findMember.getLoginId(), changePasswordTokenDTO.getPassword());
 
         return "redirect:/login";
 
@@ -241,11 +359,11 @@ public class MainController {
         return "mypage/mail";
     }
 
-/*
+
     @PostConstruct
     public void init(){
         RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setEmail("@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO.setEmail("zxcv0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
         registerDTO.setName("황재환");
         registerDTO.setLoginId("zxcv0069");
         registerDTO.setNickname("test");
@@ -254,8 +372,67 @@ public class MainController {
 
         memberService.save(registerDTO);
 
+        RegisterDTO registerDTO2 = new RegisterDTO();
+        registerDTO2.setEmail("qwer0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO2.setName("이영훈");
+        registerDTO2.setLoginId("zxcv0069gg");
+        registerDTO2.setNickname("20훈");
+        registerDTO2.setPassword("test");
+        registerDTO2.setPasswordCheck("test");
+
+        memberService.save(registerDTO2);
+
+        RegisterDTO registerDTO3 = new RegisterDTO();
+        registerDTO3.setEmail("asdf0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO3.setName("김수만");
+        registerDTO3.setLoginId("zxcv0069ㅌㅌ");
+        registerDTO3.setNickname("수만휘");
+        registerDTO3.setPassword("test");
+        registerDTO3.setPasswordCheck("test");
+
+        memberService.save(registerDTO3);
+
+        RegisterDTO registerDTO4 = new RegisterDTO();
+        registerDTO4.setEmail("zzzzz@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO4.setName("기므현");
+        registerDTO4.setLoginId("zxcv00694");
+        registerDTO4.setNickname("기므현");
+        registerDTO4.setPassword("test");
+        registerDTO4.setPasswordCheck("test");
+
+        memberService.save(registerDTO4);
+
+
+        Member test = memberService.findByNickname("test");
+//        Member 기므현 = memberService.findByNickname("기므현");
+        friendService.addFriend("test", "기므현");
+        friendService.addFriend("test", "20훈");
+        friendService.addFriend("test", "수만휘");
+
+        alarmService.addFriendRequestAlarm("test", "기므현");
+        alarmService.addFriendRequestAlarm("test", "20훈");
+        alarmService.addFriendRequestAlarm("test", "수만휘");
+
+        Essay essay = Essay.builder()
+                .title("test1")
+                .writer(test)
+                .date(LocalDateTime.now())
+                .build();
+
+        Long save = essayService.save(essay);
+
+        Essay essay2 = Essay.builder()
+                .title("test2")
+                .writer(test)
+                .date(LocalDateTime.now())
+                .build();
+
+        Long save1 = essayService.save(essay2);
+
+        alarmService.addEssayReplyAlarm(save1, "test");
+        alarmService.addEssayReplyAlarm(save, "test");
+
     }
-*/
 
 
 

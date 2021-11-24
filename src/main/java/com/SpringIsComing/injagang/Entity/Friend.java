@@ -6,19 +6,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
-//친구 Entity
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Friend {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FRIEND_ID")
     private Long id;
 
-    //서로 친구 맺은 회원들의 PK
-    private Long memberA_id;
-    private Long memberB_id;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+    private String nickname;
+
 }

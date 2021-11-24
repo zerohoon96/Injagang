@@ -39,6 +39,7 @@ public class MemberServiceImpl implements MemberService {
                 .name(registerDTO.getName())
                 .nickname(registerDTO.getNickname())
                 .email(registerDTO.getEmail())
+                .auth(true)
                 .build();
 
         Member saved = memberRepository.save(saveMember);
@@ -114,14 +115,43 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePassword(Long memberId, String password) {
-        Member findMember = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+    public Boolean passwordCheck(Member member, String password) {
+
+
+        return encoder.matches(password, member.getPassword());
+    }
+
+    @Override
+    public void changePassword(String nickname, String password) {
+        Member findMember = memberRepository.findByNickname(nickname);
 
         String digest = encoder.encode(password);
 
         findMember.changePassword(digest);
 
     }
+
+    @Override
+    public void changeNickname(String nowNickname, String changeNickname) {
+
+        Member finMember = memberRepository.findByNickname(nowNickname);
+
+        finMember.changeNickname(changeNickname);
+
+
+    }
+//    @Override
+//    public void addFriend(String loginNickname, String targetNickname) {
+//        Member loginMember = memberRepository.findByNickname(loginNickname);
+//        Member targetMember = memberRepository.findByNickname(targetNickname);
+//
+//        log.info("무유유");
+//
+//        loginMember.addFriend(targetMember);
+//
+//        log.info("식빵={}", loginMember.getFriends().size());
+//
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -135,5 +165,13 @@ public class MemberServiceImpl implements MemberService {
     public Member findByNickname(String nickname) {
         return memberRepository.findByNickname(nickname);
     }
+
+    @Override
+    public Member findById(Long Id) {
+        return memberRepository.findById(Id).orElseThrow(
+                () -> new IllegalArgumentException("멤버 없당--")
+        );
+    }
+
 
 }
