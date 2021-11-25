@@ -4,6 +4,7 @@ import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
+import com.SpringIsComing.injagang.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,8 @@ import java.util.Optional;
 public class EssayServiceImpl implements EssayService {
 
     private final EssayRepository essayRepository;
-    
+    private final MemberRepository memberRepository;
+
     @Override
     public List<Essay> findEssays(Member member) {
 
@@ -37,7 +39,13 @@ public class EssayServiceImpl implements EssayService {
     }
 
 
-//    RequiredArgsConstructor -> final이 붙은것들 생성자 만들어줌
+    @Override
+    public Member findMember(String nickName) {
+        return memberRepository.findByNickname(nickName);
+    }
+
+
+    //    RequiredArgsConstructor -> final이 붙은것들 생성자 만들어줌
 //    생성자는 하나만 있으면 자동으로 추가 해줌
 //    @Autowired
 //    public EssayServiceImpl(EssayRepository essayRepository) {

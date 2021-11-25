@@ -3,10 +3,7 @@ package com.SpringIsComing.injagang.Controller;
 import com.SpringIsComing.injagang.DTO.EssayFeedbackDTO;
 import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.DTO.TemplateDTO;
-import com.SpringIsComing.injagang.Entity.Essay;
-import com.SpringIsComing.injagang.Entity.EssayContent;
-import com.SpringIsComing.injagang.Entity.EssayTemplate;
-import com.SpringIsComing.injagang.Entity.EssayTemplateContent;
+import com.SpringIsComing.injagang.Entity.*;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Repository.TemplateRepository;
 import com.SpringIsComing.injagang.Service.EssayService;
@@ -88,7 +85,8 @@ public class EssayController {
 
 
         //return으로 ID를 반환받고 redirect~~에 add하고 key:value로 저장하면 됨
-        Essay e = Essay.createEssay(essayTitle, templateTitle, ec);
+        Member member = es.findMember(nickname);
+        Essay e = Essay.createEssay(essayTitle, templateTitle, ec, member);
         Long essayId = es.storeEssay(e);
         redirectAttributes.addAttribute("essayId", essayId);
 
@@ -164,10 +162,5 @@ public class EssayController {
         
 
         return "redirect:/essay/add";
-    }
-
-    @GetMapping("/dragtest")
-    String dragInit() {
-        return "essay/dragtest";
     }
 }
