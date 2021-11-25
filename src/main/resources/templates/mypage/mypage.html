@@ -93,7 +93,7 @@
                 essayList.forEach((essay) => {
                     str +=
                         "<tr>" +
-                        "<td><a href='/essay/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
+                        "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
                         "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
                         "<td class='text-align-center'>" + essay.questionNum + "</td>";
                     
@@ -123,7 +123,7 @@
                 interviewList.forEach((interview) => {
                     body.innerHTML +=
                         "<tr>" +
-                        "<td>" + interview.title + "</a></td>" +
+                        "<td><a href='/interview/board/" + interview.id +"' style='text-decoration: none'>" + interview.title + "</a></td>" +
                         "<td class='text-align-center'>" + interview.questionNum + "</td>" +
                         "<td class='text-align-center'>" + interview.feedbackNum + "</td>" +
                         "<td class='text-align-center'>" + interview.createTime + "</td>" +

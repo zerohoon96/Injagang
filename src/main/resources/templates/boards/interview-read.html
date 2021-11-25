@@ -26,6 +26,13 @@
                 <div>
                     <h3>[[${result.title}]]</h3>
                 </div>
+    
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <textarea rows="8" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
+                </div>
+                <br>
                 
                 <!-- 업로드한 동영상과 피드백 -->
                 <div class="form-group" th:each="dto : ${result.videoList}">
@@ -53,12 +60,6 @@
                     <div th:id="${dto.pk}"></div>
                     <input class="feedbackBtn" type="button" value="피드백 달기"
                            th:attr="onclick=|make_feedback('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_feedbackBtn()|">
-                </div>
-    
-                <!-- 게시물 글 내용 -->
-                <br><br>
-                <div>
-                    <textarea rows="10" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
                 </div>
     
                 <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만 -->

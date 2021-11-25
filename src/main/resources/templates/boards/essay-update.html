@@ -25,11 +25,22 @@
             <div class="left-space">
                 
                 <form id="updateForm" th:action="@{/essay/board/update/{pk}(pk=${result.pk})}" th:method="post">
-                <!-- 게시물 제목 -->
-                <div>
-                    <label>제목 수정</label>
-                    <input name="title" class="form-control" th:value="${result.title}">
-                </div>
+                    <!-- 게시물 제목 -->
+                    <div>
+                        <label>제목 수정</label>
+                        <input name="title" class="form-control" th:value="${result.title}">
+                    </div>
+                    
+                    <!-- 게시물 글 내용 -->
+                    <br>
+                    <div>
+                        <label>글 수정</label>
+                        <br>
+                        <textarea name="text" class="form-control">[[${result.text}]]</textarea>
+                    </div>
+                    
+                </form>
+                <br>
                 
                 <!-- 자소서 문항 내용 -->
                 <div class="form-group" th:each="dto : ${result.contentList}">
@@ -44,15 +55,6 @@
                         <textarea cols="80" readonly>[[${qdto.content}]]</textarea>
                     </div>
                 </div>
-            
-                <!-- 게시물 글 내용 -->
-                <br>
-                <div>
-                    <label>글 수정</label>
-                    <br>
-                    <textarea cols="80" name="text" class="form-control">[[${result.text}]]</textarea>
-                </div>
-                </form>
                 <br>
                 
                 <!-- 수정 완료 버튼-->

@@ -6,15 +6,17 @@
         <h2 class="mt-4">면접 게시판 글쓰기</h2>
     
         <form th:action="@{/interview/board/add}" th:method="post">
+            <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
                 <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
             </div>
             <br>
-        
+    
+            <!-- 게시물 내용 글 입력 -->
             <div class="form-group">
                 <label>Content</label>
-                <textarea class="form-control" rows="10" name="text"></textarea>
+                <textarea class="form-control" rows="8" name="text"></textarea>
             </div>
             
             <!-- 면접 영상 업로드하기 -->
