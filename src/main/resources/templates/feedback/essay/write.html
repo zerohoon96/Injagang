@@ -37,16 +37,18 @@
                 <div type="text" th:id="|answer${idx+1}|" class="form-control" th:text="${feedback.answers[idx]}"
                      th:onmouseup="|dragUpdate(${idx+1})|" th:onmousedown="|dragStart(${idx+1})|"></div>
                 <br>
+
+                <!--전송에 필요한 데이터-->
                 <div th:id="|start${idx+1}|"></div>
                 <div th:id="|end${idx+1}|"></div>
                 <div th:id="|comment${idx+1}|"></div>
 
-
-                <textarea th:id="|input${idx+1}|" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3
-                          th:onchange="|updateBuf(${idx+1})|"></textarea><br>
-                <button type="button" th:onclick="|dragCheck(${idx+1})|">첨삭 추가</button>
+                <!--첨삭 입력 칸, 버튼이 들어가는 div-->
+                <div th:id="|getFeedback${idx+1}|"></div>
                 <br><br>
             </div>
+
+            <!--총평 입력-->
             <label for="totalComment">총평</label>
             <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3
                       placeholder="총평을 입력해주세요." required></textarea>
@@ -56,9 +58,9 @@
 
         <script type="text/javascript">
             const selectedObj = window.getSelection();
-            let curStart, curEnd, curQuestion;
-            let isSelected = false;
+            let curStart, curEnd;
             let start, end, comment, commentBuf, container;
+            let startPoint = 0;
 
             initSetting();
 
@@ -108,145 +110,236 @@
                 return caretOffset;
             }
 
-            function dragUpdate(idx) { //드래그가 종료됐을때 현재 드래그 결과를 업데이트
-                console.log('[end] click start : ', idx, ' startPoint : ', startPoint);
-                if(startPoint != idx) { //올바른 드래그가 아님
-                    isSelected = false;
-                }
-                else {
-                    let range = selectedObj.getRangeAt(0);
-                    console.log(range);
-                    curStart = getCaretCharacterOffsetWithin(document.getElementById("answer" + idx));
-                    curEnd = curStart + selectedObj.getRangeAt(0).toString().length - 1;
-                    // curEnd = range.endOffset - range.startOffset + curStart - 1;
-                    curQuestion = idx;
-                    console.log(curStart, curEnd);
-                    isSelected = true; //드래그 여부 저장 (selectedObj.type 으로 체크도 가능하지만 답변 문장이 있는 textArea 만 드래그 위해 사용)
-                }
-            }
-
-            let startPoint = 0;
-
             function dragStart(idx) {
-                console.log('[start] click start : ', idx, ' startPoint : ', startPoint);
+                console.log('==========================');
+                console.log('[dragStart] idx : ', idx, ' startPoint : ', startPoint);
                 if (startPoint == idx) { //드래그가 아직 종료되지 않은 경우 실패
                     console.log('not finished!!!');
                     selectedObj.removeAllRanges();
                 }
                 console.log('click start~');
                 startPoint = idx;
+                console.log('==========================');
             }
 
-            function dragCheck(idx) { //첨삭하기 버튼을 눌렀을때 처리
+            function dragUpdate(idx) { //드래그가 종료됐을때 현재 드래그 결과를 업데이트
+                console.log('==========================');
+                console.log('[dragUpdate] idx : ', idx, ' startPoint : ', startPoint);
                 if (selectedObj.type == "Caret" || startPoint != idx) { //드래그 상태가 아니거나 드래그 시작 문제가 끝 문제가 다른 경우 실패 (다른 문제에서 드래그 시작 or 현재 문제에서 드래그 시작 → 다른 문제에서 끝 or 문제 이외의 부분에서 끝)
-                    isSelected = false;
-                }
-                startPoint = 0;
-                if (isSelected) { //선택 되었는지 검사
-                    let fail = false;
-                    for (let i = 0; i < start[idx - 1].length; i++) {
-
-                        if (!(curStart > end[idx - 1][i] + 1) && !(curEnd < start[idx - 1][i] - 1)) { //겹치지 않는지 검사
-                            fail = true;
-                            break;
-                        }
-                    }
-                    if (start[idx - 1].length == 0 || !fail) { //이미 첨삭된 부분과 겹치는지 검사
-                        if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
-                            addFeedback(idx); //피드백 추가
-                            let priorNodeList = [];
-                            document.getElementById('answer' + idx).childNodes.forEach((eachNode) =>{ //추가전 리스트 추가
-                                priorNodeList.push(eachNode);
-                            });
-
-                            //밑줄 긋기
-                            document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능으로 임시 설정
-                            document.execCommand('hiliteColor', false, "#E5CCFF"); //표시
-                            document.getElementById('answer' + idx).contentEditable = 'false'; //edit 불가능으로 회귀
-
-
-                            let afterNodeList = document.getElementById('answer' + idx).childNodes;
-                            let isFinished = false;
-
-                            for(let i = 0; i < priorNodeList.length ; i++) { //바뀐 부분 비교
-                                if(afterNodeList[i].nodeName == '#text') {
-                                    continue;
-                                }
-                                console.log('check!!! ',priorNodeList[i], afterNodeList[i]);
-                                if(priorNodeList[i] != afterNodeList[i]) {
-                                    console.log('new add!!! ', afterNodeList[i]);
-                                    container[idx - 1].push(afterNodeList[i]);
-                                    isFinished = true;
-                                    break;
-                                }
-                            }
-                            if(!isFinished) { //발견한 새로운 노드 추가
-                                console.log('after new add!!! ',afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
-                                container[idx - 1].push(afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
-                            }
-                        } else {
-                            alert('첨삭을 입력하세요.');
-                        }
-                    } else {
-                        alert('이미 선택된 부분입니다.');
-                    }
-                    console.log('여기서 위치 겹치는지 체크~~~');
-                } else {
                     alert('문장을 올바르게 선택하세요.');
+                } else {
+                    let range = selectedObj.getRangeAt(0);
+                    console.log(range);
+                    curStart = getCaretCharacterOffsetWithin(document.getElementById("answer" + idx));
+                    curEnd = curStart + selectedObj.getRangeAt(0).toString().length - 1;
+                    console.log(curStart, curEnd);
+                    startPoint = 0;
+                    console.log('드래그 검사 들어가기 전입니다!');
+                    console.log(document.getElementById('answer' + idx).childNodes);
+                    dragCheckAndHighlight(idx);
                 }
-                selectedObj.removeAllRanges(); //모든 레인지 삭제
-                isSelected = false;
+                console.log('==========================');
+            }
+
+            function dragCheckAndHighlight(idx) { //드래그 후 검사
+                console.log('==========================');
+                console.log('[dragCheckAndHighlight] idx : ',idx);
+                if (start[idx - 1].length < container[idx - 1].length) { //기존에 첨삭중인 하이라이트가 있는 경우
+                    selectedObj.removeAllRanges(); //모든 레인지 삭제
+                    alert('현재 문제의 기존 첨삭을 완료하거나 취소하세요.');
+                    return;
+                }
+                for (let i = 0; i < start[idx - 1].length; i++) { //겹치지 않는지 검사
+                    if (!(curStart > end[idx - 1][i] + 1) && !(curEnd < start[idx - 1][i] - 1)) {
+                        alert('이미 선택된 부분입니다.\n(최소 한 칸을 간격으로 첨삭을 해주세요.)');
+                        return;
+                    }
+                }
+
+                console.log('드래그 검사입니다!');
+                console.log(document.getElementById('answer' + idx).childNodes);
+                makeHighlight(idx, '#FFFF00');
+                //첨삭 입력 칸, 버튼 생성
+                document.getElementById('getFeedback' + idx).innerHTML = '<textarea id="input' + idx + '" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea><br>' +
+                    '<button type="button" onclick="addFeedback(' + idx + ')">확인</button>' +
+                    '<button type="button" onclick="cancelFeedback(' + idx + ')">취소</button>';
+                console.log('==========================');
+            }
+
+            function highlightHandler(idx, color, mode) { //하이라이트를 생성하거나 지우는 핸들러
+                console.log('==========================');
+                console.log('[highlightHandler] idx : ',idx,'color : ',color,'mode : ',mode);
+                console.log('색깔 칠할게요~~');
+                console.log(document.getElementById('answer' + idx).childNodes);
+                document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능으로 임시 설정
+                if (mode == 1) {
+                    document.execCommand('hiliteColor', false, color); //지정한 색상으로 그리기
+                } else {
+                    console.log('삭제 전 : ',document.getElementById('answer'+idx).childNodes);
+                    document.execCommand('removeFormat'); //span 태그 삭제 (밑줄 비활성화)
+                    console.log('삭제 후 : ',document.getElementById('answer'+idx).childNodes);
+                }
+                document.getElementById('answer' + idx).contentEditable = 'false'; //edit 불가능으로 회귀
+                console.log('==========================');
             }
 
             function updateBuf(idx) {
                 commentBuf[idx - 1] = document.getElementById('input' + idx).value;
             }
 
-            function addFeedback(idx) {
+            function addFeedback(idx) { //첨삭하기 버튼을 눌렀을때 처리
+                console.log('==========================');
+                console.log('[addFeedback] idx : ',idx);
+                if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
+                    addDragInfo(idx); //피드백 추가
+                    console.log('++++++++++++++++++++++++++++++++++++++');
+                    console.log('추가-기존꺼 삭제 전 : ');
+                    for(let i=0;i<container[idx - 1].length ; i++){
+                        console.log(container[idx-1][i]);
+                    }
+                    deleteHighlight(idx, container[idx - 1].length - 1);
+                    console.log('추가-기존꺼 삭제 후 : ');
+                    for(let i=0;i<container[idx - 1].length ; i++){
+                        console.log(container[idx-1][i]);
+                    }
+                    makeHighlight(idx, '#E5CCFF'); //지정 색깔로 하이라이트 생성
+                    console.log('추가-새거 생성 후 : ');
+                    for(let i=0;i<container[idx - 1].length ; i++){
+                        console.log(container[idx-1][i]);
+                    }console.log('++++++++++++++++++++++++++++++++++++++');
+                    document.getElementById('getFeedback' + idx).innerHTML = '';
+                } else {
+                    alert('첨삭을 입력하세요.');
+                }
+                console.log('==========================');
+            }
+
+            function cancelFeedback(idx) { //첨삭 취소 버튼을 눌렀을때 처리
+                deleteHighlight(idx, container[idx - 1].length - 1); //기존에 생성한 하이라이트 삭제
+                selectedObj.removeAllRanges(); //모든 레인지 삭제
+                document.getElementById('getFeedback' + idx).innerHTML = ''; //첨삭 입력칸 삭제
+            }
+
+            function addDragInfo(idx) { //드래그 결과를 추가하고 피드백 내용을 업데이트
+                console.log('==========================');
+                console.log('[addDragInfo] idx : ',idx);
+                console.log('여기는? 0');
+                for(let i=0;i<container[idx - 1].length ; i++){
+                    console.log(container[idx-1][i]);
+                }
                 //문제별 첨삭 리스트에 드래그 결과 추가
                 start[idx - 1].push(curStart);
                 end[idx - 1].push(curEnd);
                 comment[idx - 1].push(commentBuf[idx - 1]);
 
+                console.log('여기는? 1');
+                for(let i=0;i<container[idx - 1].length ; i++){
+                    console.log(container[idx-1][i]);
+                }
                 //기존 첨삭 내용을 입력창에서 삭제
-                document.getElementById('input' + idx).value = commentBuf[idx - 1] = '';
+                document.getElementById('input' + idx).value = '';
+                commentBuf[idx - 1] = '';
+
+                console.log('여기는? 2');
+                for(let i=0;i<container[idx - 1].length ; i++){
+                    console.log(container[idx-1][i]);
+                }
 
                 //해당 innerHtml += (인덱스 정보 + 피드백 내용)
                 document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (start[idx - 1].length - 1) + '].start">';
                 document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (end[idx - 1].length - 1) + '].end">';
                 document.getElementById('comment' + idx).innerHTML += '<textarea class="width-80" name="everyComment[' + (idx - 1) + '].commentList[' + (comment[idx - 1].length - 1) + '].comment" rows="3" readonly>' + comment[idx - 1][comment[idx - 1].length - 1] + '</textarea> ' +
-                    '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + (start[idx - 1].length - 1) + ')">삭제</button><br>';
+                    '<button class="btn btn-secondary" type="button" onclick="deleteFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ')">삭제</button><br>';
                 document.getElementById('start' + idx + (start[idx - 1].length - 1)).value = start[idx - 1][start[idx - 1].length - 1];
                 document.getElementById('end' + idx + (start[idx - 1].length - 1)).value = end[idx - 1][start[idx - 1].length - 1];
+                console.log('==========================');
+            }
+
+            function makeHighlight(idx, color) { ///////////////////////////////////////////////////////////이부분 동기 처리로 바꿔야 할듯?
+                let isFinished = false;
+                let priorNodeList = [];
+                let afterNodeList = document.getElementById('answer' + idx).childNodes;
+                console.log('==========================');
+                console.log('[makeHighlight] idx : ',idx,'color : ',color);
+
+                //기존 노드 리스트 저장
+
+                console.log('_________________________________');
+                console.log('기존에 있는 노드들 입니다!');
+                console.log(document.getElementById('answer' + idx).childNodes);
+                document.getElementById('answer' + idx).childNodes.forEach((eachNode) => {
+                    // console.log(eachNode);
+                    priorNodeList.push(eachNode);
+                });
+                //밑줄 긋기
+                highlightHandler(idx, color, 1); //현재 선택된 부분에 하이라이트 생성
+
+                console.log('하이라이트 후 노드들 입니다!');
+                document.getElementById('answer' + idx).childNodes.forEach((eachNode) => {
+                    console.log(eachNode);
+                    priorNodeList.push(eachNode);
+                });
+                console.log('_________________________________');
+
+                for (let i = 0; i < priorNodeList.length; i++) { //기존 노드 리스트와 하이라이트 후 노드 리스트의 바뀐 부분 비교
+                    if (afterNodeList[i].nodeName == '#text') {
+                        continue;
+                    }
+                    console.log('check!!! ', priorNodeList[i], afterNodeList[i]);
+                    if (priorNodeList[i] != afterNodeList[i]) { //새로 추가된 span 노드를 찾았을때 추가
+                        console.log('new add!!! ', afterNodeList[i]);
+                        container[idx - 1].push(afterNodeList[i]);
+                        isFinished = true;
+                        break;
+                    }
+                }
+                if (!isFinished) { //span 노드가 가장 마지막에 추가된 경우에도 추가
+                    console.log('after new add!!! ', afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
+                    container[idx - 1].push(afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
+                }
+                selectedObj.removeAllRanges(); //모든 레인지 삭제
+                console.log('==========================');
             }
 
             function deleteFeedback(curIdx, deleteIdx) { //피드백 1개 삭제
-                let node = container[curIdx - 1][deleteIdx];
-                let range = document.createRange();
-
-                //새로운 레인지 생성
-                range.setStart(node, 0);
-                range.setEnd(node, 1);
-                selectedObj.removeAllRanges();
-                selectedObj.addRange(range);
+                console.log('==========================');
+                console.log('[deleteFeedback] curIdx : ',curIdx,'deleteIdx : ',deleteIdx);
+                console.log('-------------------------------------------------');
+                console.log('삭제 문제, 위치 : ',curIdx, deleteIdx);
+                console.log('삭제 전 노드 상태: ',container[curIdx - 1]);
+                for(let i=0;i<container[curIdx - 1].length ; i++){
+                    console.log(container[curIdx-1][i]);
+                }
 
                 //밑줄 삭제
-                document.getElementById('answer' + curIdx).contentEditable = 'true'; //edit 가능으로 임시 설정
-                document.execCommand('removeFormat'); //span 태그 삭제 (밑줄 비활성화)
-                document.getElementById('answer' + curIdx).contentEditable = 'false'; //edit 불가능으로 회귀
+                deleteHighlight(curIdx, deleteIdx);
                 selectedObj.removeAllRanges(); //모든 레인지 삭제
+                console.log('삭제 전 노드 상태: ',container[curIdx - 1]);
+                for(let i=0;i<container[curIdx - 1].length ; i++){
+                    console.log(container[curIdx-1][i]);
+                }
 
                 //리스트에서 정보 삭제
                 start[curIdx - 1].splice(deleteIdx, 1);
                 end[curIdx - 1].splice(deleteIdx, 1);
                 comment[curIdx - 1].splice(deleteIdx, 1);
-                container[curIdx - 1].splice(deleteIdx, 1);
+                console.log('리스트에서 삭제 후 상태 : ',container[curIdx - 1]);
+                for(let i=0;i<container[curIdx - 1].length ; i++){
+                    console.log(container[curIdx-1][i]);
+                }
 
                 displayFeedback(curIdx); //작성한 피드백 다시 출력
+                console.log('삭제 후 노드 상태: ',container[curIdx - 1]);
+                for(let i=0;i<container[curIdx - 1].length ; i++){
+                    console.log(container[curIdx-1][i]);
+                }
+                console.log('-------------------------------------------------');
+                console.log('==========================');
             }
 
             function displayFeedback(idx) { //피드백 display
-
+                console.log('==========================');
+                console.log('[displayFeedback] idx : ',idx);
                 //기존값 초기화 (문제별 원래 저장된 부분)
                 document.getElementById('start' + idx).innerHTML = '';
                 document.getElementById('end' + idx).innerHTML = '';
@@ -260,6 +353,23 @@
                     document.getElementById('start' + idx + i).value = start[idx - 1][i];
                     document.getElementById('end' + idx + i).value = end[idx - 1][i];
                 }
+                console.log('==========================');
+            }
+
+            function deleteHighlight(curIdx, deleteIdx) {
+                console.log('==========================');
+                console.log('[deleteHighlight] curIdx : ',curIdx,'deleteIdx : ',deleteIdx);
+                let node = container[curIdx - 1][deleteIdx];
+                let range = document.createRange();
+                //새로운 레인지 생성
+                range.setStart(node, 0);
+                range.setEnd(node, 1);
+                selectedObj.removeAllRanges();
+                selectedObj.addRange(range);
+
+                highlightHandler(curIdx, '', 0);
+                container[curIdx - 1].splice(deleteIdx, 1);
+                // selectedObj.removeAllRanges(); //모든 레인지 삭제
             }
         </script>
         </body>
