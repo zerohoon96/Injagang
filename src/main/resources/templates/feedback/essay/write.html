@@ -56,7 +56,7 @@
 
         <script type="text/javascript">
             const selectedObj = window.getSelection();
-            let curField, curStart, curEnd, curQuestion;
+            let curStart, curEnd, curQuestion;
             let isSelected = false;
             let start, end, comment, commentBuf, container;
 
@@ -66,10 +66,10 @@
                 start = new Array([[${feedback.getQuestions().size()}]]);
                 end = new Array([[${feedback.getQuestions().size()}]]);
                 comment = new Array([[${feedback.getQuestions().size()}]]);
-                commentBuf = new Array([[${feedback.getQuestions().size()}]]);
                 container = new Array([[${feedback.getQuestions().size()}]]);
+                commentBuf = new Array([[${feedback.getQuestions().size()}]]);
 
-                for (let i = 0; i < start.length; i++) {
+                for (let i = 0; i < start.length; i++) { //2차원 배열처럼 사용하기 위해 설정
                     start[i] = [];
                     end[i] = [];
                     comment[i] = [];
@@ -115,13 +115,7 @@
                 }
                 else {
                     let range = selectedObj.getRangeAt(0);
-                    if(container[idx - 1].length == 0) {
-                        container[idx - 1].push(range.startContainer);
-                        container[idx - 1].push(range.endContainer);
-                    }
-                    // console.log(selectedObj);
                     console.log(range);
-                    console.log('start and end container!!! ',range.startContainer, range.endContainer);
                     curStart = getCaretCharacterOffsetWithin(document.getElementById("answer" + idx));
                     curEnd = curStart + selectedObj.getRangeAt(0).toString().length - 1;
                     // curEnd = range.endOffset - range.startOffset + curStart - 1;
@@ -151,10 +145,8 @@
                 if (isSelected) { //선택 되었는지 검사
                     let fail = false;
                     for (let i = 0; i < start[idx - 1].length; i++) {
-                        console.log('원래 : ', start[idx - 1][i], end[idx - 1][i]);
-                        console.log('현재 : ', curStart, curEnd);
 
-                        if (!(curStart > end[idx - 1][i]) && !(curEnd < start[idx - 1][i])) {
+                        if (!(curStart > end[idx - 1][i]) && !(curEnd < start[idx - 1][i])) { //겹치지 않는지 검사
                             fail = true;
                             break;
                         }
@@ -162,10 +154,36 @@
                     if (start[idx - 1].length == 0 || !fail) { //이미 첨삭된 부분과 겹치는지 검사
                         if (commentBuf[idx - 1] != undefined && commentBuf[idx - 1].length > 0) { //값이 입력된 상태인지 검사
                             addFeedback(idx); //피드백 추가
-                            document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능
+                            let priorNodeList = [];
+                            document.getElementById('answer' + idx).childNodes.forEach((eachNode) =>{ //추가전 리스트 추가
+                                priorNodeList.push(eachNode);
+                            });
+
+                            //밑줄 긋기
+                            document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능으로 임시 설정
                             document.execCommand('hiliteColor', false, "#E5CCFF"); //표시
-                            document.getElementById('answer' + idx).contentEditable = 'false'; //edit 불가능
-                            // console.log(document.getElementById('answer' + idx).innerHTML);
+                            document.getElementById('answer' + idx).contentEditable = 'false'; //edit 불가능으로 회귀
+
+
+                            let afterNodeList = document.getElementById('answer' + idx).childNodes;
+                            let isFinished = false;
+
+                            for(let i = 0; i < priorNodeList.length ; i++) { //바뀐 부분 비교
+                                if(afterNodeList[i].nodeName == '#text') {
+                                    continue;
+                                }
+                                console.log('check!!! ',priorNodeList[i], afterNodeList[i]);
+                                if(priorNodeList[i] != afterNodeList[i]) {
+                                    console.log('new add!!! ', afterNodeList[i]);
+                                    container[idx - 1].push(afterNodeList[i]);
+                                    isFinished = true;
+                                    break;
+                                }
+                            }
+                            if(!isFinished) { //발견한 새로운 노드 추가
+                                console.log('after new add!!! ',afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
+                                container[idx - 1].push(afterNodeList[afterNodeList.length - (afterNodeList.length - priorNodeList.length)]);
+                            }
                         } else {
                             alert('첨삭을 입력하세요.');
                         }
@@ -190,6 +208,7 @@
                 end[idx - 1].push(curEnd);
                 comment[idx - 1].push(commentBuf[idx - 1]);
 
+                //기존 첨삭 내용을 입력창에서 삭제
                 document.getElementById('input' + idx).value = commentBuf[idx - 1] = '';
 
                 //해당 innerHtml += (인덱스 정보 + 피드백 내용)
@@ -202,15 +221,27 @@
             }
 
             function deleteFeedback(curIdx, deleteIdx) { //피드백 1개 삭제
-                let node = container[curIdx - 1]; /////////////////////////////////////////////////이거 체크!!!
+                let node = container[curIdx - 1][deleteIdx];
                 let range = document.createRange();
-                console.log('node : ',node[0], node[1]);
-                range.setStart(node[0], start[curIdx - 1]);
-                range.setEnd(node[1], end[curIdx - 1] + 1);
-                console.log('새 range 생성 결과 : ',range);
+
+                //새로운 레인지 생성
+                range.setStart(node, 0);
+                range.setEnd(node, 1);
+                selectedObj.removeAllRanges();
+                selectedObj.addRange(range);
+
+                //밑줄 삭제
+                document.getElementById('answer' + curIdx).contentEditable = 'true'; //edit 가능으로 임시 설정
+                document.execCommand('removeFormat'); //span 태그 삭제 (밑줄 비활성화)
+                document.getElementById('answer' + curIdx).contentEditable = 'false'; //edit 불가능으로 회귀
+                selectedObj.removeAllRanges(); //모든 레인지 삭제
+
+                //리스트에서 정보 삭제
                 start[curIdx - 1].splice(deleteIdx, 1);
                 end[curIdx - 1].splice(deleteIdx, 1);
                 comment[curIdx - 1].splice(deleteIdx, 1);
+                container[curIdx - 1].splice(deleteIdx, 1);
+
                 displayFeedback(curIdx); //작성한 피드백 다시 출력
             }
 
