@@ -146,7 +146,7 @@
                     let fail = false;
                     for (let i = 0; i < start[idx - 1].length; i++) {
 
-                        if (!(curStart > end[idx - 1][i]) && !(curEnd < start[idx - 1][i])) { //겹치지 않는지 검사
+                        if (!(curStart > end[idx - 1][i] + 1) && !(curEnd < start[idx - 1][i] - 1)) { //겹치지 않는지 검사
                             fail = true;
                             break;
                         }
