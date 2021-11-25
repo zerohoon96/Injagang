@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+  <th:block th:fragment="content">
+    <head>
+      <meta charset="UTF-8">
+      <title>essay_read_page</title>
+      <style>
+        .container-fluid {
+          padding-left: 9%;
+          padding-right: 9%;
+        }
+
+        textarea {
+          resize: none;
+          pointer-events: none;
+        }
+      </style>
+    </head>
+    <body>
+    <form class="container-fluid" action method="get">
+      <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
+      <br>
+
+      <!-- 템플릿 입력 내용 -->
+      <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
+        <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>
+        <hr>
+        <div th:each="t, idx : ${essayDTO.tc}">
+          <label th:text="|${idx.count}. ${t.question}|"></label>
+          <textarea class="form-control mt-1" rows=10 th:text="${t.answer}"></textarea>
+          <br>
+        </div>
+        <br>
+      </div>
+
+      <!-- 직접 입력 내용 -->
+      <div class="form-group" th:if="${essayDTO.dc.size() > 0}">
+        <h4 class="text-center mt-3">직접 입력</h4>
+        <hr>
+        <div th:each="d, idx : ${essayDTO.dc}">
+          <label th:text="|${idx.count}. ${d.question}|"></label>
+          <textarea class="form-control mt-1" rows=10 th:text="${d.answer}"></textarea>
+          <br>
+        </div>
+        <br>
+      </div>
+      <!-- 수정, 확인버튼 -->
+      <div class="form-group">
+      </div>
+    </form>
+    </body>
+
+  </th:block>
+</th:block>
+</html>

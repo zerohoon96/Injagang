@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+  <th:block th:fragment="content">
+    <head>
+      <meta charset="UTF-8">
+
+      <style>
+        .btn-link {
+          mid-width: 100px;
+          border-radius: 0px;
+          text-decoration: none;
+          opacity:1.0;
+          box-shadow: none;
+        }
+      </style>
+
+    </head>
+    <body>
+    <h1 class="mt-4">템플릿 추가</h1>
+    <hr>
+
+    <form id="addT" name="addT" class="container" action method="post">
+      <div class="form-group" style="padding-right: 10%; padding-left: 10%">
+        <div class="form-inline">
+          <label class="mr-2">템플릿 제목 : </label>
+          <input class="form-control col-md" type="text" id="inputTemplateTitle" name="inputTemplateTitle" placeholder="템플릿 제목을 입력해주세요." required>
+        </div>
+        <br>
+        <div>
+          <!--질문 추가 입력-->
+          <div id="newQuestion"></div>
+          <input class="btn btn-outline-info" id="addButton" type="button" value="+">
+        </div>
+      </div>
+      <br>
+      <div class="text-center">
+        <input class="btn btn-primary px-5" id="save" type="button" value="저장">
+      </div>
+      <br>
+      <br>
+    </form>
+
+    <script type="text/javascript">
+      //직접 질문 입력
+      let addQ = new Array(0);
+      function display() {
+        //초기화 해주고
+        document.getElementById("newQuestion").innerHTML = "";
+        //현재 저장된 내용을 출력
+        for (let i=0; i<addQ.length; i++) {
+          document.getElementById("newQuestion").innerHTML +=
+                  `<form>
+                      <div class="form-inline mb-1">
+                          <label class="col-1">${i+1}. </label>
+                          <input class="form-control col-md" type="text" id="addQ${i+1}" name="addQ${i+1}" value="${addQ[i]}" placeholder="질문을 입력해주세요." onChange="addQ[i]=this.value" required>
+                          <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
+                      </div>
+                  </form>`;
+        }
+      }
+
+      function deleteInput(idx) {
+        addQ.splice(idx, 1);
+        display();
+      }
+
+      //버튼 클릭시
+      $(document).ready(function () {
+        $("#save").click(function (event) {
+          // 질문 갯수가 2개 이상 5개 이하 일 경우 가능
+          if (addQ.length >= 2 && addQ.length <= 5) {
+            alert("저장되었습니다.");
+            document.getElementById("addT").submit();
+          }
+          else {
+            alert("질문 개수를 2개~5개로 설정해주세요");
+          }
+        });
+
+        //직접입력 버튼 누를경우
+        $("#addButton").click(function () {
+          if (addQ.length == 5) {
+            alert("최대 질문 추가는 5개 입니다.");
+          }
+          else {
+            //이전에 내용이 있다면 출력
+            display();
+            //직접 입력 템플릿이 추가되었으니 addQ배열에 빈 값을 하나 넣어줌
+            addQ.push("");
+            document.getElementById("newQuestion").innerHTML +=
+                    `<form>
+                        <div class="form-inline mb-1">
+                              <label class="col-1">${addQ.length}. </label>
+                              <input class="form-control col-md" type="text" name="addQ${addQ.length}" value="${addQ[addQ.length - 1]}" placeholder="질문을 입력해주세요." onChange="addQ[addQ.length-1]=this.value" required>
+                              <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${addQ.length - 1});">
+                        </div>
+                        <br>
+                    </form>`;
+          }
+        });
+      });
+    </script>
+
+    </body>
+  </th:block>
+</th:block>
