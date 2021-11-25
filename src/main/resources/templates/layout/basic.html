@@ -38,7 +38,7 @@
         <!--
           <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
         -->
-        <a th:href="@{/mypage/{nickname}(nickname=${nickname})}" class="list-group-item list-group-item-action bg-light">MyPage</a>
+        <a th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}" class="list-group-item list-group-item-action bg-light">MyPage</a>
         <a th:href="@{/essay/board}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
         <a th:href="@{/interview/board}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
         <a href="#" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
@@ -68,7 +68,8 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
             <li class="nav-item active">
-              <a class="nav-link" th:href="@{/mypage/{nickname}(nickname=${nickname})}">[[${nickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
+              <a class="nav-link"
+                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">포인트(...)</a>

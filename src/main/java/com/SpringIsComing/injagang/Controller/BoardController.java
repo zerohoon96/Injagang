@@ -39,7 +39,7 @@ public class BoardController {
         log.info("==========essayBoard==========");
 
         model.addAttribute("result", service.getEssayList(pageRequestDTO));
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
         return "boards/essay-list";
     }
 
@@ -50,7 +50,7 @@ public class BoardController {
         log.info("==========interviewBoard==========");
 
         model.addAttribute("result", service.getInterviewList(pageRequestDTO));
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
         return "boards/interview-list";
     }
 
@@ -64,7 +64,7 @@ public class BoardController {
         /* eb_pk로 해당 Essay 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         EssayBoardDTO dto = service.readEssayBoard(eb_pk);
         model.addAttribute("result", dto);
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
 
         return "boards/essay-read";
     }
@@ -79,7 +79,7 @@ public class BoardController {
         /* ib_pk로 해당 Interview 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
         model.addAttribute("result", dto);
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
 
         return "boards/interview-read";
     }
@@ -92,7 +92,7 @@ public class BoardController {
 
         EssayBoardDTO dto = service.readEssayBoard(eb_pk);
         model.addAttribute("result", dto);
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
 
         return "boards/essay-update";
     }
@@ -119,7 +119,7 @@ public class BoardController {
 
         InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
         model.addAttribute("result", dto);
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
 
         return "boards/interview-update";
     }
@@ -163,7 +163,7 @@ public class BoardController {
 
         //현재 로그인 되어있는 nickname으로 그 사람이 쓴 자소서 리스트 불러오기
         model.addAttribute("essayList", service.getEssays(nickname));
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
         return "boards/essay-register";
     }
 
@@ -186,7 +186,7 @@ public class BoardController {
     public String registerInterviewBoard(@SessionAttribute("loginSession") String nickname, Model model) {
         log.info("----------registerInterviewBoard----------");
 
-        model.addAttribute("nickname", nickname);
+        model.addAttribute("loginNickname", nickname);
         return "boards/interview-register";
     }
 

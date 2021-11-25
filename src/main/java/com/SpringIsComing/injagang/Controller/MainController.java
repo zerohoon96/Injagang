@@ -98,6 +98,8 @@ public class MainController {
 
         log.info("깐부={}",friendState);
         model.addAttribute("friendState", friendState);
+        model.addAttribute("nickname", curNickname);
+        model.addAttribute("loginNickname", nickname);
 
         return "mypage/mypage";
     }

@@ -29,14 +29,16 @@
 
         <div class="row mt-3 justify-content-center">
 
-            <div class="col-3 d-flex justify-content-between">
-                <span th:text="|자기소개서 : ${essayList.size()}개 작성|"></span>
-                <span th:text="|모의면접 : ${interviewList.size()}회 실행|"></span>
-                <span th:text="|친구 : ${friendList.size()}명|"></span>
+            <div class="col d-flex justify-content-center">
+                <div>자기소개서 : [[${essayList.size()}]]개 작성</div>
+                <div style="visibility: hidden">space</div>
+                <div>면접 게시물: [[${interviewList.size()}]]개 작성</div>
+                <div style="visibility: hidden">space</div>
+                <div>친구 : [[${friendList.size()}]]명</div>
             </div>
         </div>
 
-        <div class="row mt-3 justify-content-center">
+        <div class="row mt-4 justify-content-center">
             <a th:if="${friendState} == 0" href="/mypage/update" type="button" class="btn btn-outline-secondary">회원 정보 수정</a>
         </div>
 
@@ -52,16 +54,16 @@
                         onClick="displayFriend()">친구 목록
                 </button>
 
-                <a th:if="${friendState} == 2" href="/mypage/request-friendRequest" type="button" class="btn btn-outline-secondary">친구 신청</a>
+                <a th:if="${friendState} == 2" th:href="@{/mypage/{nickname}(nickname=${nickname})}" type="button" class="btn btn-outline-secondary">친구 신청</a>
                 <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 신청 대기중</a>
-                <a th:if="${friendState} == 4" href="/mypage/request-friendRequest" type="button"
+                <a th:if="${friendState} == 4" th:href="/mypage/" type="button"
                    class="btn btn-outline-secondary">친구 수락하기</a>
             </div>
         </div>
 
         <div class="row justify-content-center mt-3">
 
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <table class="table">
                     <tr id="head"></tr>
                     <tbody id="body" style="text-align: center"></tbody>
@@ -81,25 +83,38 @@
 
             function displayEssay() {
                 head.innerHTML =
-                    "<th class='col-5 text-align-center'>자기소개서 이름</th>" +
+                    "<th class='col-4 text-align-center'>자기소개서 이름</th>" +
                     "<th class='col-2 text-align-center'>첨삭 개수</th>" +
                     "<th class='col-2 text-align-center'>예상질문 개수</th>" +
-                    "<th class='col-3 text-align-center'>작성 날짜</th>";
-                body.innerHTML = "";
+                        "<th class='col-2 text-align-center'>공개 범위</th>" +
+                    "<th class='col-2 text-align-center'>작성 날짜</th>";
+                
+                let str = "";
                 essayList.forEach((essay) => {
-                    body.innerHTML +=
+                    str +=
                         "<tr>" +
-                        "<td><a href='/essay/" + essay.id + "' style='text-decoration: none'>" + essay.title + "</a></td>" +
+                        "<td><a href='/essay/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
                         "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
-                        "<td class='text-align-center'>" + essay.questionNum + "</td>" +
-                        "<td class='text-align-center'>" + essay.createTime + "</td>" +
-                        "</tr>";
+                        "<td class='text-align-center'>" + essay.questionNum + "</td>";
+                    
+                    if(essay.access == 0){
+                        str += '<td class="text-align-center">' + '나만 보기' + '</td>';
+                    }
+                    else if (essay.access == 1) {
+                        str += '<td class="text-align-center">' + '친구 공개' + '</td>';
+                    }
+                    else if (essay.access == 2) {
+                        str += '<td class="text-align-center">' + '게시물' + '</td>';
+                    }
+                    
+                    str += "<td class='text-align-center'>" + essay.createTime + "</td></tr>";
                 });
+                body.innerHTML = str;
             }
 
             function displayInterview() {
                 head.innerHTML =
-                    "<th class='col-5 text-align-center'>모의면접 제목</th>" +
+                    "<th class='col-5 text-align-center'>면접게시물 제목</th>" +
                     "<th class='col-2 text-align-center'>문항 개수</th>" +
                     "<th class='col-2 text-align-center'>댓글 개수</th>" +
                     "<th class='col-3 text-align-center'>작성 날짜</th>";

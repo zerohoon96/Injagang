@@ -17,10 +17,14 @@ public class MypageEssayDTO {
 
     private String title;
 
+    private String essayTitle;
+
+    private int access;
+
     private int feedbackNum;
 
     private int questionNum;
 
-    private LocalDateTime createTime;
+    private String createTime;
 
 }

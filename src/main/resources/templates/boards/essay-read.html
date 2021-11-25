@@ -51,14 +51,14 @@
                             <input style="display: none" name="eb_pk" th:value="${result.pk}">
                             <input style="display: none" name="question_pk" th:value="${qdto.pk}">
                             <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${nickname == qdto.nickname}">삭제</button>
+                                    th:if="${loginNickname == qdto.nickname}">삭제</button>
                         </form>
                     </div>
             
                     <!-- 예상질문 달기 -->
                     <div th:id="${dto.pk}"></div>
                     <input class="questionButton" type="button" value="예상질문 달기"
-                           th:attr="onclick=|make_expectedQuestion('${result.pk}', '${dto.pk}', '${nickname}'); remove_questionBtn()|">
+                           th:attr="onclick=|make_expectedQuestion('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_questionBtn()|">
                 </div>
                 
                 <!-- 게시물 글 내용 -->
@@ -69,7 +69,7 @@
                 <br>
                 
                 <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만-->
-                <div th:if="${nickname == result.writer}" style="float: right">
+                <div th:if="${loginNickname == result.writer}" style="float: right">
                     <button class="btn btn-secondary" type="button">
                         <a th:href="@{/essay/board/update/{pk}(pk=${result.pk})}" style="color: white">게시물 수정</a>
                     </button>
@@ -115,14 +115,14 @@
                         <input style="display: none" name="eb_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
                         <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${nickname == dto.nickname}">삭제</button>
+                                th:if="${loginNickname == dto.nickname}">삭제</button>
                     </form>
                 </div>
     
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
                 <input id="reply_input" type="button" value="댓글 달기"
-                       th:attr="onclick=|make_reply('${result.pk}', '${nickname}'); remove_replyBtn()|">
+                       th:attr="onclick=|make_reply('${result.pk}', '${loginNickname}'); remove_replyBtn()|">
             </div>
         </div>
         

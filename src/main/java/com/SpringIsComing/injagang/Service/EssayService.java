@@ -4,6 +4,7 @@ import com.SpringIsComing.injagang.DTO.MypageEssayDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Member;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public interface EssayService {
@@ -14,13 +15,21 @@ public interface EssayService {
 
     default MypageEssayDTO toMypageEssayDTO(Essay essay) {
 
-        return MypageEssayDTO.builder()
+        MypageEssayDTO dto = MypageEssayDTO.builder()
                 .id(essay.getId())
                 .title(essay.getTitle())
+                .essayTitle(essay.getEssayTitle())
                 .feedbackNum(essay.getFeedbacks().size())
                 .questionNum(essay.getContents().size())
-                .createTime(essay.getDate())
+                .createTime(essay.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .build();
+
+        if(essay.getAccess() == null)
+            dto.setAccess(0);
+        else
+            dto.setAccess(essay.getAccess());
+
+        return dto;
     }
 
 }
