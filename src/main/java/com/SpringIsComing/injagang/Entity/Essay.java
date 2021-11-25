@@ -74,10 +74,12 @@ public class Essay{
         this.feedbacks = new ArrayList<>();
     }
 
-    public static Essay createEssay(String essayTitle, String title, List<EssayContent> EssayContents) {
+    public static Essay createEssay(String essayTitle, String title, List<EssayContent> EssayContents, Member member) {
         Essay essay = Essay.builder()
                 .essayTitle(essayTitle)
                 .templateTitle(title)
+                .writer(member)
+                .date(LocalDateTime.now())
                 .build();
 
         for (EssayContent essayContent : EssayContents) {
