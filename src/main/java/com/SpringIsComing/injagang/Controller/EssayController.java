@@ -97,17 +97,21 @@ public class EssayController {
 
 
     @GetMapping("/read/{essayId}")
-    String essayRead(@PathVariable Long essayId, Model model) throws Exception {
+    String essayRead(@SessionAttribute("loginSession") String nickname,
+                     @PathVariable Long essayId, Model model) throws Exception {
         EssayWriteDTO dto = es.readEssay(essayId);
         model.addAttribute("essayDTO", dto);
+        model.addAttribute("loginNickname", nickname);
         return "essay/read";
     }
 
     @GetMapping("/feedback/{essayId}/write") //첨삭 쓰기를 눌렀을때
     String writeFeedback(Model model,
+                         @SessionAttribute("loginSession") String nickname,
                          @PathVariable Long essayId,
                          @ModelAttribute("feedback") EssayFeedbackDTO feedback) {
         model.addAttribute("essayId", essayId); //아이디를 전달
+        model.addAttribute("loginNickname", nickname);
         return "feedback/essay/write";
     }
 
@@ -121,15 +125,18 @@ public class EssayController {
 //    }
 
     @GetMapping("/feedback/{feedbackId}") //첨삭 읽기를 눌렀을때 zzzzzzzzzzzzzzzzzzzzzzzzz url 설정!!!! 쿼리 파라메터로 할까?
-    String readFeedback(Model model, @RequestParam String feedbackId) {
+    String readFeedback(@SessionAttribute("loginSession") String nickname,
+                        Model model, @RequestParam String feedbackId) {
         System.out.println(feedbackId); //id를 사용해서 DTO 첨삭을 담는 DTO 생성
+        model.addAttribute("loginNickname", nickname);
         return "feedback/essay/read";
     }
 
 
     //템플릿 추가
     @GetMapping("/add")
-    String addInit() {
+    String addInit(@SessionAttribute("loginSession") String nickname,  Model model) {
+        model.addAttribute("loginNickname", nickname);
         return "essay/add";
     }
 
