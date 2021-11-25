@@ -31,6 +31,7 @@ public class EssayContentRepositoryTests {
                         .question("----------Sample 질문----------")
                         .answer("=========================\n==========예시 답변==========\n=========================")
                         .essay(essay)
+                        .template(false)
                         .build();
 
                 essayContentRepository.save(essayContent);

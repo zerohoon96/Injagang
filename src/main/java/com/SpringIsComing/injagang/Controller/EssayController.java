@@ -35,15 +35,17 @@ public class EssayController {
      ** 자소서 입력
      */
     @GetMapping("/write")
-    String essayInit(Model model) {
+    String essayInit(@SessionAttribute("loginSession") String nickname, Model model) {
         TemplateDTO dto = ts.readTemplate();
         model.addAttribute("templateDTO", dto);
+        model.addAttribute("loginNickname", nickname);
 
         return "essay/write";
     }
 
     @PostMapping("/write")
-    String essayWrite(@RequestParam Map<String, String> allParameters, Model model,
+    String essayWrite(@SessionAttribute("loginSession") String nickname,
+                      @RequestParam Map<String, String> allParameters, Model model,
                       RedirectAttributes redirectAttributes) {
 
         List<EssayContent> ec = new ArrayList<>();

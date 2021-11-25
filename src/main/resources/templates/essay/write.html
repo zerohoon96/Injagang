@@ -166,7 +166,9 @@
                     }
                     if (select != "emptyTemplate") {
                         //템플릿 내용검사
-                        for (let i=0; i<myArray[select].length; i++) {
+                        let templateIdx = [[${templateDTO.templateTitle}]].indexOf(select);
+                        let question = [[${templateDTO.questions}]][templateIdx];
+                        for (let i=0; i<question.length; i++) {
                             // let id = document.getElementById(`template_answer${i}`);
                             if (document.getElementById(`template_answer${i}`).value.length == 0) {
                                 alert(`${i+1}번째 템플릿 내용이 입력되지 않았습니다.`);
