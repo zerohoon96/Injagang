@@ -34,6 +34,7 @@ public class EssayFeedback {
     @Builder.Default
     private List<EssayFeedbackComment> feedbackComments= new ArrayList<>();
 
+    @Column(length = 1000)
     private String content; //총평
 
     private LocalDateTime date; //글쓴 날짜

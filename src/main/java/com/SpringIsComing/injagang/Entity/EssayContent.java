@@ -31,7 +31,10 @@ public class EssayContent {
     private List<ExpectedQuestion> questions = new ArrayList<>();
 
     private String question; //질문
+
+    @Column(length = 1500)
     private String answer; //답변
+
     private boolean template; //템플릿 설정(true : 템플릿, false : 직접읿력)
 
 

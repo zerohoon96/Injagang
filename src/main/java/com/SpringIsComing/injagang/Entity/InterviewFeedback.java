@@ -30,6 +30,8 @@ public class InterviewFeedback {
     @JoinColumn(name = "VIDEO_ID")
     private Video video;
 
+    @Column(length = 1000)
     private String comment; //피드백 내용
+
     private LocalDateTime date; //글쓴 날짜
 }

@@ -34,7 +34,10 @@ public class Interview {
     private List<Video> videos = new ArrayList<>(); //면접 녹화 영상들
 
     private String title; //제목
+
+    @Column(length = 1500)
     private String text; //내용 글
+
     private LocalDateTime date; //작성 날짜
 
     public void setTitle(String title) {
