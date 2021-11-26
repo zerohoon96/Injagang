@@ -19,7 +19,7 @@ public class InterviewAlarm extends Alarm{
 
     private String nickname;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "INTERVIEW_ID")
     Interview interview;
 
