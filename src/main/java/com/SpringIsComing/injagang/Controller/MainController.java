@@ -394,7 +394,7 @@ public class MainController {
 
     }
 
-    @GetMapping("acceptFriendRequest/{targetNickname}")
+    @GetMapping("/acceptFriendRequest/{targetNickname}")
     public String acceptFriendRequest(@SessionAttribute("loginSession") String loginNickname
                                         , @PathVariable("targetNickname") String targetNickname
                                         , RedirectAttributes redirectAttributes) {
