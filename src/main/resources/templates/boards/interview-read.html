@@ -39,7 +39,7 @@
                     <br>
                     <label th:for="|${dto.pk}label|">[[${dto.videoName}]]</label>
                     <br>
-                    <video th:id="|${dto.pk}label|" width="800" height="auto" controls>
+                    <video th:id="|${dto.pk}label|" width="600" height="auto" controls>
                         <source th:src="${dto.url}" type="video/mp4">
                     </video>
                     
@@ -52,7 +52,7 @@
                             <input style="display: none" name="ib_pk" th:value="${result.pk}">
                             <input style="display: none" name="feedback_pk" th:value="${fdto.pk}">
                             <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${loginNickname == fdto.nickname}">삭제</button>
+                                    th:if="${loginNickname == fdto.nickname || loginNickname == result.writer}">삭제</button>
                         </form>
                     </div>
                     
@@ -89,7 +89,7 @@
                         <input style="display: none" name="ib_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
                         <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${loginNickname == dto.nickname}">삭제</button>
+                                th:if="${loginNickname == dto.nickname || loginNickname == result.writer}">삭제</button>
                     </form>
                 </div>
     

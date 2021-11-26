@@ -90,7 +90,7 @@
                 console.log(questions, interviewName);
                 if (typeof SpeechSynthesisUtterance === "undefined" || typeof synth === "undefined") {
                     alert("이 브라우저에서 테스트가 불가능합니다.");
-                    endInterview.href = '/interview/aaaa'; //이동할 경로
+                    endInterview.href = '/interview/test'; //이동할 경로
                     endInterview.click();
                 } else { //가능한 경우 초기 html 추가 및 카메라 화면 설정
                     speechMsg.rate = 1; // 속도: 0.1 ~ 10
@@ -232,7 +232,7 @@
                     startInterview(idx);
                 } else { //면접 종료
                     console.log("면접을 종료합니다");
-                    endInterview.href = '/interview/aaaa'; //이동할 경로
+                    endInterview.href = '/interview/test'; //이동할 경로
                     endInterview.click();
                 }
             }

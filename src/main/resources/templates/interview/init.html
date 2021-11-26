@@ -155,7 +155,7 @@
                             <select class="input width-40 center" id="baseQuestion" name="baseQuestion" required>
                                 <option class=center value="" hidden>-- 문제 수 선택 --</option>
                                 <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
-                                    <option th.value="${num}"><p th:text="${num}"></p></option>
+                                    <option th:value="${num}"><p th:text="${num}"></p></option>
                                 </th:block>
                             </select><br>
 
@@ -163,7 +163,7 @@
                             <select class="input width-40 center" id="csQuestion" name="csQuestion" required>
                                 <option value="" hidden>-- 문제 수 선택 --</option>
                                 <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
-                                    <option th.value="${num}"><p th:text="${num}"></p></option>
+                                    <option th:value="${num}"><p th:text="${num}"></p></option>
                                 </th:block>
                             </select>
                         </div><br>
@@ -174,7 +174,7 @@
                             <select class="center input width-70" id="essaySelect" name="essayName" onChange="afterSelect()" required>
                                 <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
                                 <th:block th:each="essay: ${essayMap}">
-                                    <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
+                                    <option th:value="${essay.key}"><p th:text="${essay.key}"></p></option>
                                 </th:block>
                                 <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
                             </select>

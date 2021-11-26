@@ -115,6 +115,7 @@ public class MainController {
         UpdateDTO updateDTO = memberService.toUpdateDTO(loginMember);
 
         model.addAttribute("member", updateDTO);
+        model.addAttribute("loginNickname", nickname);
 
         return "mypage/updateInformation";
 

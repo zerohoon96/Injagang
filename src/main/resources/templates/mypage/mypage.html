@@ -95,7 +95,7 @@
                         "<tr>" +
                         "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
                         "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
-                        "<td class='text-align-center'>" + essay.questionNum + "</td>";
+                        "<td class='text-align-center'><a href='/essay/board/" + essay.id + "'>" + essay.questionNum + "</a></td>";
                     
                     if(essay.access == 0){
                         str += '<td class="text-align-center">' + '나만 보기' + '</td>';
@@ -116,7 +116,7 @@
                 head.innerHTML =
                     "<th class='col-5 text-align-center'>면접게시물 제목</th>" +
                     "<th class='col-2 text-align-center'>문항 개수</th>" +
-                    "<th class='col-2 text-align-center'>댓글 개수</th>" +
+                    "<th class='col-2 text-align-center'>피드백 개수</th>" +
                     "<th class='col-3 text-align-center'>작성 날짜</th>";
 
                 body.innerHTML = "";

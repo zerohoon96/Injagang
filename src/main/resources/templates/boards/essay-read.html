@@ -58,7 +58,7 @@
                             <input style="display: none" name="eb_pk" th:value="${result.pk}">
                             <input style="display: none" name="question_pk" th:value="${qdto.pk}">
                             <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${loginNickname == qdto.nickname}">삭제</button>
+                                    th:if="${loginNickname == qdto.nickname || loginNickname == result.writer}">삭제</button>
                         </form>
                     </div>
             
@@ -116,7 +116,7 @@
                         <input style="display: none" name="eb_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
                         <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${loginNickname == dto.nickname}">삭제</button>
+                                th:if="${loginNickname == dto.nickname || loginNickname == result.writer}">삭제</button>
                     </form>
                 </div>
     

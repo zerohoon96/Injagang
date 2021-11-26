@@ -59,10 +59,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link"
-                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
-            </li>
+              <li id="welcome_nickname" class="nav-item active">
+              </li>
+<!--            <li class="nav-item active">-->
+<!--              <a class="nav-link"-->
+<!--                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>-->
+<!--            </li>-->
             <li class="nav-item">
               <a class="nav-link" href="#">포인트(...)</a>
             </li>
@@ -88,11 +90,20 @@
   <!-- /#wrapper -->
 
   <!-- Menu Toggle Script -->
-  <script>
+  <script th:inline="javascript">
     $("#menu-toggle").click(function(e){
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+    
+    function checkSession() {
+        let loginNickname = [[${loginNickname}]];
+        if(loginNickname != null) {
+            $('#welcome_nickname').append('<a class="nav-link"' +
+                    ' href="/mypage/' + loginNickname + '">'+ loginNickname + '님 환영합니다! <span class="sr-only">(current)</span></a>');
+        }
+        // console.log("loginNickname: " + loginNickname);
+    }
 
     $('#navbarDropdown').on('click', function(){
       
@@ -143,7 +154,7 @@
 
     }
 
-
+    checkSession(); //로그인 되어있으면 환영 메시지 출력
 
   </script>
 
