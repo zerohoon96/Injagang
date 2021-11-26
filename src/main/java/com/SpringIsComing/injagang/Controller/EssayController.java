@@ -114,9 +114,14 @@ public class EssayController {
         //레포지토리에 피드백 객체 저장
         System.out.println("essayId : "+essayId);
 //        System.out.println(feedback);
-        for (EssayFeedbackQuestionDTO data: feedback.getEveryComment()) {
-            System.out.println(data);
+        for(int i =0;i<feedback.getEveryComment().size();i++) {
+            System.out.println("================================================");
+            System.out.println(i+1);
+            System.out.println(feedback.getEveryComment().get(i));
         }
+//        for (EssayFeedbackQuestionDTO data: feedback.getEveryComment()) {
+//            System.out.println(data);
+//        }
 //        System.out.println(feedback.getEveryComment());
         return "feedback/essay/z";
 //        feedback.setId(0L);
