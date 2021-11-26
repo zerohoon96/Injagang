@@ -153,6 +153,7 @@
                     console.log('not finished!!!');
                     selectedObj.removeAllRanges();
                 }
+                console.log('여기는??? ',document.getElementById('answer' + idx).childNodes);
                 console.log('click start~');
                 startPoint = idx;
                 console.log('==========================');
@@ -216,6 +217,7 @@
                 console.log('[highlightHandler] idx : ', idx, 'color : ', color, 'mode : ', mode);
                 selectedObj.removeAllRanges();
                 selectedObj.addRange(range);
+                console.log('range : ',range);
                 document.getElementById('answer' + idx).contentEditable = 'true'; //edit 가능으로 임시 설정
                 if (mode == 1) {
                     document.execCommand('hiliteColor', false, color); //지정한 색상으로 그리기
@@ -243,7 +245,6 @@
                 }
                 addBtn[idx - 1].display = "none";
                 document.getElementById('getFeedback' + idx).innerHTML = '';
-                console.log('==========================');
             }
 
             function addPlusBtn(idx) {
@@ -261,8 +262,6 @@
                     '<textarea id="input' + idx + '" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea><br>' +
                     '<button type="button" onclick="addFeedback(' + idx + ')">확인</button>' +
                     '<button type="button" onclick="cancelFeedback(' + idx + ')">취소</button>';
-                console.log('==========================');
-
             }
 
             function cancelFeedback(idx) { //첨삭 취소 버튼을 눌렀을때 처리
@@ -302,10 +301,15 @@
                 console.log('==========================');
                 console.log('[makeHighlight] idx : ', idx, 'color : ', color);
 
+
                 //기존 노드 리스트 저장
                 console.log('_________________________________');
                 console.log('기존에 있는 노드들 입니다!');
-                console.log(document.getElementById('answer' + idx).childNodes);
+
+                document.getElementById('answer' + idx).childNodes.forEach((eachNode) => {
+                    console.log(eachNode);
+                });
+
                 document.getElementById('answer' + idx).childNodes.forEach((eachNode) => {
                     priorNodeList.push(eachNode);
                 });
@@ -315,7 +319,7 @@
                 selectedString[idx - 1].push(rangeBuf[idx - 1].toString());
                 highlightHandler(idx, color, rangeBuf[idx - 1], 1); //현재 선택된 부분에 하이라이트 생성
                 afterNodeList = document.getElementById('answer' + idx).childNodes;
-
+                console.log('after !! :',afterNodeList);
                 for (let i = 0; i < priorNodeList.length; i++) { //기존 노드 리스트와 하이라이트 후 노드 리스트의 바뀐 부분 비교
                     if (afterNodeList[i].nodeName == '#text') {
                         continue;
@@ -393,6 +397,28 @@
                 //리스트 정보 삭제
                 container[curIdx - 1].splice(deleteIdx, 1);
                 // selectedObj.removeAllRanges(); //모든 레인지 삭제
+
+
+                mergeText(curIdx);
+            }
+
+            function mergeText(idx) {
+                let tmp = document.getElementById('answer' + idx).childNodes;
+                console.log('탐색전 : ',document.getElementById('answer' + idx).innerHTML);
+                console.log(tmp);
+                for(let i = 0; i < tmp.length - 1 ; i++) {
+                    console.log('i : ',i,'len : ',tmp.length,'now : ',tmp[i],'next : ', tmp[i+1]);
+                    if(tmp[i].nodeName == '#text' && tmp[i+1].nodeName == '#text') {
+                        console.log('추가 전 : ',tmp[i].nodeValue);
+                        tmp[i].nodeValue += tmp[i + 1].nodeValue;
+                        console.log('추가 후 : ',tmp[i].nodeValue);
+                        document.getElementById('answer' + idx).removeChild(tmp[i+1]);
+                        i--;
+                    }
+                }
+                console.log('탐색후 : ',document.getElementById('answer' + idx).innerHTML);
+                console.log(tmp);
+
             }
         </script>
         </body>
