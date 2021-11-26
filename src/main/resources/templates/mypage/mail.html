@@ -86,10 +86,12 @@
         <div class="body">
             <div id="content">
 
-                <a href="#" class="margin-top-30"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
+                <a href="/login" class="margin-top-30"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
 
-                <p>이메일 보냈으니 확인하셈 ㅡㅡ</p>
-
+                <span>입력하신 이메일로 메일을 전송했습니다.</span>
+                <span>이메일을 확인해주세요.</span>
+                <br><br>
+                <button class="w-400 btn btn-primary" th:onclick="|location.href='@{/login}'|">로그인하러가기</button>
             </div>
         </div>
         </body>

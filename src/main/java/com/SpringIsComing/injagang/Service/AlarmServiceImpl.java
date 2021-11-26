@@ -57,6 +57,11 @@ public class AlarmServiceImpl  implements AlarmService {
 
     }
 
+    @Override
+    public Long addExpectedQuestionAlarm(Long essayId, String nickname) {
+        return createEssayAlarm(essayId, nickname,"예상질문");
+    }
+
     private Long createEssayAlarm(Long essayId, String nickname, String type) {
         Essay essay = essayRepository.findById(essayId).orElseThrow(
                 () -> new IllegalArgumentException("에세이 없당")

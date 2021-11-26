@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FriendRequest {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "FRIENDREQUEST_ID")
     private Long id;
@@ -21,4 +22,5 @@ public class FriendRequest {
     //서로 친구 맺은 회원들의 PK
     private Long memberA_id;
     private Long memberB_id;
+
 }

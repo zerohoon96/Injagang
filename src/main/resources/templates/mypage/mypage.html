@@ -52,9 +52,9 @@
                         onClick="displayFriend()">친구 목록
                 </button>
 
-                <a th:if="${friendState} == 2" href="/mypage/request-friendRequest" type="button" class="btn btn-outline-secondary">친구 신청</a>
-                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 신청 대기중</a>
-                <a th:if="${friendState} == 4" href="/mypage/request-friendRequest" type="button"
+                <a th:if="${friendState} == 2" th:href="@{/mypage/requestFriendRequest/{nickname}(nickname = ${nickname})}" type="button" class="btn btn-outline-secondary">친구 신청</a>
+                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 수락 대기중</a>
+                <a th:if="${friendState} == 4" th:href="@{/mypage/acceptFriendRequest/{nickname}(nickname = ${nickname})}" type="button"
                    class="btn btn-outline-secondary">친구 수락하기</a>
             </div>
         </div>
