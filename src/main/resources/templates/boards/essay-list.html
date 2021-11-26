@@ -3,13 +3,20 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
+        <head>
+            <style>
+                tr {
+                    text-align: center;
+                }
+            </style>
+        </head>
+
         <h1 class="mt-4">자소서 게시판</h1>
-        
         <!-- 게시판 글목록 테이블 -->
         <table id="board_body" class="table table-striped col-12">
             <thead>
-            <tr>
-                <th scope="col">제목</th>
+            <tr style="border-top:none !important;">
+                <th class="text-left" scope="col">제목</th>
                 <th scope="col">예상질문</th>
                 <th scope="col">피드백</th>
                 <th scope="col">글쓴이</th>
@@ -18,9 +25,9 @@
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}" th:if="${dto.access} == 2">
-                <td><a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page},
+                <td class="text-left"><a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page},
                 type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
-                    [[${dto.title}]]</a><span>[댓글:[[${dto.rCnt}]]]</span></td>
+                    [[${dto.title}]]</a><span class="ml-1" th:text="|[${dto.rCnt}]|"></span></td>
                 <td>[[${dto.qCnt}]]</td>
                 <td>[[${dto.fCnt}]]</td>
                 <td>[[${dto.writer}]]</td>
@@ -61,16 +68,16 @@
         <form action="/essay/board" method="get" id="searchForm">
             <div class="input-group" style="margin: auto;">
                 <input type="hidden" name="page" value="1">
-                <div class="input-group-prepend">
+                <div class="input-group-prepend mr-1">
                     <select class="custom-select" name="type">
-                        <option th:selected="${pageRequestDTO.type == null}">-------</option>
-                        <option value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
-                        <option value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                        <option style="text-align: center" th:selected="${pageRequestDTO.type == null}">선택</option>
+                        <option style="text-align: center" value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
+                        <option style="text-align: center" value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
                     </select>
                 </div>
-                <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <input style="border-radius: 4px" class="form-control mr-1" name="keyword" th:value="${pageRequestDTO.keyword}">
                 <div class="input-group-append" id="button-addon4">
-                    <button class="btn btn-outline-secondary btn-search" type="button">검색</button>
+                    <button style="border-bottom-left-radius: 4px; border-top-left-radius: 4px" class="btn btn-outline-secondary btn-search" type="button">검색</button>
                     <button class="btn btn-outline-secondary btn-clear" type="button">초기화</button>
                 </div>
             </div>
