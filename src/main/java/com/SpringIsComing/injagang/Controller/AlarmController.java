@@ -59,12 +59,11 @@ public class AlarmController {
         result.addAll(friendDTO);
 
         log.info("쓰벌2={}",result.size());
-        log.info("쓰벌3={}",result.get(0));
+//        log.info("쓰벌3={}",result.get(0));
         Collections.sort(result);
-        log.info("쓰벌4={}",result.get(0));
+//        log.info("쓰벌4={}",result.get(0));
 
         return result;
-
     }
 
     @PostMapping("/alarmRead")

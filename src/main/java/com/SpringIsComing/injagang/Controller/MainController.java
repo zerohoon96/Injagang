@@ -209,7 +209,6 @@ public class MainController {
     public String loginStart(Member member) {
 
         return "mypage/login";
-
     }
 
     /**

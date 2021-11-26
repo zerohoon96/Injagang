@@ -12,6 +12,8 @@ public class InterviewController {
      **/
     @GetMapping("/init")
     public String interviewInit() {
+
+
         return "interview/init";
     }
 }
