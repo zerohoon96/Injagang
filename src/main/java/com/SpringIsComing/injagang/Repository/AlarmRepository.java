@@ -1,5 +1,6 @@
 package com.SpringIsComing.injagang.Repository;
 
+import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Interview;
 import com.SpringIsComing.injagang.Entity.alarm.Alarm;
 import com.SpringIsComing.injagang.Entity.Member;
@@ -28,4 +29,6 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     List<FriendAlarm> findFriendAlarmsByMember(@Param("m") Member member);
 
     List<InterviewAlarm> findAlarmsByInterview(Interview interview);
+
+    List<EssayAlarm> findAlarmsByEssay(Essay essay);
 }
