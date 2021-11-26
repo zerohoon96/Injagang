@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.Entity.Friend;
+import com.SpringIsComing.injagang.Entity.FriendRequest;
 import com.SpringIsComing.injagang.Entity.Member;
 import com.SpringIsComing.injagang.Repository.FriendRepository;
 import com.SpringIsComing.injagang.Repository.FriendRequestRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,6 +32,43 @@ public class FriendServiceImpl implements FriendService {
     public boolean existRequest(Long loginId, Long targetId) {
 
         return friendRequestRepository.findFriendByIds(loginId, targetId).isPresent();
+
+    }
+
+    @Override
+    public void addFriendRequest(Long loginId, Long targetId) {
+        FriendRequest friendRequest = FriendRequest.builder()
+                .memberA_id(loginId)
+                .memberB_id(targetId)
+                .build();
+
+        friendRequestRepository.save(friendRequest);
+    }
+
+    @Override
+    public void acceptFriendRequest(Long loginId, Long targetId) {
+
+        Optional<FriendRequest> friendRequest = friendRequestRepository.findFriendByIds(targetId, loginId);
+
+        if (friendRequest.isPresent()) {
+
+            FriendRequest request = friendRequest.get();
+
+            friendRequestRepository.delete(request);
+
+            Member targetMember = memberRepository.findById(targetId).orElseThrow(
+                    () -> new IllegalArgumentException("멤버가 없어용")
+            );
+
+            Member loginMember = memberRepository.findById(loginId).orElseThrow(
+                    () -> new IllegalArgumentException("멤버가 없어용")
+            );
+
+            addFriend(loginMember.getNickname(), targetMember.getNickname());
+
+        }
+
+
 
     }
 
