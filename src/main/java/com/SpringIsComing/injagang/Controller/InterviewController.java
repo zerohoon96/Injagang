@@ -17,7 +17,6 @@ public class InterviewController {
 
     private final InterviewService service;
 
-    private final
     /**
      * 면접 세팅 화면
      **/

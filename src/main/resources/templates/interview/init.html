@@ -23,7 +23,7 @@
                     for (i = 0; i < questionValue.length; i++)
                         document.getElementById('inputQuestion').innerHTML += createInput(i);
                     //새로운 입력창 띄움
-                    document.getElementById('inputQuestion').innerHTML += "<input class='input width-70' type='text' name='question' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
+                    document.getElementById('inputQuestion').innerHTML += "<input class='input width-70' type='text' name='question' value='"+cur+"' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
                         "<input class='btn btn-style-mini' type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
                 }
 
