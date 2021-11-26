@@ -19,6 +19,7 @@ public interface AlarmService {
 
     Long addEssayReplyAlarm(Long essayId,String nickname);
     Long addFeedbackAlarm(Long essayId,String nickname);
+    Long addExpectedQuestionAlarm(Long essayId, String nickname);
     Long addInterviewReplyAlarm(Long interviewId,String nickname);
     Long addInterviewFeedbackAlarm(Long interviewId,String nickname);
     Long addFriendRequestAlarm(String targetNickname, String loginNickname);

@@ -43,12 +43,15 @@ public interface EssayService {
 
     default MypageEssayDTO toMypageEssayDTO(Essay essay) {
 
+        List<EssayContent> contentList = essay.getContents();
+        int cnt = contentList.stream().mapToInt(content -> content.getQuestions().size()).sum();
+
         MypageEssayDTO dto = MypageEssayDTO.builder()
                 .id(essay.getId())
                 .title(essay.getTitle())
                 .essayTitle(essay.getEssayTitle())
                 .feedbackNum(essay.getFeedbacks().size())
-                .questionNum(essay.getContents().size())
+                .questionNum(cnt)
                 .createTime(essay.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .build();
 

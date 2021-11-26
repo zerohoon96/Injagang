@@ -41,20 +41,11 @@
       </div>
       <br>
       <div class="list-group list-group-flush">
-        <!--
-          <a href="#" class="list-group-item list-group-item-action bg-light">MyPage</a>
-        -->
         <a th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}" class="list-group-item list-group-item-action bg-light">MyPage</a>
         <a th:href="@{/essay/board}" class="list-group-item list-group-item-action bg-light">자소서 게시판</a>
         <a th:href="@{/interview/board}" class="list-group-item list-group-item-action bg-light">면접 게시판</a>
         <a th:href="@{/essay/write}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
-        <!--/*
-        <a th:href="@{/essay}" class="list-group-item list-group-item-action bg-light">자소서 쓰기</a>
-        */-->
-        <a href="#" class="list-group-item list-group-item-action bg-light">면접 보기</a>
-        <!--/*
         <a th:href="@{/interview/init}" class="list-group-item list-group-item-action bg-light">면접 보기</a>
-        */-->
         <a th:href="@{/essay/add}" class="list-group-item list-group-item-action bg-light">템플릿 추가</a>
       </div>
     </div>
@@ -74,10 +65,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link"
-                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>
-            </li>
+              <li id="welcome_nickname" class="nav-item active">
+              </li>
+<!--            <li class="nav-item active">-->
+<!--              <a class="nav-link"-->
+<!--                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>-->
+<!--            </li>-->
             <li class="nav-item">
               <a class="nav-link" href="#">포인트(...)</a>
             </li>
@@ -103,18 +96,28 @@
   <!-- /#wrapper -->
 
   <!-- Menu Toggle Script -->
-  <script>
+  <script th:inline="javascript">
     $("#menu-toggle").click(function(e){
       e.preventDefault();
       $("#wrapper").toggleClass("toggled");
     });
+    
+    function checkSession() {
+        let loginNickname = [[${loginNickname}]];
+        if(loginNickname != null) {
+            $('#welcome_nickname').append('<a class="nav-link"' +
+                    ' href="/mypage/' + loginNickname + '">'+ loginNickname + '님 환영합니다! <span class="sr-only">(current)</span></a>');
+        }
+        // console.log("loginNickname: " + loginNickname);
+    }
 
     $('#navbarDropdown').on('click', function(){
-
+      
       $.ajax({
         url: "/showAlarm",
         type: "GET",
         success: function(data){
+            console.log("data: " + data);
 
           $("#navbarDropdownList").empty();
 
@@ -124,14 +127,13 @@
             } else if (data[i].type == 2) {
               $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/interview/board/" + data[i].contentId + "\""+" onClick=\"readAlarm("+data[i].id+")\""+">" + data[i].content + "</a>");
             } else {
-              $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/mypage/"+data[i].nickname +"\""+" onClick=\"readAlarm("+data[i].id+")\""+">"+data[i].content+"</a>");
+                $('#navbarDropdownList').append("<a class=\"dropdown-item\" href=\"/mypage/" + data[i].nickname + "\"" + " onClick=\"readAlarm(" + data[i].id + ")\"" + ">" + data[i].content + "</a>");
             }
-
-
           }
         },
         error: function(){
           // alert("restController err");
+            console.log("No Session");
         }
       });
     });
@@ -158,7 +160,7 @@
 
     }
 
-
+    checkSession(); //로그인 되어있으면 환영 메시지 출력
 
   </script>
 

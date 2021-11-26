@@ -31,23 +31,26 @@
                         <input name="title" class="form-control" th:value="${result.title}">
                     </div>
     
-                    <div class="form-group" th:each="dto : ${result.videoList}">
-                        <br>
-                        <label>[[${dto.videoName}]]</label>
-                        <br>
-                        <video width="640" height="360" controls>
-                            <source th:src="${dto.url}" type="video/mp4">
-                        </video>
-                    </div>
-                
                     <!-- 게시물 글 내용 -->
                     <br>
                     <div>
                         <label>글 수정</label>
                         <br>
-                        <textarea cols="80" name="text" class="form-control">[[${result.text}]]</textarea>
+                        <textarea name="text" class="form-control">[[${result.text}]]</textarea>
                     </div>
+                    
                 </form>
+                <br>
+                
+                <!-- 업로드한 비디오들 -->
+                <div class="form-group" th:each="dto : ${result.videoList}">
+                    <br>
+                    <label>[[${dto.videoName}]]</label>
+                    <br>
+                    <video width="640" height="360" controls>
+                        <source th:src="${dto.url}" type="video/mp4">
+                    </video>
+                </div>
                 <br>
             
                 <!-- 수정 완료 버튼-->

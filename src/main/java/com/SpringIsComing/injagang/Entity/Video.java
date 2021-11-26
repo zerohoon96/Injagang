@@ -31,6 +31,8 @@ public class Video {
     private List<InterviewFeedback> feedbacks = new ArrayList<>();
 
     private String videoURL; //영상 url
+
     private String videoName; //영상 제목
+
     private LocalDateTime date;
 }

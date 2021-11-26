@@ -88,7 +88,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void confirmEmail(String token) {
 
         AuthToken findToken = authTokenRepository.findByIdAndExpirationDateAfterAndExpired(token, LocalDateTime.now(), false)

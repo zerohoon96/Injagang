@@ -1,164 +1,204 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-  <th:block th:fragment="content">
-    <head>
-      <script th:inline="javascript">
-        var questionValue = new Array(0);
-        var cur = "";
-        function addInput() { //추가 버튼을 눌렀을때
-        if(cur.length>0){ //입력값이 있어야 추가
-          questionValue.push(cur);
-          cur="";
-        }
-        display();
-        }
+    <th:block th:fragment="content">
+        <head>
+            <script th:inline="javascript">
+                var questionValue = new Array(0);
+                var cur = "";
 
-        function display() {
-          document.getElementById('inputQuestion').innerHTML="";
-          //기존 내용, 삭제 버튼 추가
-          for(i=0;i<questionValue.length;i++)
-            document.getElementById('inputQuestion').innerHTML+=createInput(i);
-          //새로운 입력창 띄움
-          document.getElementById('inputQuestion').innerHTML+="<input class=input1 type='text' name='question' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  "+
-                  "<input class=input2 type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
-        }
+                function addInput() { //추가 버튼을 눌렀을때
+                    if (cur.length > 0) { //입력값이 있어야 추가
+                        console.log("cur : ",cur);
+                        questionValue.push(cur);
+                        console.log("추가 후 : ",questionValue);
+                        cur = "";
+                    }
+                    display();
+                }
 
-        function createInput(idx) {
-          return "<input class=input1 type='text' name='question"+(idx+1)+"' value="+questionValue[idx]+" readonly>  "+
-                  "<input class=input2 type='button' value='삭제' onclick='deleteInput("+(idx)+");''></div><br>";
-        }
+                function display() {
+                    document.getElementById('inputQuestion').innerHTML = "";
+                    //기존 내용, 삭제 버튼 추가
+                    for (i = 0; i < questionValue.length; i++)
+                        document.getElementById('inputQuestion').innerHTML += createInput(i);
+                    //새로운 입력창 띄움
+                    document.getElementById('inputQuestion').innerHTML += "<input class='input width-70' type='text' name='question' value='"+cur+"' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
+                        "<input class='btn btn-style-mini' type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
+                }
 
-        function deleteInput(idx) { //삭제 버튼 눌렀을때
-          console.log("삭제 인덱스 : ",idx);
-          console.log("삭제전 상태",questionValue.length)
-          for(i=0;i<questionValue.length;i++)
-            console.log(i,questionValue[i]);
-          if(questionValue.length>0) {
-            questionValue.splice(idx,1);
-          }
-          console.log("삭제후 상태",questionValue.length)
-          for(i=0;i<questionValue.length;i++)
-            console.log(i,questionValue[i]);
-          display();
-        }
+                function createInput(idx) { //기존에 저장한 추가 질문 및 삭제 버튼을 추가하는 함수
+                    return "<input class='input width-70' type='text' name='question" + (idx + 1) + "' value='" + questionValue[idx] + "' readonly>  " +
+                        "<input class='btn btn-style-mini' type='button' value='삭제' onclick='deleteInput(" + (idx) + ");''></div><br>";
+                }
 
-        function afterSelect() { //자기소개서 선택 후
-          var selectForm = document.getElementById("essaySelect"); //자기소개서 선택
-          var essayName = selectForm.options[selectForm.selectedIndex].value; //자기소개서 선택 결과
-          let essayMap = [[${essayMap}]]; //자기소개서 map (이걸 활용해서 각 댓글수 추출)
+                function deleteInput(idx) { //삭제 버튼 눌렀을때
+                    for (i = 0; i < questionValue.length; i++)
+                        console.log(i, questionValue[i]);
+                    if (questionValue.length > 0) {
+                        questionValue.splice(idx, 1);
+                    }
+                    display();
+                }
 
-          console.log("essay name : ",essayName);
-          console.log("essayMap : ",essayMap[essayName],typeof essayMap);
-          if(essayMap[essayName]!=undefined) { //자기소개서를 선택한 경우
-            document.getElementById('expectedQuestion').innerHTML = "<option value='' hidden>질문 수</option>";
-            for (i = 1; i <= essayMap[essayName]; i++) //질문 개수만큼 설정 option 생성
-              document.getElementById('expectedQuestion').innerHTML += "<option value=" + i + ">" + i + "</option>";
-          }
-          else { //자기소개서를 선택하지 않은 경우
-            document.getElementById('expectedQuestion').innerHTML = "";
-            document.getElementById('expectedQuestion').innerHTML += "<option value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
-          }
-          console.log(document.getElementById('expectedQuestion').innerHTML);
-        }
+                function afterSelect() { //자기소개서 선택 후
+                    var selectForm = document.getElementById("essaySelect"); //자기소개서 선택
+                    var essayName = selectForm.options[selectForm.selectedIndex].value; //자기소개서 선택 결과
+                    let essayMap = [[${essayMap}]]; //자기소개서 map (이걸 활용해서 각 댓글수 추출)
 
-      </script> 
-      <meta charset="utf-8"/>
-      <title>면접 보기</title>
-      <style>
-        #interviewForm {
-          /* display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 100vh;
-          border: 1px solid #000000;
-          margin: 0px; */
-          border: 20px solid lightblue;
-          padding: 5px 20px;
-          position: absolute;
-          top: 30%;
-          left: 50%;
-          /* width: 100vh; height: 100vh; */
-          margin-left: -220px;
-          margin-top : -170px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          /* text-align: center; */
-        }
-        .input1 {
-          width: 300px;
-        height: 30px;
-        text-align: center;
-        }
-        .input2 {
-          width: 70px;
-          height: 33px;
-          text-align: center;
-        }
-        .input3 {
-          width: 150px;
-          height: 35px;
-          text-align: center;
-        }
-      </style>
-    </head>
-    <body>
-    <div id="interviewForm">
-      <section>
-        <h1 style="text-align: center;">면접 보기</h1>
-        <form name="interview" action="/interview/test" method="post">
-          <div>면접 제목<br>
-            <input class=input1 type="text" name="interviewName" placeholder="면접 제목을 입력하세요" required>
-          </div>
-          <br><br>
-          <div>
-            기본 문제 선택
-            <div>인성 질문
-              <select class=input3 name="baseQuestion" required>
-                <option value="" hidden>-- 문제 수 선택 --</option>
-                <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
-                  <option th.value="${num}"><p th:text="${num}"></p></option>
-                </th:block>
-              </select>
-            </div>
-            <div>전공 질문
-              <select class=input3 name="csQuestion" required>
-                <option value="" hidden>-- 문제 수 선택 --</option>
-                <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
-                  <option th.value="${num}"><p th:text="${num}"></p></option>
-                </th:block>
-              </select>
-            </div>
-          </div>
+                    if (essayMap[essayName] != undefined) { //자기소개서를 선택한 경우
+                        document.getElementById('expectedQuestion').innerHTML = "<option value='' hidden>질문 수</option>";
+                        for (i = 1; i <= essayMap[essayName]; i++) //질문 개수만큼 설정 option 생성
+                            document.getElementById('expectedQuestion').innerHTML += "<option class='center' value=" + i + ">" + i + "</option>";
+                    } else { //자기소개서를 선택하지 않은 경우
+                        document.getElementById('expectedQuestion').innerHTML = "";
+                        document.getElementById('expectedQuestion').innerHTML += "<option class='center' value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
+                    }
+                }
 
-          <br><br>
-
-          <div id="selectEssay">예상 질문 댓글<br>
-            <select id="essaySelect" class=input1 name="essayName" onChange="afterSelect()" required>
-              <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
-              <th:block th:each="essay: ${essayMap}">
-                <option th.value="${essay.key}"><p th:text="${essay.key}"></p></option>
-              </th:block>
-              <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
-            </select>
-            <select id="expectedQuestion" class=input2 name="expectedQuestion" required>
-              <option value="">질문 수</option>
-            </select>
-          </div>
-          <br><br>
-          직접 입력하기<br>
-          <div id="inputQuestion">
-            <script>
-              display();
             </script>
-          </div>
-          <input class=input2 type="submit" name="" value="면접 시작">
-        </form>
-      </section>
-    </div>
-    </body>
-  </th:block>
+            <meta charset="utf-8"/>
+            <title>면접 보기</title>
+            <style>
+                #headLine {
+                    font-family: 함초롬바탕;
+                    font-size: 35px;
+                    font-weight: bold;
+                    text-align: center;
+                    margin-top: 5%;
+                    margin-left: 25%;
+                    width: 50%;
+                }
+
+                .btn-style-big {
+                    color: #fff;
+                    background-color: plum;
+                    border-color: plum;
+                    text-align: center;
+                    width: 200px;
+                    height: 50px;
+                }
+
+                .btn-style-mini {
+                    color: #fff;
+                    background-color: plum;
+                    border-color: plum;
+                    text-align: center;
+                    width: 100px;
+                    height: 50px;
+                }
+
+                .body {
+                    display: flex;
+                    height: 100%;
+                    background: #f5f6f7;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .center {
+                    text-align: center;
+                }
+                .bold {
+                    font-weight: bold;
+                }
+                #content {
+                    display: flex;
+                    flex-direction: column;
+                    width: 600px;
+                    /* justify-content: center; */
+                    align-items: center;
+                }
+                .margin-bottom-10 {
+                    margin-bottom: 30px;
+                }
+                .input{
+                    display: inline;
+                    height: 51px;
+                    border: solid 1px #dadada;
+                    padding: 10px 14px 10px 14px;
+                    box-sizing: border-box;
+                    background: #fff;
+                    /* position: relative; */
+                }
+                .width-100 {
+                    width: 100%;
+                }
+                .width-70 {
+                    width: 70%;
+                }
+                .width-40 {
+                    width: 40%;
+                }
+                .width-20 {
+                    width: 20%;
+                }
+            </style>
+        </head>
+        <body>
+        <div class="body">
+            <div id="content">
+                <div class="form-group container-fluid" id="interviewForm">
+                    <div id="headLine">
+                        <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>
+                    </div>
+                    <br>
+                    <form name="interview" action="/interview/test" method="post">
+                        <div class="margin-bottom-10">
+                            <label class=bold for="interviewName">면접 제목</label><br>
+                            <input class="input width-100" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요" required>
+                        </div><br>
+
+                        <div class="margin-bottom-10">
+                            <label class=bold>기본 문제 선택</label><br>
+                            <label class="center width-40" for="baseQuestion">인성 면접 질문</label>
+                            <select class="input width-40 center" id="baseQuestion" name="baseQuestion" required>
+                                <option class=center value="" hidden>-- 문제 수 선택 --</option>
+                                <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                                    <option th:value="${num}"><p th:text="${num}"></p></option>
+                                </th:block>
+                            </select><br>
+
+                            <label class="center width-40" for="csQuestion">CS 면접 질문</label>
+                            <select class="input width-40 center" id="csQuestion" name="csQuestion" required>
+                                <option value="" hidden>-- 문제 수 선택 --</option>
+                                <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                                    <option th:value="${num}"><p th:text="${num}"></p></option>
+                                </th:block>
+                            </select>
+                        </div><br>
+
+                        <div class="margin-bottom-10">
+                            <label class=bold>예상 질문 댓글</label><br>
+
+                            <select class="center input width-70" id="essaySelect" name="essayName" onChange="afterSelect()" required>
+                                <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
+                                <th:block th:each="essay: ${essayMap}">
+                                    <option th:value="${essay.key}"><p th:text="${essay.key}"></p></option>
+                                </th:block>
+                                <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
+                            </select>
+                            <select class="input width-20" id="expectedQuestion" name="expectedQuestion" required>
+                                <option value="">질문 수</option>
+                            </select>
+                        </div><br>
+
+                        <div class="margin-bottom-10">
+                            <label class=bold>직접 입력하기</label><br>
+                            *앞서 선택한 문제들과 겹칠 수가 있습니다.<br>
+                            *영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)<br>
+                            <div id="inputQuestion">
+                                <script>
+                                    display();
+                                </script>
+                            </div>
+                        </div><br>
+                        <input class="btn btn-style-big" type="submit" name="" value="면접 시작">
+                    </form>
+                </div>
+            </div>
+        </div>
+        </body>
+    </th:block>
 </th:block>
 </html>

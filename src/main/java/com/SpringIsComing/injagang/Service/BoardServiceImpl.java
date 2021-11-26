@@ -2,6 +2,7 @@ package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.*;
+import com.SpringIsComing.injagang.Entity.alarm.InterviewAlarm;
 import com.SpringIsComing.injagang.Repository.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -33,6 +34,7 @@ public class BoardServiceImpl implements BoardService{
     private final VideoRepository videoRepository;
     private final ReplyRepository replyRepository;
     private final ExpectedQuestionRepository questionRepository;
+    private final AlarmRepository alarmRepository;
 
     @Override
     @Transactional
@@ -199,8 +201,7 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     public void deleteInterviewBoard(Long pk) {
         Interview interview = interviewRepository.findById(pk).get();
-        interview.setTitle("");
-        interview.setText("");
+        List<InterviewAlarm> alarms = alarmRepository.findAlarmsByInterview(interview);
 
         List<Reply> replies = interview.getReplies();
         List<Video> videos = interview.getVideos();
@@ -215,6 +216,7 @@ public class BoardServiceImpl implements BoardService{
             }
         }
 
+        alarmRepository.deleteAll(alarms);
         interviewRepository.delete(interview);
     }
 

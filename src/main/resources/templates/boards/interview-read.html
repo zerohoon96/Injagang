@@ -26,13 +26,20 @@
                 <div>
                     <h3>[[${result.title}]]</h3>
                 </div>
+    
+                <!-- 게시물 글 내용 -->
+                <br>
+                <div>
+                    <textarea rows="8" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
+                </div>
+                <br>
                 
                 <!-- 업로드한 동영상과 피드백 -->
                 <div class="form-group" th:each="dto : ${result.videoList}">
                     <br>
                     <label th:for="|${dto.pk}label|">[[${dto.videoName}]]</label>
                     <br>
-                    <video th:id="|${dto.pk}label|" width="800" height="auto" controls>
+                    <video th:id="|${dto.pk}label|" width="600" height="auto" controls>
                         <source th:src="${dto.url}" type="video/mp4">
                     </video>
                     
@@ -45,7 +52,7 @@
                             <input style="display: none" name="ib_pk" th:value="${result.pk}">
                             <input style="display: none" name="feedback_pk" th:value="${fdto.pk}">
                             <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${loginNickname == fdto.nickname}">삭제</button>
+                                    th:if="${loginNickname == fdto.nickname || loginNickname == result.writer}">삭제</button>
                         </form>
                     </div>
                     
@@ -53,12 +60,6 @@
                     <div th:id="${dto.pk}"></div>
                     <input class="feedbackBtn" type="button" value="피드백 달기"
                            th:attr="onclick=|make_feedback('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_feedbackBtn()|">
-                </div>
-    
-                <!-- 게시물 글 내용 -->
-                <br><br>
-                <div>
-                    <textarea rows="10" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
                 </div>
     
                 <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만 -->
@@ -88,7 +89,7 @@
                         <input style="display: none" name="ib_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
                         <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${loginNickname == dto.nickname}">삭제</button>
+                                th:if="${loginNickname == dto.nickname || loginNickname == result.writer}">삭제</button>
                     </form>
                 </div>
     

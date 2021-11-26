@@ -54,9 +54,9 @@
                         onClick="displayFriend()">친구 목록
                 </button>
 
-                <a th:if="${friendState} == 2" th:href="@{/mypage/{nickname}(nickname=${nickname})}" type="button" class="btn btn-outline-secondary">친구 신청</a>
-                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 신청 대기중</a>
-                <a th:if="${friendState} == 4" th:href="/mypage/" type="button"
+                <a th:if="${friendState} == 2" th:href="@{/requestFriendRequest/{nickname}(nickname = ${nickname})}" type="button" class="btn btn-outline-secondary">친구 신청</a>
+                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 수락 대기중</a>
+                <a th:if="${friendState} == 4" th:href="@{/acceptFriendRequest/{nickname}(nickname = ${nickname})}" type="button"
                    class="btn btn-outline-secondary">친구 수락하기</a>
             </div>
         </div>
@@ -95,7 +95,7 @@
                         "<tr>" +
                         "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
                         "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
-                        "<td class='text-align-center'>" + essay.questionNum + "</td>";
+                        "<td class='text-align-center'><a href='/essay/board/" + essay.id + "'>" + essay.questionNum + "</a></td>";
                     
                     if(essay.access == 0){
                         str += '<td class="text-align-center">' + '나만 보기' + '</td>';
@@ -116,14 +116,14 @@
                 head.innerHTML =
                     "<th class='col-5 text-align-center'>면접게시물 제목</th>" +
                     "<th class='col-2 text-align-center'>문항 개수</th>" +
-                    "<th class='col-2 text-align-center'>댓글 개수</th>" +
+                    "<th class='col-2 text-align-center'>피드백 개수</th>" +
                     "<th class='col-3 text-align-center'>작성 날짜</th>";
 
                 body.innerHTML = "";
                 interviewList.forEach((interview) => {
                     body.innerHTML +=
                         "<tr>" +
-                        "<td>" + interview.title + "</a></td>" +
+                        "<td><a href='/interview/board/" + interview.id +"' style='text-decoration: none'>" + interview.title + "</a></td>" +
                         "<td class='text-align-center'>" + interview.questionNum + "</td>" +
                         "<td class='text-align-center'>" + interview.feedbackNum + "</td>" +
                         "<td class='text-align-center'>" + interview.createTime + "</td>" +

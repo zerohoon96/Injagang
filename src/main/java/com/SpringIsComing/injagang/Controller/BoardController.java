@@ -147,7 +147,7 @@ public class BoardController {
         return "redirect:/essay/board";
     }
 
-    //면접 게시물 삭제 - 객체를 삭제하지는 않음
+    //면접 게시물 삭제 - 객체를 삭제
     @GetMapping("/interview/board/delete/{pk}")
     public String deleteInterviewBoard(@PathVariable Long pk) {
         log.info("==========deleteEssayBoard==========");

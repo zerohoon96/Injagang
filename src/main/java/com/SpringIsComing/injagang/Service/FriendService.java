@@ -11,6 +11,8 @@ public interface FriendService {
     List<Friend> findFriends(Member member);
 
     boolean existRequest(Long loginId, Long targetId);
+    void addFriendRequest(Long loginId, Long targetId);
+    void acceptFriendRequest(Long loginId, Long targetId);
 
     void addFriend(String loginNickname, String targetNickname);
 
