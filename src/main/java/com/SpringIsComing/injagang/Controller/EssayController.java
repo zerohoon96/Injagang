@@ -70,7 +70,6 @@ public class EssayController {
             }
         }
 
-
         es.storeEssay(Essay.createEssay(name, t_title, ec));
 
 //        System.out.println("name = " + name);
