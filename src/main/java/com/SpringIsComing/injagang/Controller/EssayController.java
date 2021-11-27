@@ -104,8 +104,8 @@ public class EssayController {
         answers.add("교양선택 수강학점은 20학점 이상에서 자유롭게 수강할 수 있다. 교양선택 영역은 12개 영역(문학과 예술, 역사와 철학, 정보와 기술, 봉사의 리더십, 창의성과 의사소통능력, 세계의 언어, 세계의 문화와 국제관계, 인간과 사회, 정치와 경제, 자연과학과 수리, 생활과 건강, 학문과 진로탐색)로 구성되어 있으며, 이 중 5개 영역에 해당되는 강의를 선택하여 수강하면 된다. 2010학년도부터는 융합형 인재 육성을 위해 수강방식이 바뀌었는데, 이때 학생들은 핵심교양, 융합교양, 실용교양을 구분하여 수강해야 한다. 2010학년도 입학자는 '핵심교양'에 포함되는 영역의 강좌를 반드시 영역별 각 1개 이상 수강하고, '융합교양'에 포함되는 영역의 강좌는 인문/자연계열 기준으로 교차 수강해야 한다.");
         //////////////////////////////////////////////////////////////////////////////////
 
-        feedback.setQuestions(questions);
-        feedback.setAnswers(answers);
+        model.addAttribute("questions", questions);
+        model.addAttribute("answers", answers);
         model.addAttribute("essayPostName","삼성 자소서 첨삭 해주세요!");
         return "feedback/essay/write";
     }
