@@ -65,7 +65,7 @@
                     <video autoplay="true" id="videoElement" muted="true">
                     </video>
                     <a id="autoDownload" href=""></a>
-                    <a id="endInterview" href=""></a>
+                    <a id="endInterview" th:href="@{/interview/test(qCnt=${qCnt}, interviewName=${interviewName})}"></a>
                 </div>
                 <div id="everyBtn"></div>
             </div>
@@ -232,7 +232,6 @@
                     startInterview(idx);
                 } else { //면접 종료
                     console.log("면접을 종료합니다");
-                    endInterview.href = '/interview/test'; //이동할 경로
                     endInterview.click();
                 }
             }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -76,6 +77,7 @@ public class InterviewController {
         log.info("questionList ={}", questionList);
 
         model.addAttribute("questions", questionList);
+        model.addAttribute("qCnt", questionList.size());
         model.addAttribute("interviewName", allParameters.get("interviewName"));
         model.addAttribute("loginNickname", nickname);
         return "interview/test";
@@ -83,9 +85,17 @@ public class InterviewController {
 
     //면접 마쳤을 때
     @GetMapping("/test")
-    String test(@SessionAttribute("loginSession") String nickname, Model model) {
-        model.addAttribute("loginNickname", nickname);
-        return "interview/muyaho";
+    String test(@SessionAttribute("loginSession") String nickname, Model model,
+                @RequestParam("qCnt") int qCnt, @RequestParam("interviewName") String title) {
+
+        log.info("qCnt = {}", qCnt);
+        log.info("interviewName = {}", title);
+
+        //모의면접 객체 저장
+        service.registerTestInterview(qCnt, title, nickname);
+
+//        model.addAttribute("loginNickname", nickname);
+        return "redirect:/mypage/" + nickname;
     }
 
 }

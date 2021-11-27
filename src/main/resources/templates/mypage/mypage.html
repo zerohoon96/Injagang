@@ -52,7 +52,7 @@
                 </button>
                 <!-- 모의면접 기록 추가 -->
                 <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
-                        onClick="">모의면접 기록
+                        onClick="displayMockInterview()">모의면접 기록
                 </button>
                 <!-------------------->
                 <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
@@ -81,10 +81,12 @@
             const body = document.getElementById('body');
             const essayList = [[${essayList}]];
             const interviewList = [[${interviewList}]];
+            const mockInterviewList = [[${mockInterviewList}]];
             const friendList = [[${friendList}]];
-            console.log(essayList)
-            console.log(interviewList)
-            console.log(friendList)
+            console.log(essayList);
+            console.log(interviewList);
+            console.log(mockInterviewList);
+            console.log(friendList);
 
             function displayEssay() {
                 head.innerHTML =
@@ -135,6 +137,23 @@
                         "</tr>";
                 });
 
+            }
+
+            function displayMockInterview() {
+                head.innerHTML =
+                        "<th class='col-5 text-align-center'>면접 제목</th>" +
+                        "<th class='col-2 text-align-center'>질문 개수</th>" +
+                        "<th class='col-3 text-align-center'>작성 날짜</th>";
+    
+                body.innerHTML = "";
+                mockInterviewList.forEach(mock => {
+                    body.innerHTML +=
+                            "<tr>" +
+                            "<td>" + mock.title + "</a></td>" +
+                            "<td class='text-align-center'>" + mock.qCnt + "</td>" +
+                            "<td class='text-align-center'>" + mock.date + "</td>" +
+                            "</tr>";
+                })
             }
 
             function displayFriend() {

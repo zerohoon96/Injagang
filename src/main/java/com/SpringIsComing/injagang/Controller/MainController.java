@@ -8,6 +8,7 @@ import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.Entity.Member;
+import com.SpringIsComing.injagang.Entity.MockInterview;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
@@ -87,15 +88,20 @@ public class MainController {
             }
         }
 
+        List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(nickname);
 
         model.addAttribute("essayList", essayService.findEssays(targetMember).stream()
                 .map(e -> essayService.toMypageEssayDTO(e)).collect(toList()));
+
         model.addAttribute("interviewList", interviewService.findInterviews(targetMember).stream()
                 .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList()));
+
+        model.addAttribute("mockInterviewList", mockInterviewDTOList);
 
         model.addAttribute("friendList", targetFriends.stream()
                 .map(f -> friendService.toMypageDTO(f)).collect(toList()));
 
+        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
         log.info("깐부={}", friendState);
         model.addAttribute("friendState", friendState);
         model.addAttribute("nickname", curNickname);
