@@ -1,11 +1,13 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.EssayFeedbackInfoDTO;
+import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Service.EssayService;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
+import com.SpringIsComing.injagang.Service.FeedbackService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class EssayController {
 
-    private final EssayServiceImpl es;
+    private final EssayService es;
+    private final FeedbackService feedbackService;
     public List<String> questions = new ArrayList<>();
     public List<String> answers = new ArrayList<>();
     /**
@@ -127,9 +130,7 @@ public class EssayController {
                          @PathVariable Long essayId,
                          @ModelAttribute EssayFeedbackInfoDTO feedback) {
         //레포지토리에 피드백 객체 저장
-        testData = feedback;
         System.out.println("essayId : "+essayId);
-//        System.out.println(feedback);
         for(int i =0;i<feedback.getEveryComment().size();i++) {
             System.out.println("================================================");
             System.out.println(i+1);
@@ -144,8 +145,6 @@ public class EssayController {
                         @PathVariable Long essayId,
                         @PathVariable Long feedbackId,
                         @ModelAttribute EssayFeedbackInfoDTO feedback) {
-        feedback.setEveryComment(testData.getEveryComment());
-        feedback.setContent(testData.getContent());
         System.out.println(feedback);
         model.addAttribute("questions", questions);
         model.addAttribute("answers", answers);
