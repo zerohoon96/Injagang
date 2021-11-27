@@ -36,6 +36,7 @@
             <div class="left-space mt-3">
                 <!-- 게시물 제목 -->
                 <h3 class="text-center mb-2">[[${result.title}]]</h3>
+                <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
                 <!-- 게시물 글 내용 -->
                 [[${result.text}]]
 <!--                <textarea class="form-control" rows="5" style="pointer-events: none; border: 0;">[[${result.text}]]</textarea>-->
@@ -45,7 +46,7 @@
                     <br>
                     <label th:for="|${dto.pk}content|" th:text="|${idx.count}. ${dto.title}|"></label>
                     <br>
-                    <textarea rows=10 style="pointer-events: none" th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:value="${dto.text}"></textarea>
+                    <textarea rows=10 style="pointer-events: none" th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:text="${dto.text}"></textarea>
             
                     <!-- 예상질문 부분 -->
                     <div class="mt-2" th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
