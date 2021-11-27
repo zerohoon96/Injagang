@@ -1,7 +1,6 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.EssayFeedbackInfoDTO;
-import com.SpringIsComing.injagang.DTO.EssayFeedbackQuestionDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
 import com.SpringIsComing.injagang.Service.EssayServiceImpl;
@@ -20,7 +19,8 @@ import java.util.*;
 public class EssayController {
 
     private final EssayServiceImpl es;
-
+    public List<String> questions = new ArrayList<>();
+    public List<String> answers = new ArrayList<>();
     /**
      ** 자소서 입력
      */
@@ -107,7 +107,7 @@ public class EssayController {
         model.addAttribute("questions", questions);
         model.addAttribute("answers", answers);
         model.addAttribute("essayPostName","삼성 자소서 첨삭 해주세요!");
-        return "feedback/essay/write";
+        return "feedback/write";
     }
 
     @PostMapping("/feedback/{essayId}/write") //첨삭 저장을 눌렀을때
@@ -115,6 +115,7 @@ public class EssayController {
                          @PathVariable Long essayId,
                          @ModelAttribute EssayFeedbackInfoDTO feedback) {
         //레포지토리에 피드백 객체 저장
+        testData = feedback;
         System.out.println("essayId : "+essayId);
 //        System.out.println(feedback);
         for(int i =0;i<feedback.getEveryComment().size();i++) {
@@ -122,28 +123,21 @@ public class EssayController {
             System.out.println(i+1);
             System.out.println(feedback.getEveryComment().get(i));
         }
-//        for (EssayFeedbackQuestionDTO data: feedback.getEveryComment()) {
-//            System.out.println(data);
-//        }
-//        System.out.println(feedback.getEveryComment());
-        return "feedback/essay/z";
-//        feedback.setId(0L);
-//        return "redirect:/feedback/" + feedback.getId(); //첨삭 읽기로 redirect
+
+        return "redirect:/essay/feedback/" + essayId + "/read/" + '0'; //첨삭 읽기로 redirect
     }
 
-    @GetMapping("/feedback/{feedbackId}")
-    String readFeedback(Model model, @RequestParam String feedbackId) {
-        System.out.println(feedbackId); //id를 사용해서 DTO 첨삭을 담는 DTO 생성
-        return "feedback/essay/read";
-    }
-
-    @GetMapping("/test")
-    String z(Model model) {
-        return "essay/tmp";
-    }
-    @PostMapping("/test")
-    String zz(Model model) {
-        System.out.println("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
-        return "feedback/essay/z";
+    @GetMapping("/feedback/{essayId}/read/{feedbackId}")
+    String readFeedback(Model model,
+                        @PathVariable Long essayId,
+                        @PathVariable Long feedbackId,
+                        @ModelAttribute EssayFeedbackInfoDTO feedback) {
+        feedback.setEveryComment(testData.getEveryComment());
+        feedback.setContent(testData.getContent());
+        System.out.println(feedback);
+        model.addAttribute("questions", questions);
+        model.addAttribute("answers", answers);
+        model.addAttribute("essayPostName","삼성 자소서 첨삭 해주세요!");
+        return "feedback/read";
     }
 }
