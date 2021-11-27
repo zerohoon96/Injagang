@@ -43,13 +43,18 @@
         </div>
 
         <div class="row justify-content-center mt-5">
-            <div class="btn-group col-lg-4" role="group" aria-label="Basic outlined example">
+            <div class="btn-group col-lg-6" role="group" aria-label="Basic outlined example">
                 <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
                         onClick="displayEssay()">자기소개서
                 </button>
                 <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
                         onClick="displayInterview()">면접
                 </button>
+                <!-- 모의면접 기록 추가 -->
+                <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
+                        onClick="">모의면접 기록
+                </button>
+                <!-------------------->
                 <button th:if="${friendState} < 2" type="button" class="btn btn-outline-secondary"
                         onClick="displayFriend()">친구 목록
                 </button>

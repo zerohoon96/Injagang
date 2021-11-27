@@ -46,7 +46,9 @@
                     <!-- 기존에 달린 피드백 부분 -->
                     <div th:each="fdto : ${result.feedbackList}" th:if="${dto.pk == fdto.videoId}">
                         <form th:action="@{/interview/feedback/delete}" th:method="post">
-                            <label th:for="|${fdto.pk}feedback|">[[${fdto.nickname}]]님의 피드백</label>
+                            <label th:for="|${fdto.pk}feedback|">
+                                <a th:href="@{|/mypage/${fdto.nickname}|}">[[${fdto.nickname}]]</a>님의 피드백
+                            </label>
                             <br>
                             <textarea th:id="|${fdto.pk}feedback|" cols="80" readonly>[[${fdto.comment}]]</textarea>
                             <input style="display: none" name="ib_pk" th:value="${result.pk}">
@@ -83,7 +85,7 @@
                 <!-- 기존 댓글 표시해줄 부분 -->
                 <div th:each="dto : ${result.replyList}">
                     <form th:action="@{/interview/reply/delete}" th:method="post">
-                        <label>[[${dto.nickname}]]님의 댓글</label>
+                        <label><a th:href="@{|/mypage/${dto.nickname}|}">[[${dto.nickname}]]</a>님의 댓글</label>
                         <br>
                         <textarea cols="80" readonly>[[${dto.content}]]</textarea>
                         <input style="display: none" name="ib_pk" th:value="${result.pk}">

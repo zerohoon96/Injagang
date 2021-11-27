@@ -81,6 +81,7 @@ public class InterviewController {
         return "interview/test";
     }
 
+    //면접 마쳤을 때
     @GetMapping("/test")
     String test(@SessionAttribute("loginSession") String nickname, Model model) {
         model.addAttribute("loginNickname", nickname);

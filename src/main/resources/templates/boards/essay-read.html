@@ -52,7 +52,9 @@
                     <!-- 예상질문 부분 -->
                     <div th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
                         <form th:action="@{/essay/question/delete}" th:method="post">
-                            <label th:for="|${qdto.pk}question|">[[${qdto.nickname}]]님의 예상질문</label>
+                            <label th:for="|${qdto.pk}question|">
+                                <a th:href="@{|/mypage/${qdto.nickname}|}">[[${qdto.nickname}]]</a>님의 예상질문
+                            </label>
                             <br>
                             <textarea th:id="|${qdto.pk}question|" cols="80" readonly>[[${qdto.content}]]</textarea>
                             <input style="display: none" name="eb_pk" th:value="${result.pk}">
@@ -110,7 +112,7 @@
                 <!-- 기존 댓글 표시 -->
                 <div th:each="dto : ${result.replyList}">
                     <form th:action="@{/essay/reply/delete}" th:method="post">
-                        <label>[[${dto.nickname}]]님의 댓글</label>
+                        <label><a th:href="@{|/mypage/${dto.nickname}|}">[[${dto.nickname}]]</a>님의 댓글</label>
                         <br>
                         <textarea cols="80" readonly>[[${dto.content}]]</textarea>
                         <input style="display: none" name="eb_pk" th:value="${result.pk}">
