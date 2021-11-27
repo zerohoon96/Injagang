@@ -29,7 +29,7 @@ public class Essay{
     @Builder.Default
     private List<Reply> replies = new ArrayList<>(); //달린 댓글들
 
-    @OneToMany(mappedBy = "essay",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "essay", cascade = CascadeType.ALL)
     @Builder.Default
     private List<EssayContent> contents =  new ArrayList<>(); //자소서 문항들
 
@@ -39,6 +39,7 @@ public class Essay{
 
     private Integer access; //공개 범위(0,null: private, 1: 친구공개, 2:게시판 등록)
     private String essayTitle; //자소서 제목
+    private String templateTitle; //템플릿 제목
     private String title; //제목
     private String text; //내용 글
     private LocalDateTime date; //작성 날짜
@@ -47,7 +48,7 @@ public class Essay{
     public static Essay createEssay(String essayTitle, String title, List<EssayContent> EssayContents) {
         Essay essay = Essay.builder()
                 .essayTitle(essayTitle)
-                .title(title)
+                .templateTitle(title)
                 .build();
 
         for (EssayContent essayContent : EssayContents) {

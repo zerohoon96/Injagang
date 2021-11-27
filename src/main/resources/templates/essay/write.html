@@ -9,8 +9,8 @@
 
             <style>
                 .container-fluid {
-                    padding-left: 7%;
-                    padding-right: 7%;
+                    padding-left: 9%;
+                    padding-right: 9%;
                 }
                 .btn-link {
                     mid-width: 100px;
@@ -25,28 +25,30 @@
 
                 select {
                     text-align: center;
-                    margin: 0 auto;
+                    margin: 15px 0;
+                    padding-left: 10%;
+                    padding-right: 10%;
                 }
             </style>
 
         </head>
         <body>
         <!--동적 게시글 작성 양식-->
-        <form id="createTemplate" name="createTemplate" action method="post">
-            <div class="form-group container-fluid">
+        <form class="container-fluid" id="createTemplate" name="createTemplate" action method="post">
+            <div class="form-group" style="padding-right: 20%; padding-left: 20%">
                 <!--템플릿 불러오기 칸-->
                 <select class="form-control" name="template_select" id="template_select" onchange="Change_template();">
-                    <option value="t0">템플릿 불러오기</option>
+                    <option value="emptyTemplate">템플릿 불러오기</option>
                     <option value="t1">템플릿 1</option>
                     <option value="t2">템플릿 2</option>
                     <option value="t3">템플릿 3</option>
                 </select>
                 <br>
-                <!--아래 div는 텟플릿별 질문과 내용적는 곳 생성 하는 부분-->
-                <div id="ct_newessay"></div>
             </div>
+            <!--아래 div는 텟플릿별 질문과 내용적는 곳 생성 하는 부분-->
+            <div id="ct_newessay"></div>
             <br>
-            <div class="container-fluid">
+            <div>
                 <!--직접 입력-->
                 <div id="cd_newessay"></div>
                 <input class="btn btn-outline-info" id="template_direct" type="button" value="+">
@@ -54,7 +56,7 @@
             <br>
             <br>
             <div class="text-center">
-                <input class="btn btn-primary px-5" id="save" type="submit" value="저장">
+                <input class="btn btn-primary px-5" id="save" type="button" value="저장">
             </div>
             <br>
             <br>
@@ -70,7 +72,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <input type="text" class="form-control" name="titleName">
+                            <input type="text" class="form-control" name="titleName" required>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
@@ -86,7 +88,7 @@
             var myArray = {
                 "t1" : ["질문1", "질문2", "질문3", "질문4"],
                 "t2" : ["질문1", "질문2", "질문3"],
-                "t3" : ["질문1", "질문2"]
+                "t3" : ["성격", "내 여자친구는 구미호"]
             }
 
             //직접입력 부분에서 추가 할 경우 다른 내용은 저장해 두어야 하기 때문에
@@ -95,7 +97,7 @@
             var direct_question = new Array(0);
             //직접 입력부분의 내용 입력
             var direct_answer = new Array(0);
-            var select = "t0";
+            var select = "emptyTemplate";
 
             //템플릿을 몇번째 실행할건지 선택
             function Change_template()
@@ -112,14 +114,14 @@
                 //불러오기전 이전의 내용(화면) 초기화
                 document.getElementById("ct_newessay").innerHTML="";
 
-                if (select == "t0") return;
+                if (select == "emptyTemplate") return;
 
                 //템플릿 질문 갯수만큼 생성
                 for (let ele in myArray[select]) {
                     document.getElementById("ct_newessay").innerHTML +=
                         `<form>
                             <label> ${+ele + 1}. ${myArray[select][ele]}</label>
-                            <textarea class="form-control" rows=10 name="t${myArray[select][ele]}"placeholder="내용을 입력해주세요." required></textarea><br>
+                            <textarea class="form-control" rows=10 id="template_answer${+ele}" name="t${myArray[select][ele]}"placeholder="내용을 입력해주세요."></textarea><br>
                         </form>`
                 }
             }
@@ -135,10 +137,10 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${i+1}.</label>
-                                <input class="form-control col-md" type="text" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required>
+                                <input class="form-control col-md" type="text" id="direect_question${i}" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
                             </div>
-                            <textarea class="form-control mb-1" rows=10 name="direct_answer${i}" placeholder="내용을 입력해주세요." onChange="direct_answer[${i}]=this.value" required>${direct_answer[i]}</textarea>
+                            <textarea class="form-control mb-1" rows=10 id="direct_answer${i}" name="direct_answer${i}" placeholder="내용을 입력해주세요." onChange="direct_answer[${i}]=this.value">${direct_answer[i]}</textarea>
                             <br>
                         </form>`;
                 }
@@ -155,36 +157,35 @@
             //버튼 클릭시
             $(document).ready(function () {
 
-                //저장 버튼 누를 경우
-                // $("#save").on("click", function () {
-                //     $("#createTemplate").on("submit", function(event) {
-                //        event.preventDefault();
-                //        $(":required", this).parent().show();
-                //        var invalidInputs = $(":invalid", this);
-                //        console.log(invalidInputs);
-                //        if (invalidInputs.length > 0){
-                //            console.log("bis");
-                //            $("#saveModal").modal("show");
-                //        }
-                //        else if (event.originalEvent) {
-                //            return false;
-                //        }
-                //     });
-                // });
-
                 $("#save").click(function (event) {
-                    event.preventDefault();
-                    $(":required", this).parent().show();
-                    var invalidInputs = $(":invalid", this);
-                   console.log(invalidInputs);
-                    if (select=="t0" && direct_question.length == 0) {
+                    //아무 내용이 없다면
+                    if (select=="emptyTemplate" && direct_question.length == 0) {
                         alert("저장할 내용이 없습니다.");
-                        return false;
+                        return;
                     }
-                    else {
-                        $("#saveModal").modal("show");
-                        return true;
+                    if (select != "emptyTemplate") {
+                        //템플릿 내용검사
+                        for (let i=0; i<myArray[select].length; i++) {
+                            // let id = document.getElementById(`template_answer${i}`);
+                            if (document.getElementById(`template_answer${i}`).value.length == 0) {
+                                alert(`${i+1}번째 템플릿 내용이 입력되지 않았습니다.`);
+                                return;
+                            }
+                        }
                     }
+                    //직접입력 내용검사
+                    for (let i=0; i<direct_question.length; i++) {
+                        if (direct_question[i].length == 0) {
+                            alert(`${i+1}번째 직접입력에 대한 질문이 입력되지 않았습니다.`);
+                            return;
+                        }
+                        else if (direct_answer[i].length == 0) {
+                            alert(`${i+1}번째 직접입력에 대한 내용이 입력되지 않았습니다.`);
+                            return;
+                        }
+                    }
+
+                    $("#saveModal").modal("show");
                 });
 
                 //다이얼로그 창안에서 취소 버튼 누를 경우
@@ -204,10 +205,10 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${direct_question.length}.  </label>
-                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value" required>
+                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${direct_question.length-1});">
                             </div>
-                            <textarea class="form-control mb-1" rows=10 name="direct_answer${direct_question.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[${direct_answer.length-1}]=this.value" required>${direct_answer[direct_question.length-1]}</textarea>
+                            <textarea class="form-control mb-1" rows=10 name="direct_answer${direct_question.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[${direct_answer.length-1}]=this.value">${direct_answer[direct_question.length-1]}</textarea>
                             <br>
                         </form>`;
                     });
