@@ -13,10 +13,21 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto:update
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: giarmri@gmail.com
+    password: tlsrn157
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   mail:
     host: smtp.gmail.com
@@ -30,17 +41,13 @@ spring:
           starttls:
             enable: true
 
-logging.level:
-  org.hibernate.SQL: debug
+  server:
+    servlet:
+      session:
+        tracking-modes: cookie
 
-server:
-  servlet:
-    session:
-      tracking-modes: cookie
-
-com:
-  SpringIsComing:
-    injagang:
-      upload:
-        path: /Users/smod/upload
-
+  com:
+    SpringIsComing:
+      injagang:
+        upload:
+          path: C:/Users/roe96/upload
