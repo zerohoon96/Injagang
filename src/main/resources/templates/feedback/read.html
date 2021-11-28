@@ -48,7 +48,8 @@
                 <div th:if="${idx+1} == ${feedback.num[info.index]}">
                     <span style="font-weight: bold" th:id="|label${idx+1}${info.index}|"></span>
                     <span th:id="|comment${idx+1}${info.index}|"></span>
-                    <div style="border: 1px solid black;" th:text="${comment}"></div><br>
+                    <div style="border: 1px solid black;" th:text="${comment}"></div>
+                    <br>
                 </div>
             </div>
             <!--            </div>-->
@@ -80,8 +81,11 @@
 
                 for (let i = 0; i < num.length; i++) {
                     if (num[i] > curQuestion) { //문제 바뀜
+                        newContent += orgContent.substr(cursor, orgContent.length - cursor);
                         document.getElementById('answer' + curQuestion).innerHTML = newContent;
-                        console.log('최종 : ',document.getElementById('answer' + curQuestion).innerHTML);
+                        console.log('=====================================================================');
+                        console.log('최종 : ', document.getElementById('answer' + curQuestion).innerHTML);
+                        console.log('=====================================================================');
                         curQuestion++;
                         newContent = "";
                         orgContent = document.getElementById('answer' + curQuestion).innerText;
@@ -92,15 +96,15 @@
                     }
                     newContent += orgContent.substr(cursor, start[i] - cursor);
                     cursor = start[i];
-                    // console.log('new content : ',newContent);
+                    console.log('new content : ', newContent);
                     newContent += '<span style="background-color: #E5CCFF">' + orgContent.substr(cursor, end[i] - start[i] + 1) + '</span>';
                     console.log(newContent);
-                    document.getElementById('label'+curQuestion+i).innerText = '선택 문장 '+(ct+1)+' : ';
-                    document.getElementById('comment'+curQuestion+i).innerText = orgContent.substr(cursor, end[i] - start[i] + 1);
+                    document.getElementById('label' + curQuestion + i).innerText = '선택 문장 ' + (ct + 1) + ' : ';
+                    document.getElementById('comment' + curQuestion + i).innerText = orgContent.substr(cursor, end[i] - start[i] + 1);
                     ct++;
                     cursor = end[i] + 1;
                 }
-                document.getElementById('answer' + curQuestion).innerHTML = newContent;
+                document.getElementById('answer' + curQuestion).innerHTML = newContent + orgContent.substr(cursor, orgContent.length - cursor);
             }
         </script>
 
