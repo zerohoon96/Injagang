@@ -24,7 +24,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final EssayRepository essayRepository;
 
     @Override
-    public void storeFeedback(Member member, Essay essay, EssayFeedbackInfoDTO essayFeedbackInfoDTO) {
+    public Long storeFeedback(Member member, Essay essay, EssayFeedbackInfoDTO essayFeedbackInfoDTO) {
         EssayFeedback feedback = EssayFeedback.builder()
                 .member(member)
                 .essay(essay)
@@ -42,16 +42,12 @@ public class FeedbackServiceImpl implements FeedbackService {
                 feedback.getFeedbackComments().add(essayFeedbackComment); //첨삭 리스트에 추가
             }
         }
-        essayFeedbackRepository.save(feedback);
+        return essayFeedbackRepository.save(feedback).getId();
     }
 
     @Override
-    public EssayFeedback findFeedback(String nickname, Long essayId) {
-        Member member = memberRepository.findByNickname(nickname);
-        Essay essay = essayRepository.findById(essayId).orElseThrow(
-                ()-> new IllegalArgumentException("자소서 없어요")
-        );
-        return essayFeedbackRepository.findFeedbackByMemberAndEssay(member, essay);
+    public EssayFeedback findById(Long essayFeedbackId) {
+        return essayFeedbackRepository.findFeedbackById(essayFeedbackId);
     }
 
 }

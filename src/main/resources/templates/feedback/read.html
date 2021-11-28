@@ -8,22 +8,6 @@
             <title>Essay feedback write page</title>
 
             <style>
-                .add-btn {
-                    width: 2.5rem;
-                    height: 2.5rem;
-                    font-size: 1.25rem;
-                    color: #56b8f5;
-                    background-color: #fff;
-                    cursor: pointer;
-                    border: 2px solid #56b8f5;
-                    border-radius: 50%;
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    z-index: 10;
-                    transition: color 0.2s, background-color 0.2s ease-in-out;
-                }
-
                 .container-fluid {
                     padding-left: 7%;
                     padding-right: 7%;
@@ -48,93 +32,51 @@
 
         </head>
         <body>
-        <form class="container-fluid" action method="post" th:object="${feedback}">
-            <label class="form-control text-center mt-3" th:text="|${essayPostName} 게시물을 첨삭하고 있습니다.|"></label><br>
-            <button type="button" onclick="showGuide()">첨삭 방법</button>
+        <label class="form-control text-center mt-3" th:text="|${essayPostName} 게시물에 저장된 ${feedbackWriter} 님의 첨삭입니다.|"></label><br>
 
-            <div th:each="idx : ${#numbers.sequence(0,questions.size()-1)}">
+        <div th:each="idx : ${#numbers.sequence(0,questions.size()-1)}">
 
-                <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${questions[idx]}|"></label>
-                <div type="text" style="border: 1px solid black;" th:id="|answer${idx+1}|"
-                     th:text="${answers[idx]}"
-                     th:onmouseup="|dragUpdate(${idx+1})|" th:onmousedown="|dragStart(${idx+1})|"></div>
-                <br>
-
-                <!--전송에 필요한 데이터-->
-                <div th:id="|start${idx+1}|"></div>
-                <div th:id="|end${idx+1}|"></div>
-                <div th:id="|comment${idx+1}|"></div>
-
-                <!--첨삭 입력 칸, 버튼이 들어가는 div-->
-                <div th:id="|getFeedback${idx+1}|"></div>
-                <br><br>
-
-                <!--드래그 후 보이는 + 버튼-->
-                <button type="button" style="display: none" class="add-btn" th:id="|addBtn${idx+1}|"
-                        th:onclick="|addPlusBtn(${idx+1})|">+
-                </button>
-            </div>
-
-            <!--총평 입력-->
-            <label for="totalComment">총평</label>
-            <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3
-                      placeholder="총평을 입력해주세요." required></textarea><br>
-
-            <!--최종 첨삭 저장 버튼-->
-            <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
+            <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${questions[idx]}|"></label>
+            <div type="text" style="border: 1px solid black;" th:id="|answer${idx+1}|"
+                 th:text="${answers[idx]}"
+                 th:onmouseup="|dragUpdate(${idx+1})|" th:onmousedown="|dragStart(${idx+1})|"></div>
             <br>
-        </form>
+
+            <div th:id="|comment${idx+1}|"></div>
+
+        </div>
+
+        <!--총평 출력-->
+        <label>총평</label>
+        <div th:text="${feedback.getContent()}"></div>
+        <!--            <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3-->
+        <!--                      placeholder="총평을 입력해주세요." required></textarea><br>-->
+
+        <!--최종 첨삭 저장 버튼-->
+        <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
+        <br>
 
         <script type="text/javascript">
             const selectedObj = window.getSelection();
-            let btnWidth, btnHeight;
-            let curStart, curEnd, curQuestion = 0;
-            let start, end, comment, selectedString, commentBuf, rangeBuf, container, remainEdit, addBtn;
-            let mouseX, mouseY;
-            let startPoint = 0;
+            let start, end, comment, commentBuf, rangeBuf, container;
 
             initSetting();
-
-            document.addEventListener("mousedown", (e) => { //마우스 왼쪽 버튼을 클릭했을때 이벤트 처리
-                mouseX = e.pageX;
-                mouseY = e.pageY;
-                if (curQuestion > 0 && e.target.id != addBtn[curQuestion - 1].id) { //활성화된 버튼을 클릭하지 않은 경우 버튼 none 처리
-                    addBtn[curQuestion - 1].style.display = "none";
-                }
-            })
 
             function initSetting() { //초기 세팅 진행
                 start = new Array([[${questions.size()}]]);
                 end = new Array([[${questions.size()}]]);
                 comment = new Array([[${questions.size()}]]);
-                selectedString = new Array([[${questions.size()}]]);
 
                 container = new Array([[${questions.size()}]]);
                 rangeBuf = new Array([[${questions.size()}]]);
                 commentBuf = new Array([[${questions.size()}]]);
-                addBtn = new Array([[${questions.size()}]]);
-                remainEdit = new Array([[${questions.size()}]]);
 
                 for (let i = 0; i < start.length; i++) { //2차원 배열처럼 사용하기 위해 설정
                     start[i] = [];
                     end[i] = [];
-                    selectedString[i] = [];
                     comment[i] = [];
                     container[i] = [];
-                    addBtn[i] = document.querySelector("#addBtn" + (i + 1));
-                    remainEdit[i] = 0;
                 }
-                btnWidth = Number(getComputedStyle(addBtn[0]).width.slice(0, -2));
-                btnHeight = Number(getComputedStyle(addBtn[0]).height.slice(0, -2));
-
-            }
-
-            function showGuide() { //첨삭 방법을 소개하는 팝업
-                alert('1. 문제별로 할당된 첨삭란에 첨삭을 입력합니다.\n' +
-                    '2. 첨삭 대상 문장을 드래그하고 + 버튼을 누르세요.\n' +
-                    '3. 내용을 작성하고 저장을 하면 첨삭이 저장됩니다.\n' +
-                    '4. 저장된 첨삭은 삭제하거나 내용을 수정할 수 있습니다.\n' +
-                    '5. 총평을 입력하고 저장 버튼을 눌러서 첨삭을 종료하세요.');
             }
 
             function getCaretCharacterOffsetWithin(element) {

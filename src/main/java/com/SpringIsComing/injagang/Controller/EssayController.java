@@ -1,9 +1,6 @@
 package com.SpringIsComing.injagang.Controller;
 
-import com.SpringIsComing.injagang.DTO.EssayFeedbackInfoDTO;
-import com.SpringIsComing.injagang.DTO.EssayFeedbackQuestionDTO;
-import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
-import com.SpringIsComing.injagang.DTO.TemplateDTO;
+import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.*;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Repository.TemplateRepository;
@@ -29,6 +26,17 @@ public class EssayController {
     private final EssayService essayService;
     private final FeedbackService feedbackService;
     private final FeedbackCommentService feedbackCommentService;
+    private final Comparator<EssayFeedbackComment> comparator = new Comparator<EssayFeedbackComment>() { //첨삭 정렬
+        @Override
+        public int compare(EssayFeedbackComment commentA, EssayFeedbackComment commentB) {
+            int diff = commentA.getNum() - commentB.getNum();
+            if (diff == 0) {
+                return commentA.getStart() - commentB.getStart();
+            }
+            return diff;
+        }
+    };
+
     /**
      * * 자소서 입력
      */
@@ -129,48 +137,93 @@ public class EssayController {
     String addFeedback(Model model,
                        @SessionAttribute("loginSession") String nickname,
                        @PathVariable Long essayId,
-                       @ModelAttribute EssayFeedbackInfoDTO feedback) {
+                       @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
         //레포지토리에 피드백 객체 저장
         Member writer = memberService.findByNickname(nickname);
         Essay essay = es.findEssay(essayId);
 
-        feedbackService.storeFeedback(writer, essay, feedback);
-
-        return "redirect:/essay/feedback/" + essayId + "/read/" + '0'; //첨삭 읽기로 redirect
+        //feedback 저장
+        Long feedbackId = feedbackService.storeFeedback(writer, essay, feedback);
+        return "redirect:/essay/feedback/read/" + feedbackId; //첨삭 읽기로 redirect
     }
 
-    @GetMapping("/feedback/{essayId}/read/{feedbackId}")
+    @GetMapping("/feedback/read/{feedbackId}")
+        //첨삭 읽기를 눌렀을때
     String readFeedback(Model model,
-                        @SessionAttribute("loginSession") String nickname,
-                        @PathVariable Long essayId,
                         @PathVariable Long feedbackId,
-                        @ModelAttribute EssayFeedbackInfoDTO feedback) {
-        Essay essay = es.findEssay(essayId); //essay 저장
-        Member writer = memberService.findByNickname(nickname); //작성자 저장
-        List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findFeedbackComment(nickname, essayId, feedbackId); //첨삭 목록 저장
+                        @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+        EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
+        Essay essay = es.findEssay(essayFeedback.getEssay().getId()); //essay 저장
+        List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findById(feedbackId); //첨삭 목록 저장
         List<EssayContent> essayContents = essay.getContents(); //자기소개서 내용 저장
+        List<EssayFeedbackQuestionDTO> everyComment = new ArrayList<>();
+        List<EssayFeedbackCommentDTO> commentList = new ArrayList<>();
         List<String> questions = new ArrayList<>();
         List<String> answers = new ArrayList<>();
-        String content = feedbackService.findFeedback(nickname, essayId).getContent();
+        String content = feedbackService.findById(feedbackId).getContent();
+        int curQuestion = 1, idx = 0;
 
-        for (EssayContent essayContent : essayContents) { //전달을 위한 리스트
+        for (EssayContent essayContent : essayContents) { //전달을 위한 질문, 답변 리스트 생성
             questions.add(essayContent.getQuestion());
             answers.add(essayContent.getAnswer());
         }
 
-        System.out.println("***첨삭 목록***");
-        for (EssayFeedbackComment essayFeedbackComment : feedbackComment) { ///////////////////////여기서 DTO에 삽입!
-            System.out.println("문제 번호: " + essayFeedbackComment.getNum());
-            System.out.println("시작: " + essayFeedbackComment.getStart());
-            System.out.println("끝: " + essayFeedbackComment.getEnd());
-            System.out.println("내용: " + essayFeedbackComment.getContent());
+        feedbackComment.sort(comparator); //문제번호, 시작 인덱스에 따라 정렬
+        System.out.println("***첨삭 목록***" + feedbackComment.size());
+
+        for (EssayFeedbackComment comment : feedbackComment) { //DTO에 데이터 삽입
+            if (comment.getNum() > curQuestion) { //문제가 바뀔 때마다 추가
+                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
+                eachQuestion.setCommentList(commentList);
+                everyComment.add(eachQuestion);
+                curQuestion++;
+                commentList = new ArrayList<>();
+            }
+            EssayFeedbackCommentDTO eachComment = new EssayFeedbackCommentDTO();
+            eachComment.setStart(comment.getStart());
+            eachComment.setEnd(comment.getEnd());
+            eachComment.setComment(comment.getContent());
+            commentList.add(eachComment);
+            if (++idx == feedbackComment.size()) { //마지막 처리
+                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
+                eachQuestion.setCommentList(commentList);
+                everyComment.add(eachQuestion);
+            }
+            System.out.println("문제 번호: " + comment.getNum());
+            System.out.println("시작: " + comment.getStart());
+            System.out.println("끝: " + comment.getEnd());
+            System.out.println("내용: " + comment.getContent());
             System.out.println("=========================");
         }
+
+        feedback.setEveryComment(everyComment); //첨삭 목록 저장
         feedback.setContent(content); //총평 저장
+        System.out.println("*******모델 어트리뷰트에 저장된 총평*******");
+        for (EssayFeedbackQuestionDTO a : feedback.getEveryComment()) {
+            for (EssayFeedbackCommentDTO b : a.getCommentList()) {
+                System.out.println(b);
+            }
+        }
         model.addAttribute("questions", questions);
         model.addAttribute("answers", answers);
         model.addAttribute("essayPostName", "삼성 자소서 첨삭 해주세요!");
+        model.addAttribute("feedbackWriter", essayFeedback.getMember().getNickname());
         return "feedback/read";
+    }
+
+
+    @PostMapping("/feedback/update/{feedbackId}")
+        //첨삭 수정을 눌렀을때 ///////////////////////////////////////////아직 안함
+    String updateFeedback(Model model,
+                          @SessionAttribute("loginSession") String nickname,
+                          @PathVariable Long essayId,
+                          @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+        //레포지토리에 피드백 객체 저장
+        Member writer = memberService.findByNickname(nickname);
+        Essay essay = es.findEssay(essayId);
+
+        Long feedbackId = feedbackService.storeFeedback(writer, essay, feedback);
+        return "redirect:/essay/feedback/read/" + feedbackId; //첨삭 읽기로 redirect
     }
 
 
