@@ -58,9 +58,9 @@ public class EssayServiceImpl implements EssayService {
         return save.getId();
     }
 
-    public Essay findEssay(Long essayId) throws Exception {
+    public Essay findEssay(Long essayId) {
         return essayRepository.findById(essayId)
-                .orElseThrow(()-> new Exception("id is not find"));
+                .orElseThrow(()-> new IllegalArgumentException("아몰랑"));
     }
 
     public EssayWriteDTO readEssay(Long id) {

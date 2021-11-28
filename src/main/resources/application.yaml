@@ -4,30 +4,14 @@
       username: sa
       password:
       driver-class-name: org.h2.Driver
-    servlet:
-      multipart:
-        location: ~/upload
-        maxFileSize: 100MB
-        maxRequestSize: 100MB
 
 
     jpa:
       hibernate:
-        ddl-auto: update
+        ddl-auto: create
       properties:
         hibernate:
           format_sql: true
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: giarmri@gmail.com
-      password: tlsrn157
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
 
   logging.level:
     org.hibernate.SQL: debug
@@ -36,9 +20,3 @@
     servlet:
       session:
         tracking-modes: cookie
-
-  com:
-    SpringIsComing:
-      injagang:
-        upload:
-          path: /Users/smod/upload

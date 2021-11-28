@@ -24,9 +24,7 @@ public class EssayFeedbackComment {
     private EssayFeedback essayFeedback;
 
     private int num; //문항 번호
-    private int startIdx; //시작 인덱스
-    private int length; //드래그한 길이
-
-    @Column(length = 1000)
+    private int start; //시작 인덱스
+    private int end; //종료 인덱스
     private String content; //피드백 내용
 }
