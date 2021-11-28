@@ -91,7 +91,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:each="dto : ${result.feedbackList}"
-                           th:href="@{/essay/feedback/{essayId}/read/{feedbackId}(essayId=${result.pk}, feedbackId=${dto.pk})}"
+                           th:href="@{/essay/feedback/read/{feedbackId}(feedbackId=${dto.pk})}"
                            th:text="|${dto.nickname}님의 첨삭|">
                         </a>
                     </div>
