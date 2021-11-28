@@ -151,7 +151,8 @@ public class EssayController {
         //첨삭 읽기를 눌렀을때
     String readFeedback(Model model,
                         @PathVariable Long feedbackId,
-                        @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+//                        @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback,
+                        @ModelAttribute("feedback") EssayFeedbackReadDTO feedback) {
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
         Essay essay = es.findEssay(essayFeedback.getEssay().getId()); //essay 저장
         List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findById(feedbackId); //첨삭 목록 저장
@@ -160,6 +161,11 @@ public class EssayController {
         List<EssayFeedbackCommentDTO> commentList = new ArrayList<>();
         List<String> questions = new ArrayList<>();
         List<String> answers = new ArrayList<>();
+        List<Integer> numList = new ArrayList<>();
+        List<Integer> startList = new ArrayList<>();
+        List<Integer> endList = new ArrayList<>();
+        List<String> contentList = new ArrayList<>();
+
         String content = feedbackService.findById(feedbackId).getContent();
         int curQuestion = 1, idx = 0;
 
@@ -172,23 +178,28 @@ public class EssayController {
         System.out.println("***첨삭 목록***" + feedbackComment.size());
 
         for (EssayFeedbackComment comment : feedbackComment) { //DTO에 데이터 삽입
-            if (comment.getNum() > curQuestion) { //문제가 바뀔 때마다 추가
-                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
-                eachQuestion.setCommentList(commentList);
-                everyComment.add(eachQuestion);
-                curQuestion++;
-                commentList = new ArrayList<>();
-            }
-            EssayFeedbackCommentDTO eachComment = new EssayFeedbackCommentDTO();
-            eachComment.setStart(comment.getStart());
-            eachComment.setEnd(comment.getEnd());
-            eachComment.setComment(comment.getContent());
-            commentList.add(eachComment);
-            if (++idx == feedbackComment.size()) { //마지막 처리
-                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
-                eachQuestion.setCommentList(commentList);
-                everyComment.add(eachQuestion);
-            }
+//            if (comment.getNum() > curQuestion) { //문제가 바뀔 때마다 추가
+//                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
+//                eachQuestion.setCommentList(commentList);
+//                everyComment.add(eachQuestion);
+//                curQuestion++;
+//                commentList = new ArrayList<>();
+//            }
+//            EssayFeedbackCommentDTO eachComment = new EssayFeedbackCommentDTO();
+//            eachComment.setStart(comment.getStart());
+//            eachComment.setEnd(comment.getEnd());
+//            eachComment.setComment(comment.getContent());
+//            commentList.add(eachComment);
+//            if (++idx == feedbackComment.size()) { //마지막 처리
+//                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
+//                eachQuestion.setCommentList(commentList);
+//                everyComment.add(eachQuestion);
+//            }
+            numList.add(comment.getNum());
+            startList.add(comment.getStart());
+            endList.add(comment.getEnd());
+            contentList.add(comment.getContent());
+
             System.out.println("문제 번호: " + comment.getNum());
             System.out.println("시작: " + comment.getStart());
             System.out.println("끝: " + comment.getEnd());
@@ -196,18 +207,26 @@ public class EssayController {
             System.out.println("=========================");
         }
 
-        feedback.setEveryComment(everyComment); //첨삭 목록 저장
-        feedback.setContent(content); //총평 저장
-        System.out.println("*******모델 어트리뷰트에 저장된 총평*******");
-        for (EssayFeedbackQuestionDTO a : feedback.getEveryComment()) {
-            for (EssayFeedbackCommentDTO b : a.getCommentList()) {
-                System.out.println(b);
-            }
-        }
-        model.addAttribute("questions", questions);
-        model.addAttribute("answers", answers);
-        model.addAttribute("essayPostName", "삼성 자소서 첨삭 해주세요!");
-        model.addAttribute("feedbackWriter", essayFeedback.getMember().getNickname());
+        feedback.setQuestions(questions);
+        feedback.setAnswers(answers);
+        feedback.setNum(numList);
+        feedback.setStart(startList);
+        feedback.setEnd(endList);
+        feedback.setComment(contentList);
+        feedback.setContent(content);
+        feedback.setEssayPostName(essay.getEssayTitle());
+        feedback.setFeedbackWriter(essayFeedback.getMember().getNickname());
+
+//        feedback.setEveryComment(everyComment); //첨삭 목록 저장
+//        feedback.setContent(content); //총평 저장
+//        System.out.println("*******모델 어트리뷰트에 저장된 총평*******");
+//        for (EssayFeedbackQuestionDTO a : feedback.getEveryComment()) {
+//            for (EssayFeedbackCommentDTO b : a.getCommentList()) {
+//                System.out.println(b);
+//            }
+//        }
+//        model.addAttribute("feedbackWriter", essayFeedback.getMember().getNickname());
+        System.out.println("feedback = " + feedback);
         return "feedback/read";
     }
 
