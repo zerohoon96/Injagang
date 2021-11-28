@@ -28,7 +28,7 @@ public class InterviewFeedbackRepositoryTests {
     public void insertInterviewFeedbacks() {
         //200개의 피드백을 무작위 면접 게시물에 생성
         IntStream.rangeClosed(1,200).forEach(i -> {
-            long video_id = (long)(Math.random()*99) + 1;
+            long video_id = (long)(Math.random()*100) + 1;
             long member_id = (long)(Math.random()*50) + 1;
             Video video = videoRepository.findById(video_id).get();
             Member member = memberRepository.findById(member_id).get();

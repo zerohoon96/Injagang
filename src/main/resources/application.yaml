@@ -1,22 +1,46 @@
-  spring:
-    datasource:
-      url: jdbc:h2:tcp://localhost/~/test
-      username: sa
-      password:
-      driver-class-name: org.h2.Driver
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  servlet:
+    multipart:
+      location: ~/upload
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
 
 
-    jpa:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: create
-      properties:
-        hibernate:
-          format_sql: true
+        format_sql: true
 
-  logging.level:
-    org.hibernate.SQL: debug
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: giarmri@gmail.com
+    password: tlsrn157
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
-  server:
-    servlet:
-      session:
-        tracking-modes: cookie
+logging.level:
+  org.hibernate.SQL: debug
+
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
+
+com:
+  SpringIsComing:
+    injagang:
+      upload:
+        path: /Users/smod/upload
+

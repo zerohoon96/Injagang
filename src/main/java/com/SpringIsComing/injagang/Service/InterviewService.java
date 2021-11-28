@@ -1,11 +1,14 @@
 package com.SpringIsComing.injagang.Service;
 
+import com.SpringIsComing.injagang.DTO.MockInterviewDTO;
 import com.SpringIsComing.injagang.DTO.MypageInterviewDTO;
 import com.SpringIsComing.injagang.Entity.Interview;
 import com.SpringIsComing.injagang.Entity.Member;
+import com.SpringIsComing.injagang.Entity.MockInterview;
 import com.SpringIsComing.injagang.Entity.Video;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +20,10 @@ public interface InterviewService {
 
     void getRandomExpectedQuestions(List<String> questionList, int cnt, String nickname);
 
+    void registerTestInterview(int qCnt, String interviewName, String nickname);
+
+    List<MockInterviewDTO> findMockInterviews(String nickname);
+
     default MypageInterviewDTO toMypageInterViewDTO(Interview interview){
 
         List<Video> videos = interview.getVideos();
@@ -27,7 +34,7 @@ public interface InterviewService {
                 .title(interview.getTitle())
                 .questionNum(videos.size())
                 .feedbackNum(cnt)
-                .createTime(LocalDateTime.now())
+                .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 

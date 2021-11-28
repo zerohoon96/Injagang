@@ -189,11 +189,16 @@ public class BoardServiceImpl implements BoardService{
 
         List<Reply> replies = essay.getReplies();
         List<EssayFeedback> feedbacks = essay.getFeedbacks();
+        List<EssayContent> contents = essay.getContents();
         for (Reply reply : replies) {
             replyRepository.delete(reply);
         }
         for (EssayFeedback feedback : feedbacks) {
             essayFeedbackRepository.delete(feedback);
+        }
+        for (EssayContent content : contents) {
+            questionRepository.deleteAll(content.getQuestions());
+            content.clearQuestions();
         }
 
         essay.clearReplies();
