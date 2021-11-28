@@ -51,7 +51,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Essay essay = essayRepository.findById(essayId).orElseThrow(
                 ()-> new IllegalArgumentException("자소서 없어요")
         );
-        return essayFeedbackRepository.findFeedbackByNicknameAndEssay(member, essay);
+        return essayFeedbackRepository.findFeedbackByMemberAndEssay(member, essay);
     }
 
 }
