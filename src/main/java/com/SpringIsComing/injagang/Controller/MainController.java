@@ -45,7 +45,7 @@ public class MainController {
     /**
      * 마이페이지
      */
-    @GetMapping("/mypage/{nickname}")
+    @GetMapping(value = {"/mypage/{nickname}", "/"})
     public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable("nickname") String curNickname
             , Model model) {
 
@@ -101,7 +101,7 @@ public class MainController {
         model.addAttribute("friendList", targetFriends.stream()
                 .map(f -> friendService.toMypageDTO(f)).collect(toList()));
 
-        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
+//        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
         log.info("깐부={}", friendState);
         model.addAttribute("friendState", friendState);
         model.addAttribute("nickname", curNickname);
@@ -250,6 +250,11 @@ public class MainController {
 
 
         if (redirectURL == null) {
+            redirectAttributes.addAttribute("nickname", loginMember.getNickname());
+            return "redirect:/mypage/{nickname}";
+        }
+        // "/"에서 로그인 할 경우 에러나는 것 처리
+        else if(redirectURL.equals("/")){
             redirectAttributes.addAttribute("nickname", loginMember.getNickname());
             return "redirect:/mypage/{nickname}";
         }

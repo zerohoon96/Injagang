@@ -87,11 +87,12 @@
             <div class="right-space">
                 <div class="dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        피드백([[${result.fCnt}]]개)
+                        첨삭([[${result.fCnt}]]개)
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" th:each="dto : ${result.feedbackList}"
-                           th:href="@{/essay/board/feedback/{pk}(pk=${dto.pk})}" th:text="|${dto.nickname}님의 피드백|">
+                           th:href="@{/essay/feedback/{essayId}/read/{feedbackId}(essayId=${result.pk}, feedbackId=${dto.pk})}"
+                           th:text="|${dto.nickname}님의 첨삭|">
                         </a>
                     </div>
                 </div>
@@ -100,7 +101,7 @@
             <!-- 첨삭쓰기 버튼 -->
             <div style="float: right; display: inline-block">
                 <button class="btn btn-primary">
-                    <a th:href="@{/essay/board/feedback}" style="color: white;">첨삭 쓰기</a>
+                    <a th:href="@{/essay/feedback/{essayId}/write(essayId=${result.pk})}" style="color: white;">첨삭 쓰기</a>
                 </button>
             </div>
             <hr>
