@@ -132,9 +132,11 @@
 
                     <div>
                         <button class="w-400 btn btn-primary">확인</button>
-                        <button class="w-400 btn btn-primary" th:onclick="|location.href='@{/mypage/member.nickname}'|">취소</button>
                     </div>
                 </form>
+                <div class="mt-1">
+                    <button class="w-400 btn btn-primary" th:onclick="|location.href='@{/mypage/{nickname}(nickname = ${member.nickname})}'|">취소</button>
+                </div>
             </div>
         </div>
         </body>

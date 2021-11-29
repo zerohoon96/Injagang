@@ -8,6 +8,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 @Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
@@ -18,6 +20,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String requestURI = request.getRequestURI();
+
+
+        log.info("개새기들1 ={}",request.getMethod());
+        log.info("개새기들2={}",request.getRequestURL());
 
         log.info("URI={}", requestURI);
 

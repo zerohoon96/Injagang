@@ -56,16 +56,23 @@ public class MainController {
     /**
      * 마이페이지
      */
-    @GetMapping("/mypage/{nickname}")
-    public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable("nickname") String curNickname
+    @GetMapping({"/mypage/{nickname}", "/"})
+    public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable(value = "nickname",required = false) String curNickname
             , Model model) {
 
 
         Member loginMember = memberService.findByNickname(nickname);
+        log.info("curname ={}",curNickname);
+
+        if (curNickname == null) {
+            curNickname = nickname;
+            log.info("hello moto");
+
+        }
+        log.info("아우={}",curNickname);
+
         Member targetMember = memberService.findByNickname(curNickname);
 
-        log.info("curname = {}", curNickname);
-        log.info("target = {}", loginMember);
 
         List<Friend> loginFriends = friendService.findFriends(loginMember);
         List<Friend> targetFriends = friendService.findFriends(targetMember);
