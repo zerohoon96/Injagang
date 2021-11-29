@@ -467,10 +467,10 @@ public class MainController {
 //    @PostConstruct
 //    public void init(){
 //        RegisterDTO registerDTO = new RegisterDTO();
-//        registerDTO.setEmail("kimsm@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-//        registerDTO.setName("김수만");
-//        registerDTO.setLoginId("kimsuman");
-//        registerDTO.setNickname("smkim");
+//        registerDTO.setEmail("abcde@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+//        registerDTO.setName("홍준표");
+//        registerDTO.setLoginId("hongjunpyo");
+//        registerDTO.setNickname("muyahong");
 //        registerDTO.setPassword("test");
 //        registerDTO.setPasswordCheck("test");
 //

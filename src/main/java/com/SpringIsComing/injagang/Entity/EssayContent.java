@@ -26,7 +26,7 @@ public class EssayContent {
     @JoinColumn(name = "ESSAY_ID")
     private Essay essay;
 
-    @OneToMany(mappedBy = "essayContent")
+    @OneToMany(mappedBy = "essayContent", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ExpectedQuestion> questions = new ArrayList<>();
 

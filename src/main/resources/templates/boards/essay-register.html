@@ -9,20 +9,21 @@
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
             </div>
             <br>
     
             <!-- 게시물 내용 글 입력 -->
             <div class="form-group">
                 <label>Content</label>
-                <textarea class="form-control" rows="8" name="text"></textarea>
+                <textarea class="form-control" rows="8" name="text" required></textarea>
             </div>
             
             <!-- 마이페이지에서 자소서 불러오기 -->
             <label for="essaySelect">불러올 자소서 선택</label>
             <br>
             <select id="essaySelect" th:name="pk">
+                <option th:if="${essayList.isEmpty()}">쓴 자소서가 없습니다.</option>
                 <option th:each="dto : ${essayList}" th:value="${dto.pk}" th:utext="${dto.essayTitle}"></option>
             </select>
             <br><br>

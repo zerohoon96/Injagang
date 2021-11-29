@@ -101,8 +101,14 @@
                     str +=
                         "<tr>" +
                         "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
-                        "<td class='text-align-center'>" + essay.feedbackNum + "</td>" +
-                        "<td class='text-align-center'><a href='/essay/board/" + essay.id + "'>" + essay.questionNum + "</a></td>";
+                        "<td class='text-align-center'>" + essay.feedbackNum + "</td>";
+                    
+                    if(essay.access == 2) {
+                        str += "<td class='text-align-center'><a href='/essay/board/" + essay.id + "'>" + essay.questionNum + "</a></td>";
+                    }
+                    else{
+                        str += "<td class='text-align-center'>" + essay.questionNum + "</td>";
+                    }
                     
                     if(essay.access == 0){
                         str += '<td class="text-align-center">' + '나만 보기' + '</td>';
@@ -146,15 +152,9 @@
                         "<th class='col-3 text-align-center'>작성 날짜</th>";
     
                 body.innerHTML = "";
-                mockInterviewList.forEach(mock => {
-                    console.log(typeof(mock.qNum) + " " + mock.qNum);
+                mockInterviewList.forEach((mock) => {
                     body.innerHTML += `<tr><td>${mock.title}</td>
-            <td class="text-align-center">${mock.qNum}</td> <td class="text-align-center">${mock.date}</td></tr>`;
-                            // "<tr>" +
-                            // "<td>" + mock.title + "</td>" +
-                            // "<td class='text-align-center'>" + mock.qCnt + "</td>" +
-                            // "<td class='text-align-center'>" + mock.date + "</td>" +
-                            // "</tr>";
+            <td class="text-align-center">${mock.qnum}</td> <td class="text-align-center">${mock.date}</td></tr>`;
                 });
             }
 

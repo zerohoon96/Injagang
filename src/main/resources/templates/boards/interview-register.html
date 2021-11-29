@@ -9,20 +9,20 @@
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
             </div>
             <br>
     
             <!-- 게시물 내용 글 입력 -->
             <div class="form-group">
                 <label>Content</label>
-                <textarea class="form-control" rows="8" name="text"></textarea>
+                <textarea class="form-control" rows="8" name="text" required></textarea>
             </div>
             
             <!-- 면접 영상 업로드하기 -->
             <div class="form-group">
                 <label><b>면접 영상 업로드</b></label>
-                <input name="uploadFiles" type="file" onchange="uploadVideos()" multiple>
+                <input name="uploadFiles" type="file" onchange="uploadVideos()" multiple required>
             </div>
             
             <div class="uploadResult"></div>
@@ -45,7 +45,7 @@
                 for (let i = 0; i < arr.length; i++) {
                     str += "<div>";
                     str += '<label>영상 제목</label>&nbsp';
-                    str += '<input name="videoNames"><br>'; //영상 제목 입력란
+                    str += '<input name="videoNames" required><br>'; //영상 제목 입력란
                     str += "<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
                     str += "<input class='btn btn-outline-info removeBtn' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
                     str += "</div>";

@@ -163,7 +163,9 @@ public class BoardController {
         log.info("----------registerEssayBoard----------");
 
         //현재 로그인 되어있는 nickname으로 그 사람이 쓴 자소서 리스트 불러오기
-        model.addAttribute("essayList", service.getEssays(nickname));
+        List<EssayDTO> dtoList = service.getEssays(nickname);
+
+        model.addAttribute("essayList", dtoList);
         model.addAttribute("loginNickname", nickname);
         return "boards/essay-register";
     }
@@ -196,7 +198,7 @@ public class BoardController {
     public String registerEssayInterviewPost(@SessionAttribute("loginSession") String nickname,
                                              @RequestParam("title") String title,
                                              @RequestParam("text") String text,
-                                             @RequestParam("videoNames") List<String> videoNames,
+                                             @RequestParam(value = "videoNames", required = false) List<String> videoNames,
                                              @RequestParam("videoUrls") List<String> files) throws Exception{
         log.info("----------registerInterviewBoardPost----------");
         log.info("title: " + title + " text: " + text);
