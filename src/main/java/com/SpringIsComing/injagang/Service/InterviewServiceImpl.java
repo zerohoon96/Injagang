@@ -75,7 +75,7 @@ public class InterviewServiceImpl implements InterviewService{
                             .pk(mock.getId())
                             .nickname(mock.getMember().getNickname())
                             .title(mock.getTitle())
-                            .qCnt(mock.getQCnt())
+                            .qNum(mock.getQCnt())
                             .date(mock.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                             .build());
         });

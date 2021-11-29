@@ -25,6 +25,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.*;
@@ -41,11 +43,20 @@ public class MainController {
     private final AuthTokenService authTokenService;
     private final AlarmService alarmService;
 
+    /**
+     * 메인 페이지 - 마이 페이지로 리다이렉트
+     * 로그인 후 메인 페이지로 이동 시 마이 페이지로 이동
+     */
+    @GetMapping("/")
+    public String mainPage(@SessionAttribute("loginSession") String nickname, RedirectAttributes redirectAttributes){
+        redirectAttributes.addAttribute("nickname", nickname);
+        return "redirect:/mypage/{nickname}";
+    }
 
     /**
      * 마이페이지
      */
-    @GetMapping(value = {"/mypage/{nickname}", "/"})
+    @GetMapping("/mypage/{nickname}")
     public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable("nickname") String curNickname
             , Model model) {
 
@@ -88,20 +99,53 @@ public class MainController {
             }
         }
 
+        List<MypageEssayDTO> essayDTOList = essayService.findEssays(targetMember).stream()
+                .map(e -> essayService.toMypageEssayDTO(e)).collect(toList());
+
+        List<MypageInterviewDTO> interviewDTOList = interviewService.findInterviews(targetMember).stream()
+                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList());
+
         List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(nickname);
 
-        model.addAttribute("essayList", essayService.findEssays(targetMember).stream()
-                .map(e -> essayService.toMypageEssayDTO(e)).collect(toList()));
+        List<MypageFriendDTO> friendDTOList = targetFriends.stream()
+                .map(f -> friendService.toMypageDTO(f)).collect(toList());
 
-        model.addAttribute("interviewList", interviewService.findInterviews(targetMember).stream()
-                .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList()));
+        Collections.sort(essayDTOList, new Comparator<MypageEssayDTO>() {
+            @Override
+            public int compare(MypageEssayDTO o1, MypageEssayDTO o2) {
+                if(o1.getCreateTime().compareTo(o2.getCreateTime()) < 0) return 1;
+                else if(o1.getCreateTime().compareTo(o2.getCreateTime()) > 0) return -1;
+                else return 0;
+            }
+        });
+
+        Collections.sort(interviewDTOList, new Comparator<MypageInterviewDTO>() {
+            @Override
+            public int compare(MypageInterviewDTO o1, MypageInterviewDTO o2) {
+                if(o1.getCreateTime().compareTo(o2.getCreateTime()) < 0) return 1;
+                else if(o1.getCreateTime().compareTo(o2.getCreateTime()) > 0) return -1;
+                else return 0;
+            }
+        });
+
+        Collections.sort(mockInterviewDTOList, new Comparator<MockInterviewDTO>() {
+            @Override
+            public int compare(MockInterviewDTO o1, MockInterviewDTO o2) {
+                if(o1.getDate().compareTo(o2.getDate()) < 0) return 1;
+                else if(o1.getDate().compareTo(o2.getDate()) > 0) return -1;
+                else return 0;
+            }
+        });
+
+        model.addAttribute("essayList", essayDTOList);
+
+        model.addAttribute("interviewList", interviewDTOList);
 
         model.addAttribute("mockInterviewList", mockInterviewDTOList);
 
-        model.addAttribute("friendList", targetFriends.stream()
-                .map(f -> friendService.toMypageDTO(f)).collect(toList()));
+        model.addAttribute("friendList", friendDTOList);
 
-//        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
+        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
         log.info("깐부={}", friendState);
         model.addAttribute("friendState", friendState);
         model.addAttribute("nickname", curNickname);
@@ -253,8 +297,8 @@ public class MainController {
             redirectAttributes.addAttribute("nickname", loginMember.getNickname());
             return "redirect:/mypage/{nickname}";
         }
-        // "/"에서 로그인 할 경우 에러나는 것 처리
-        else if(redirectURL.equals("/")){
+        // "/", "/mypage"에서 로그인 할 경우 에러나는 것 처리
+        else if(redirectURL.equals("/") || redirectURL.equals("/mypage/")){
             redirectAttributes.addAttribute("nickname", loginMember.getNickname());
             return "redirect:/mypage/{nickname}";
         }

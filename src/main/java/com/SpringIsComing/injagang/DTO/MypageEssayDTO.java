@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MypageEssayDTO {
+public class MypageEssayDTO{
 
     private Long id;
 
@@ -26,5 +26,4 @@ public class MypageEssayDTO {
     private int questionNum;
 
     private String createTime;
-
 }

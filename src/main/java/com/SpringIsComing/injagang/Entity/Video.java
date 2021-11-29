@@ -35,4 +35,8 @@ public class Video {
     private String videoName; //영상 제목
 
     private LocalDateTime date;
+
+    public void setVideoName(String str) {
+        this.videoName = str;
+    }
 }

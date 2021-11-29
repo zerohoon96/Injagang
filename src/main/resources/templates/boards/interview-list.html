@@ -22,7 +22,7 @@
                     [[${dto.title}]]</a></span><span>[댓글:[[${dto.rCnt}]]]</span></td>
                 <th>[[${dto.fCnt}]]</th>
                 <td><a th:href="@{|/mypage/${dto.writer}|}">[[${dto.writer}]]</a></td>
-                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH/mm')}]]</td>
+                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH:mm')}]]</td>
             </tr>
             </tbody>
         </table>

@@ -86,7 +86,7 @@ public class InterviewController {
     //면접 마쳤을 때
     @GetMapping("/test")
     String test(@SessionAttribute("loginSession") String nickname, Model model,
-                @RequestParam("qCnt") int qCnt, @RequestParam("interviewName") String title) {
+                @RequestParam int qCnt, @RequestParam("interviewName") String title) {
 
         log.info("qCnt = {}", qCnt);
         log.info("interviewName = {}", title);

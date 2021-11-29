@@ -47,7 +47,7 @@ public interface BoardService {
     void updateEssayBoard(Long pk, String title, String text);
 
     //면접 게시물 제목, 글 수정하기
-    void updateInterviewBoard(Long pk, String title, String text);
+    void updateInterviewBoard(Long pk, String title, String text, List<String> videoNames);
 
     //자소서 게시물 삭제하기
     void deleteEssayBoard(Long pk);
