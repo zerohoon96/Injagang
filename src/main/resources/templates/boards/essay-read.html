@@ -100,9 +100,11 @@
             
             <!-- 첨삭쓰기 버튼 -->
             <div style="float: right; display: inline-block">
+                <div th:if="${result.writer != loginNickname}">
                 <button class="btn btn-primary">
                     <a th:href="@{/essay/feedback/{essayId}/write(essayId=${result.pk})}" style="color: white;">첨삭 쓰기</a>
                 </button>
+                </div>
             </div>
             <hr>
             

@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 @Service
@@ -74,11 +75,13 @@ public class BoardServiceImpl implements BoardService{
 
         interviewRepository.save(entity);
 
+        int idx = 0;
+        List<String> videoNames = dto.getVideoNames();
         for (String videoUrl : dto.getVideoUrls()) {
-            String videoName = videoUrl.split("_")[1]; //원본 파일명
+//            String videoName = videoUrl.split("_")[1]; //원본 파일명
             Video video = Video.builder()
                     .videoURL(videoUrl)
-                    .videoName(videoName)
+                    .videoName(videoNames.get(idx++))
                     .date(LocalDateTime.now())
                     .interview(entity)
                     .build();
@@ -168,11 +171,17 @@ public class BoardServiceImpl implements BoardService{
 
     @Override
     @Transactional
-    public void updateInterviewBoard(Long pk, String title, String text) {
+    public void updateInterviewBoard(Long pk, String title, String text, List<String> videoNames) {
         Interview interview = interviewRepository.findById(pk).get();
         interview.setTitle(title);
         interview.setText(text);
         interview.setDate(LocalDateTime.now());
+
+        AtomicInteger idx = new AtomicInteger();
+        List<Video> videos = interview.getVideos();
+        videos.forEach(video -> {
+            video.setVideoName(videoNames.get(idx.getAndIncrement()));
+        });
 
         interviewRepository.save(interview);
     }

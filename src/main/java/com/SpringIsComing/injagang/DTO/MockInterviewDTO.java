@@ -16,6 +16,6 @@ public class MockInterviewDTO {
     private Long pk;
     private String nickname;
     private String title;
-    private int qCnt;
+    private Integer qNum;
     private String date;
 }

@@ -22,43 +22,53 @@
             <!-- 면접 영상 업로드하기 -->
             <div class="form-group">
                 <label><b>면접 영상 업로드</b></label>
-                <input name="uploadFiles" type="file" multiple>
-                <button type="button" class="uploadBtn">업로드</button>
+                <input name="uploadFiles" type="file" onchange="uploadVideos()" multiple>
             </div>
             
             <div class="uploadResult"></div>
             <div id="videoUrls"></div>
             
             <br>
-            <button type="submit" class="btn btn-primary registerInterview" style="float: right">
+            <button type="submit" class="btn btn-primary registerInterview" style="float: right" onclick="pushVideoURLs()">
                 게시물 저장
             </button>
         </form>
         
         <script th:inline="javascript">
-            let urls = [];
+            let urls = []; //영상들의 저장 경로
             //업로드한 비디오 보여주기
             function showUploadedVideos(arr){
                 console.log(arr);
                 let divArea = $('.uploadResult');
     
+                let str = ""
                 for (let i = 0; i < arr.length; i++) {
-                    divArea.append("<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>");
+                    str += "<div>";
+                    str += '<label>영상 제목</label>&nbsp';
+                    str += '<input name="videoNames"><br>'; //영상 제목 입력란
+                    str += "<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
+                    str += "<input class='btn btn-outline-info removeBtn' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
+                    str += "</div>";
                     urls.push(arr[i].videoURL);
                 }
-                
+                divArea.append(str);
+            }
+
+            //업로드하는 최종 영상들의 url들을 저장
+            function pushVideoURLs() {
+                console.log("final onclick");
                 document.getElementById('videoUrls').innerHTML =
                         '<input name="videoUrls" value='+urls+' style="display: none">';
             }
-            
-            $('.uploadBtn').click(function () {
+
+            function uploadVideos() {
                 let formData = new FormData();
                 let inputFile = $("input[type='file']");
                 let files = inputFile[0].files;
     
                 for (let i = 0; i < files.length; i++) {
-                        console.log(files[i]);
-                        formData.append("uploadFiles", files[i]);
+                    console.log(files[i]);
+                    formData.append("uploadFiles", files[i]);
                 }
     
                 //실제 업로드 부분
@@ -75,6 +85,23 @@
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(textStatus);
+                    }
+                });
+            }
+
+            $('.uploadResult').on("click", ".removeBtn", function (e) {
+                let target = $(this);
+                let fileName = target.data("name");
+                let targetDiv = $(this).closest("div");
+    
+                console.log(fileName);
+    
+                $.post('/removeFile', {fileName: fileName}, function (result) {
+                    console.log(result);
+                    if (result == true) {
+                        targetDiv.remove();
+                        //배열에서 해당 파일이름 제거
+                        urls.splice(urls.indexOf(fileName), 1);
                     }
                 });
             });

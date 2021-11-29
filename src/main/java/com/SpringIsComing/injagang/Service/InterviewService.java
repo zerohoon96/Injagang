@@ -34,7 +34,7 @@ public interface InterviewService {
                 .title(interview.getTitle())
                 .questionNum(videos.size())
                 .feedbackNum(cnt)
-                .createTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .createTime(interview.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
     }
 

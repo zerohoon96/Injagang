@@ -122,7 +122,7 @@
             function displayInterview() {
                 head.innerHTML =
                     "<th class='col-5 text-align-center'>면접게시물 제목</th>" +
-                    "<th class='col-2 text-align-center'>문항 개수</th>" +
+                    "<th class='col-2 text-align-center'>영상 개수</th>" +
                     "<th class='col-2 text-align-center'>피드백 개수</th>" +
                     "<th class='col-3 text-align-center'>작성 날짜</th>";
 
@@ -147,13 +147,15 @@
     
                 body.innerHTML = "";
                 mockInterviewList.forEach(mock => {
-                    body.innerHTML +=
-                            "<tr>" +
-                            "<td>" + mock.title + "</td>" +
-                            "<td class='text-align-center'>" + mock.qCnt + "</td>" +
-                            "<td class='text-align-center'>" + mock.date + "</td>" +
-                            "</tr>";
-                })
+                    console.log(typeof(mock.qNum) + " " + mock.qNum);
+                    body.innerHTML += `<tr><td>${mock.title}</td>
+            <td class="text-align-center">${mock.qNum}</td> <td class="text-align-center">${mock.date}</td></tr>`;
+                            // "<tr>" +
+                            // "<td>" + mock.title + "</td>" +
+                            // "<td class='text-align-center'>" + mock.qCnt + "</td>" +
+                            // "<td class='text-align-center'>" + mock.date + "</td>" +
+                            // "</tr>";
+                });
             }
 
             function displayFriend() {

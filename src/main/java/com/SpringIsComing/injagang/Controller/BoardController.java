@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
@@ -127,13 +129,12 @@ public class BoardController {
     @PostMapping("/interview/board/update/{pk}")
     public String updateInterviewBoardPost(@SessionAttribute("loginSession") String nickname,
                                            @PathVariable("pk") Long ib_pk,
-                                           @RequestParam("title") String title,
-                                           @RequestParam("text") String text) {
+                                           @RequestParam String title,
+                                           @RequestParam String text,
+                                           @RequestParam List<String> videoNames) {
         log.info("==========interviewBoardUpdatePost==========");
-        log.info("title: " + title);
-        log.info("text: " + text);
 
-        service.updateInterviewBoard(ib_pk, title, text);
+        service.updateInterviewBoard(ib_pk, title, text, videoNames);
 
         return "redirect:/interview/board/" + ib_pk;
     }
@@ -195,18 +196,23 @@ public class BoardController {
     public String registerEssayInterviewPost(@SessionAttribute("loginSession") String nickname,
                                              @RequestParam("title") String title,
                                              @RequestParam("text") String text,
+                                             @RequestParam("videoNames") List<String> videoNames,
                                              @RequestParam("videoUrls") List<String> files) throws Exception{
         log.info("----------registerInterviewBoardPost----------");
         log.info("title: " + title + " text: " + text);
 
-        List<String> srcPathList = new ArrayList<>();
+        if (videoNames.size() != files.size()) {
+            log.info("--------------------WARNING: video names and urls don't match--------------------");
+        }
+
+        //List<String> srcPathList = new ArrayList<>();
         List<String> pathList = new ArrayList<>();
         for (String file : files) {
             String srcFileName = URLDecoder.decode(file, "UTF-8");
             String srcFilePath = uploadPath + File.separator + srcFileName;
             String filePath = "/upload/" + srcFileName;
             pathList.add(filePath);
-            srcPathList.add(srcFilePath);
+            //srcPathList.add(srcFilePath);
         }
         //log.info("srcPathList: " + srcPathList);
         log.info("pathList: " + pathList);
@@ -215,6 +221,7 @@ public class BoardController {
                 .title(title)
                 .text(text)
                 .videoUrls(pathList)
+                .videoNames(videoNames)
                 .writer(nickname)
                 .build();
 

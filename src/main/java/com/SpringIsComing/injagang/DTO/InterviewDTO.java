@@ -22,4 +22,5 @@ public class InterviewDTO {
     private String writer; //작성자 닉네임
     private LocalDateTime date;
     private List<String> videoUrls; //업로드한 비디오들의 저장경로 리스트
+    private List<String > videoNames; //작성자가 입력한 업로드한 비디오의 이름
 }
