@@ -48,22 +48,31 @@
 
         </head>
         <body>
-        <form class="container-fluid" action method="post" th:object="${feedback}">
-            <label class="form-control text-center mt-3" th:text="|${essayPostName} 게시물을 첨삭하고 있습니다.|"></label><br>
-            <button type="button" onclick="showGuide()">첨삭 방법</button>
+        <form class="container-fluid" action method="post" th:object="${writeFeedback}">
+            <label class="form-control text-center mt-3"
+                   th:text="|${readFeedback.essayPostName} 게시물에 저장된 첨삭을 수정하고 있습니다.|"></label><br>
 
-            <div th:each="idx : ${#numbers.sequence(0,questions.size()-1)}">
+            <div th:each="idx : ${#numbers.sequence(0,readFeedback.questions.size()-1)}">
 
-                <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${questions[idx]}|"></label>
+                <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${readFeedback.questions[idx]}|"></label>
                 <div type="text" style="border: 1px solid black;" th:id="|answer${idx+1}|"
-                     th:text="${answers[idx]}"
-                     th:onmouseup="|dragUpdate(${idx+1})|" th:onmousedown="|dragStart(${idx+1})|"></div>
+                     th:text="${readFeedback.answers[idx]}" th:onmouseup="|dragUpdate(${idx+1})|"
+                     th:onmousedown="|dragStart(${idx+1})|">
+                </div>
                 <br>
 
                 <!--전송에 필요한 데이터-->
                 <div th:id="|start${idx+1}|"></div>
                 <div th:id="|end${idx+1}|"></div>
-                <div th:id="|comment${idx+1}|"></div>
+                <div th:id="|comment${idx+1}|">
+                    <div th:each="comment,info : ${readFeedback.comment}">
+                        <div th:if="${idx+1} == ${readFeedback.num[info.index]}">
+                            <div th:id="|initComment${idx+1}${info.index}|" style="display: none;"
+                                 th:text="${comment}"></div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!--첨삭 입력 칸, 버튼이 들어가는 div-->
                 <div th:id="|getFeedback${idx+1}|"></div>
@@ -73,15 +82,16 @@
                 <button type="button" style="display: none" class="add-btn" th:id="|addBtn${idx+1}|"
                         th:onclick="|addPlusBtn(${idx+1})|">+
                 </button>
+
             </div>
 
             <!--총평 입력-->
             <label for="totalComment">총평</label>
-            <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3
-                      placeholder="총평을 입력해주세요." required></textarea><br>
+            <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3 required></textarea><br>
 
             <!--최종 첨삭 저장 버튼-->
             <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
+            <button type="buttton" class="margin-bottom-10 w-300 btn btn-primary" href="window.history.back()">취소</button>
             <br>
         </form>
 
@@ -92,8 +102,9 @@
             let start, end, comment, selectedString, commentBuf, rangeBuf, container, remainEdit, addBtn;
             let mouseX, mouseY;
             let startPoint = 0;
-
-            initSetting();
+            let num = [[${readFeedback.num}]];
+            let tmpStart = [[${readFeedback.start}]];
+            let tmpEnd = [[${readFeedback.end}]];
 
             document.addEventListener("mousedown", (e) => { //마우스 왼쪽 버튼을 클릭했을때 이벤트 처리
                 mouseX = e.pageX;
@@ -103,18 +114,28 @@
                 }
             })
 
-            function initSetting() { //초기 세팅 진행
-                start = new Array([[${questions.size()}]]);
-                end = new Array([[${questions.size()}]]);
-                comment = new Array([[${questions.size()}]]);
-                selectedString = new Array([[${questions.size()}]]);
+            initSetting();
+            display();
 
-                container = new Array([[${questions.size()}]]);
-                rangeBuf = new Array([[${questions.size()}]]);
-                commentBuf = new Array([[${questions.size()}]]);
-                addBtn = new Array([[${questions.size()}]]);
-                remainEdit = new Array([[${questions.size()}]]);
+            function initSetting() {
+                let curQuestion = 1, idx = 0;
+                let startBuf = [], endBuf = [], initCommentBuf = [];
+                let commentTextArea = document.getElementById('totalComment');
 
+                commentTextArea.value = [[${readFeedback.content}]];
+
+                start = new Array([[${readFeedback.questions.size()}]]);
+                end = new Array([[${readFeedback.questions.size()}]]);
+                comment = new Array([[${readFeedback.questions.size()}]]);
+                selectedString = new Array([[${readFeedback.questions.size()}]]);
+
+                container = new Array([[${readFeedback.questions.size()}]]);
+                rangeBuf = new Array([[${readFeedback.questions.size()}]]);
+                commentBuf = new Array([[${readFeedback.questions.size()}]]);
+                addBtn = new Array([[${readFeedback.questions.size()}]]);
+                remainEdit = new Array([[${readFeedback.questions.size()}]]);
+
+                console.log('start.length : ', start.length);
                 for (let i = 0; i < start.length; i++) { //2차원 배열처럼 사용하기 위해 설정
                     start[i] = [];
                     end[i] = [];
@@ -124,17 +145,80 @@
                     addBtn[i] = document.querySelector("#addBtn" + (i + 1));
                     remainEdit[i] = 0;
                 }
+
+                for (let i = 0; i < tmpStart.length; i++) {
+                    if (num[i] > curQuestion) {
+                        start[curQuestion - 1] = startBuf;
+                        end[curQuestion - 1] = endBuf;
+                        comment[curQuestion - 1] = initCommentBuf;
+                        startBuf = [];
+                        endBuf = [];
+                        initCommentBuf = [];
+                        curQuestion++;
+                        idx = 0;
+                    }
+                    startBuf.push(tmpStart[i]);
+                    endBuf.push(tmpEnd[i]);
+                    initCommentBuf.push(document.getElementById('initComment' + curQuestion + i).textContent);
+                    idx++;
+                    if (i + 1 == tmpStart.length) {
+                        start[curQuestion - 1] = startBuf;
+                        end[curQuestion - 1] = endBuf;
+                        comment[curQuestion - 1] = initCommentBuf;
+                    }
+                }
                 btnWidth = Number(getComputedStyle(addBtn[0]).width.slice(0, -2));
                 btnHeight = Number(getComputedStyle(addBtn[0]).height.slice(0, -2));
-
             }
 
-            function showGuide() { //첨삭 방법을 소개하는 팝업
-                alert('1. 문제별로 할당된 첨삭란에 첨삭을 입력합니다.\n' +
-                    '2. 첨삭 대상 문장을 드래그하고 + 버튼을 누르세요.\n' +
-                    '3. 내용을 작성하고 저장을 하면 첨삭이 저장됩니다.\n' +
-                    '4. 저장된 첨삭은 삭제하거나 내용을 수정할 수 있습니다.\n' +
-                    '5. 총평을 입력하고 저장 버튼을 눌러서 첨삭을 종료하세요.');
+            function display() {
+                let orgContent, newContent;
+                let cursor = 0;
+                let spanList;
+
+                for (let i = 1; i <= start.length; i++) { //모든 문제별로 진행
+                    orgContent = document.getElementById('answer' + i).innerText;
+                    // newContent = document.getElementById('answer' + i).innerHTML;
+                    cursor = 0;
+                    spanList = [];
+
+                    document.getElementById('answer' + i).innerHTML = '';
+                    for (let j = 0; j < start[i - 1].length; j++) {
+                        document.getElementById('answer' + i).innerHTML += orgContent.substr(cursor, start[i - 1][j] - cursor); //직전 마지막 다음 ~ 시작 직전까지 저장
+                        cursor = start[i - 1][j]; //커서 이동
+                        selectedString[i - 1][j] = orgContent.substr(cursor, end[i - 1][j] - start[i - 1][j] + 1);
+                        document.getElementById('answer' + i).innerHTML += '<span style="background-color: #E5CCFF">' + selectedString[i - 1][j] + '</span>'; //하이라이트
+                        spanList.push(document.getElementById('answer' + i).childNodes.length - 1);
+                        cursor = end[i - 1][j] + 1;
+                    }
+                    document.getElementById('answer' + i).innerHTML += orgContent.substr(cursor, orgContent.length - cursor);
+                    for (let j = 0; j < spanList.length; j++) {
+                        container[i - 1].push(document.getElementById('answer' + i).childNodes[spanList[j]]);
+                    }
+                    displayFeedback(i);
+                }
+            }
+
+            function displayFeedback(idx) { //피드백 display
+                console.log('==========================');
+                console.log('[displayFeedback] idx : ', idx);
+                //기존값 초기화 (문제별 원래 저장된 부분)
+                document.getElementById('start' + idx).innerHTML = '';
+                document.getElementById('end' + idx).innerHTML = '';
+                document.getElementById('comment' + idx).innerHTML = '';
+
+                for (let i = 0; i < start[idx - 1].length; i++) {
+                    document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].start">';
+                    document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].end">';
+                    document.getElementById('start' + idx + i).value = start[idx - 1][i];
+                    document.getElementById('end' + idx + i).value = end[idx - 1][i];
+                    document.getElementById('comment' + idx).innerHTML += '<b>선택 문장 ' + (i + 1) + ' : </b><span>' + selectedString[idx - 1][i] + '</span><br>' +
+                        '<textarea class="width-60 background-color-gray" id="commentContent' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea><br>' +
+                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '1" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button> ' +
+                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '2" onclick="editFeedback(' + idx + ',' + i + ')">수정</button> ' +
+                        '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '3" onclick="processEditFeedback(' + idx + ',' + i + ',1)">확인</button> ' +
+                            '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '4" onclick="processEditFeedback(' + idx + ',' + i + ',2)">취소</button><br>';
+                }
             }
 
             function getCaretCharacterOffsetWithin(element) {
@@ -164,8 +248,10 @@
                 console.log('==========================');
                 console.log('[dragStart] idx : ', idx, ' startPoint : ', startPoint);
                 if (startPoint == idx) { //드래그가 아직 종료되지 않은 경우 실패
+                    console.log('not finished!!!');
                     selectedObj.removeAllRanges();
                 }
+                console.log('click start~');
                 startPoint = idx;
             }
 
@@ -192,6 +278,7 @@
             function dragCheckAndProcess(idx) { //드래그 후 검사
                 console.log('==========================');
                 console.log('[dragCheckAndProcess] idx : ', idx);
+
                 for (let i = 0; i < start[idx - 1].length; i++) { //겹치지 않는지 검사
                     if (!(curStart > end[idx - 1][i] + 1) && !(curEnd < start[idx - 1][i] - 1)) {
                         alert('이미 선택된 부분입니다.\n(최소 한 칸을 간격으로 첨삭을 해주세요.)');
@@ -245,7 +332,6 @@
             function addPlusBtn(idx) {
                 //첨삭 입력 칸, 버튼 생성
                 let range = selectedObj.getRangeAt(0);
-                console.log('버튼 추가 후 range : ', rangeBuf[idx - 1], range);
                 addBtn[idx - 1].style.display = "none";
                 if (range != rangeBuf[idx - 1]) { //현재 드래그와 저장된 드래그 비교
                     alert('드래그를 해제하지 말고 버튼을 눌러주세요.');
@@ -254,8 +340,6 @@
                     return;
                 }
 
-                // makeHighlight(idx, "#FFF000");
-                // rangeBuf[idx - 1] = selectedObj.getRangeAt(0);
                 document.getElementById('getFeedback' + idx).innerHTML = '<br><b>현재 선택 문장 : </b><span>' + rangeBuf[idx - 1].toString() + '</span><br>' +
                     '<textarea id="input' + idx + '" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea><br>' +
                     '<button class="btn btn-secondary" type="button" onclick="addFeedback(' + idx + ')">확인</button> ' +
@@ -282,7 +366,6 @@
                 commentBuf[idx - 1] = '';
 
                 displayFeedback(idx);
-
             }
 
             function makeHighlight(idx, color) {
@@ -369,7 +452,6 @@
                     comment[curIdx - 1][multiIdx] = commentTextArea.value;
                 } else { //취소 버튼 -> 기존 값으로 되돌림
                     commentTextArea.value = comment[curIdx - 1][multiIdx];
-
                 }
 
             }
@@ -386,28 +468,6 @@
                 commentTextArea.readOnly = true;
             }
 
-            function displayFeedback(idx) { //피드백 display
-                console.log('==========================');
-                console.log('[displayFeedback] idx : ', idx);
-                //기존값 초기화 (문제별 원래 저장된 부분)
-                document.getElementById('start' + idx).innerHTML = '';
-                document.getElementById('end' + idx).innerHTML = '';
-                document.getElementById('comment' + idx).innerHTML = '';
-
-                for (let i = 0; i < start[idx - 1].length; i++) {
-                    document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].start">';
-                    document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].end">';
-                    document.getElementById('start' + idx + i).value = start[idx - 1][i];
-                    document.getElementById('end' + idx + i).value = end[idx - 1][i];
-                    document.getElementById('comment' + idx).innerHTML += '<b>선택 문장 ' + (i + 1) + ' : </b><span>' + selectedString[idx - 1][i] + '</span><br>' +
-                        '<textarea class="width-60 background-color-gray" id="commentContent' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea><br>' +
-                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '1" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button> ' +
-                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '2" onclick="editFeedback(' + idx + ',' + i + ')">수정</button> ' +
-                        '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '3" onclick="processEditFeedback(' + idx + ',' + i + ',1)">확인</button> ' +
-                        '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '4" onclick="processEditFeedback(' + idx + ',' + i + ',2)">취소</button><br>';
-                }
-            }
-
             function deleteHighlight(curIdx, deleteIdx) {
                 console.log('==========================');
                 console.log('[deleteHighlight] curIdx : ', curIdx, 'deleteIdx : ', deleteIdx);
@@ -416,7 +476,6 @@
                 //새로운 레인지 생성
                 range.setStart(node, 0);
                 range.setEnd(node, 1);
-
                 //하이라이트 삭제
                 highlightHandler(curIdx, '', range, 0);
 

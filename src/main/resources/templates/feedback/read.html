@@ -32,8 +32,9 @@
 
         </head>
         <body>
-        <label class="form-control text-center mt-3" th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></label><br>
-        <p th:text="|작성시간 : ${feedback.writeTime}|"></p>
+        <label class="form-control text-center mt-3"
+               th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></label><br>
+        <p th:text="|최종 수정 시간 : ${feedback.writeTime}|"></p>
         <div th:each="idx : ${#numbers.sequence(0,feedback.questions.size()-1)}">
 
             <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
@@ -41,8 +42,7 @@
                  th:text="${feedback.answers[idx]}"></div>
             <br>
 
-            <!--여기부터 이제 그리기-->
-            <!--            <div th:id="|comment${idx+1}|">-->
+            <!--첨삭 목록-->
             <div th:each="comment,info : ${feedback.comment}">
                 <div th:if="${idx+1} == ${feedback.num[info.index]}">
                     <span style="font-weight: bold" th:id="|label${idx+1}${info.index}|"></span>
@@ -51,8 +51,6 @@
                     <br>
                 </div>
             </div>
-            <!--            </div>-->
-
         </div>
 
         <!--총평 출력-->
@@ -62,54 +60,92 @@
 
         <!--첨삭 수정, 삭제, 이전 버튼-->
         <div th:if="${feedback.curUserNickname} == ${feedback.essayWriter}">
-            <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
-                <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/feedback/delete/${feedback.feedbackId}?essayId=${feedback.essayId}|">삭제</a>
-                <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/feedback/update/${feedback.feedbackId}?essayId=${feedback.essayId}|">수정</a>
-            </div>
+            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
+               th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>
+            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
+               th:href="|/essay/feedback/update/${feedback.feedbackId}|">수정</a>
         </div>
-        <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
+
+        <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
+            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
+               th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>
+            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
+               th:href="|/essay/feedback/update/${feedback.feedbackId}|">수정</a>
+        </div>
+
+        <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
+           th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
 
 
-        <script type="text/javascript">
+        <script th:inline="javascript">
             const selectedObj = window.getSelection();
+            var start, end, comment;
             let num = [[${feedback.num}]];
-            let start = [[${feedback.start}]];
-            let end = [[${feedback.end}]];
+            let tmpStart = [[${feedback.start}]];
+            let tmpEnd = [[${feedback.end}]];
 
+            initSetting();
             display();
 
-            function display() {
-                let orgContent = document.getElementById('answer' + 1).innerText, newContent = "";
-                let curQuestion = 1;
-                let cursor = 0;
-                let ct = 0;
+            function initSetting() {
+                let curQuestion = 1, idx = 0;
+                let startBuf = [], endBuf = [];
+                start = new Array([[${feedback.questions.size()}]]);
+                end = new Array([[${feedback.questions.size()}]]);
+                comment = new Array([[${feedback.questions.size()}]]);
 
-                for (let i = 0; i < num.length; i++) {
-                    if (num[i] > curQuestion) { //문제 바뀜
-                        newContent += orgContent.substr(cursor, orgContent.length - cursor);
-                        document.getElementById('answer' + curQuestion).innerHTML = newContent;
-                        console.log('=====================================================================');
-                        console.log('최종 : ', document.getElementById('answer' + curQuestion).innerHTML);
-                        console.log('=====================================================================');
-                        curQuestion++;
-                        newContent = "";
-                        orgContent = document.getElementById('answer' + curQuestion).innerText;
-                        cursor = 0;
-                        ct = 0;
-                        console.log(i);
-
-                    }
-                    newContent += orgContent.substr(cursor, start[i] - cursor);
-                    cursor = start[i];
-                    console.log('new content : ', newContent);
-                    newContent += '<span style="background-color: #E5CCFF">' + orgContent.substr(cursor, end[i] - start[i] + 1) + '</span>';
-                    console.log(newContent);
-                    document.getElementById('label' + curQuestion + i).innerText = '선택 문장 ' + (ct + 1) + ' : ';
-                    document.getElementById('comment' + curQuestion + i).innerText = orgContent.substr(cursor, end[i] - start[i] + 1);
-                    ct++;
-                    cursor = end[i] + 1;
+                for (let i = 0; i < start.length; i++) { //2차원 배열처럼 사용하기 위해 설정
+                    start[i] = [];
+                    end[i] = [];
                 }
-                document.getElementById('answer' + curQuestion).innerHTML = newContent + orgContent.substr(cursor, orgContent.length - cursor);
+
+                for (let i = 0; i < tmpStart.length; i++) {
+                    if (num[i] > curQuestion) {
+                        start[curQuestion - 1] = startBuf;
+                        end[curQuestion - 1] = endBuf;
+                        startBuf = [];
+                        endBuf = [];
+                        curQuestion++;
+                    }
+                    startBuf.push(tmpStart[i]);
+                    endBuf.push(tmpEnd[i]);
+                    if (i + 1 == tmpStart.length) {
+                        start[curQuestion - 1] = startBuf;
+                        end[curQuestion - 1] = endBuf;
+                    }
+                }
+            }
+
+            function display() {
+                let orgContent, newContent;
+                let ct = 0, cursor = 0;
+
+
+                for (let i = 1; i <= start.length; i++) { //모든 문제별로 진행
+                    orgContent = document.getElementById('answer' + i).innerText;
+                    newContent = "";
+                    cursor = 0;
+                    console.log(start[i - 1]);
+                    console.log(start[i - 1].length);
+
+                    console.log('org : ', orgContent);
+                    for (let j = 0; j < start[i - 1].length; j++) {
+                        console.log(cursor, ' 부터 ', start[i - 1][j] - cursor, ' 이만큼 처음');
+                        newContent += orgContent.substr(cursor, start[i - 1][j] - cursor); //직전 마지막 다음 ~ 시작 직전까지 저장
+                        console.log('추가 후 : ', newContent);
+                        cursor = start[i - 1][j]; //커서 이동
+                        console.log(cursor, ' 부터 ', end[i - 1][j] - start[i - 1][j] + 1, ' 이만큼 하이라이트');
+                        newContent += '<span style="background-color: #E5CCFF">' + orgContent.substr(cursor, end[i - 1][j] - start[i - 1][j] + 1) + '</span>'; //하이라이트
+                        console.log('추가 후 : ', newContent);
+                        document.getElementById('label' + i + ct).innerText = '선택 문장 ' + (j + 1) + ' : ';
+                        document.getElementById('comment' + i + ct).innerText = orgContent.substr(cursor, end[i - 1][j] - start[i - 1][j] + 1);
+                        cursor = end[i - 1][j] + 1;
+                        ct++;
+                    }
+                    newContent += orgContent.substr(cursor, orgContent.length - cursor);
+                    console.log('추가 후 : ', newContent);
+                    document.getElementById('answer' + i).innerHTML = newContent;
+                }
             }
         </script>
 
