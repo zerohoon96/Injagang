@@ -43,15 +43,13 @@ public class MainController {
     private final AuthTokenService authTokenService;
     private final AlarmService alarmService;
 
-    /**
-     * 메인 페이지 - 마이 페이지로 리다이렉트
-     * 로그인 후 메인 페이지로 이동 시 마이 페이지로 이동
-     */
-    @GetMapping("/")
-    public String mainPage(@SessionAttribute("loginSession") String nickname, RedirectAttributes redirectAttributes){
-        redirectAttributes.addAttribute("nickname", nickname);
-        return "redirect:/mypage/{nickname}";
+
+    @GetMapping("/sibal")
+    public String sibal(){
+
+        return "mypage/test";
     }
+
 
     /**
      * 마이페이지
@@ -304,11 +302,6 @@ public class MainController {
             redirectAttributes.addAttribute("nickname", loginMember.getNickname());
             return "redirect:/mypage/{nickname}";
         }
-        // "/", "/mypage"에서 로그인 할 경우 에러나는 것 처리
-        else if(redirectURL.equals("/") || redirectURL.equals("/mypage/")){
-            redirectAttributes.addAttribute("nickname", loginMember.getNickname());
-            return "redirect:/mypage/{nickname}";
-        }
 
         return "redirect:" + redirectURL;
 
@@ -471,20 +464,20 @@ public class MainController {
     }
 
 
-//    @PostConstruct
-//    public void init(){
-//        RegisterDTO registerDTO = new RegisterDTO();
-//        registerDTO.setEmail("kimsm@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-//        registerDTO.setName("김수만");
-//        registerDTO.setLoginId("kimsuman");
-//        registerDTO.setNickname("smkim");
-//        registerDTO.setPassword("test");
-//        registerDTO.setPasswordCheck("test");
-//
-//        memberService.save(registerDTO);
-//
-//
-//    }
+    @PostConstruct
+    public void init(){
+        RegisterDTO registerDTO = new RegisterDTO();
+        registerDTO.setEmail("kimsm@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+        registerDTO.setName("김수만");
+        registerDTO.setLoginId("kimsuman");
+        registerDTO.setNickname("smkim");
+        registerDTO.setPassword("test");
+        registerDTO.setPasswordCheck("test");
+
+        memberService.save(registerDTO);
+
+
+    }
 
 
 }
