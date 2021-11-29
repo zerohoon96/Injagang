@@ -5,7 +5,9 @@
         <head>
             <meta charset="utf-8">
             <style>
-
+                h1 {
+                    border-bottom: 5px double #5657aa;
+                }
 
                 .text-align-center {
                     text-align: center;
@@ -22,7 +24,7 @@
         <div class="row mt-5 justify-content-center">
 
             <div class="col-6 d-flex justify-content-center">
-                <span style="font-family: 함초롬바탕" class="display-4" th:text="|${nickname}님의 my page|"></span>
+                <h1 th:text="|${nickname}'s MyPage|"></h1>
             </div>
 
         </div>
@@ -30,16 +32,16 @@
         <div class="row mt-3 justify-content-center">
 
             <div class="col d-flex justify-content-center">
-                <div>자기소개서 : [[${essayList.size()}]]개 작성</div>
+                <div>자기소개서 : <b>[[${essayList.size()}]]</b></div>
                 <div style="visibility: hidden">space</div>
-                <div>면접 게시물: [[${interviewList.size()}]]개 작성</div>
+                <div>면접 게시물 : <b>[[${interviewList.size()}]]</b></div>
                 <div style="visibility: hidden">space</div>
-                <div>친구 : [[${friendList.size()}]]명</div>
+                <div>친구 : <b>[[${friendList.size()}]]</b></div>
             </div>
         </div>
 
         <div class="row mt-4 justify-content-center">
-            <a th:if="${friendState} == 0" href="/mypage/update" type="button" class="btn btn-outline-secondary">회원 정보 수정</a>
+            <a th:if="${friendState} == 0" href="/mypage/update" type="button" class="btn btn-outline-info">회원 정보 수정</a>
         </div>
 
         <div class="row justify-content-center mt-5">
@@ -59,10 +61,10 @@
                         onClick="displayFriend()">친구 목록
                 </button>
 
-                <a th:if="${friendState} == 2" th:href="@{/requestFriendRequest/{nickname}(nickname = ${nickname})}" type="button" class="btn btn-outline-secondary">친구 신청</a>
-                <a th:if="${friendState} == 3" class="btn btn-outline-secondary">친구 수락 대기중</a>
+                <a th:if="${friendState} == 2" th:href="@{/requestFriendRequest/{nickname}(nickname = ${nickname})}" type="button" class="btn btn-outline-info">친구 신청</a>
+                <a th:if="${friendState} == 3" class="btn btn-outline-info">친구 수락 대기중</a>
                 <a th:if="${friendState} == 4" th:href="@{/acceptFriendRequest/{nickname}(nickname = ${nickname})}" type="button"
-                   class="btn btn-outline-secondary">친구 수락하기</a>
+                   class="btn btn-outline-info">친구 수락하기</a>
             </div>
         </div>
 
@@ -111,7 +113,7 @@
                     }
                     
                     if(essay.access == 0){
-                        str += '<td class="text-align-center">' + '나만 보기' + '</td>';
+                        str += '<td class="text-align-center">' + '비공개' + '</td>';
                     }
                     else if (essay.access == 1) {
                         str += '<td class="text-align-center">' + '친구 공개' + '</td>';

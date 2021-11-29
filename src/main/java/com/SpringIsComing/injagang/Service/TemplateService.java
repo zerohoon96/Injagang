@@ -11,5 +11,6 @@ import java.util.List;
 public interface TemplateService {
 
     public void storeEssayTemplate(EssayTemplate essayTemplate);
+    public TemplateDTO readTemplate();
 
 }

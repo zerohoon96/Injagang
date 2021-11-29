@@ -3,26 +3,18 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
-        
+
         <head>
             <style>
-                .essay-content{
-                    box-sizing: border-box;
-                    width: 100%;
-                    margin-top: 30px;
-                }
                 textarea{
                     resize: none;
-                    display: inline-block;
-                    height: auto;
                 }
             </style>
         </head>
     
-        <div class="essay-content">
+        <div class="container-fluid mt-3">
         
             <!-- 게시물 내용 부분 -->
-            <div class="left-space">
             
                 <form id="updateForm" th:action="@{/interview/board/update/{pk}(pk=${result.pk})}" th:method="post">
                     <!-- 게시물 제목 -->
@@ -55,18 +47,11 @@
                 <button class="btn btn-primary" type="submit" form="updateForm">수정 완료</button>
         
             </div>
-            <br><hr>
-        
-            <!-- 댓글 영역 -->
-            <div class="reply-space">
-                <h3>댓글</h3>
-                <div th:each="dto : ${result.replyList}">
-                    <label>[[${dto.nickname}]]님의 댓글([[${dto.date}]])</label>
-                    <br>
-                    <textarea cols="80" readonly>[[${dto.content}]]</textarea>
-                </div>
-            </div>
-    
+            <br>
+
+            <!-- 수정 완료 버튼-->
+            <button class="btn btn-outline-info form-control" type="submit" form="updateForm">수정 완료</button>
+            <br><br>
         </div>
     </th:block>
 </th:block>

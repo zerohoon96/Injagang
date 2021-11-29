@@ -15,6 +15,8 @@ public interface EssayService {
     public Long storeEssay(Essay essay);
     public Essay findEssay(Long essayId) throws Exception;
     public Member findMember(String nickName);
+    public EssayWriteDTO readEssay(Long id);
+    public void deleteEssay(Long essayId);
 
     default EssayWriteDTO essayEntityToDto(Essay essay) {
         List<EssayContent> ec = essay.getContents();

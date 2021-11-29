@@ -11,96 +11,121 @@
                     width: 100%;
                     margin-top: 30px;
                 }
+                .left-space{
+                    display: inline-block;
+                    width:80%;
+                }
+                .right-space{
+                    display: inline-block;
+                    float: right;
+                }
                 textarea{
                     resize: none;
                     display: inline-block;
                     height: auto;
                 }
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
+                }
             </style>
         </head>
         
-        <div class="interview-content">
+        <div class="container-fluid">
             <!-- 게시물 내용 -->
-            <div class="content-space">
+            <div class="left-space mt-3">
                 <!-- 게시물 제목 -->
-                <div>
-                    <h3>[[${result.title}]]</h3>
-                </div>
-    
+                <h3 class="text-center mb-2">[[${result.title}]]</h3>
+                <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
+
                 <!-- 게시물 글 내용 -->
-                <br>
-                <div>
-                    <textarea rows="8" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
-                </div>
-                <br>
+                [[${result.text}]]
+                <br><br>
                 
                 <!-- 업로드한 동영상과 피드백 -->
-                <div class="form-group" th:each="dto : ${result.videoList}">
+                <div class="form-group" th:each="dto, idx : ${result.videoList}">
                     <br>
-                    <label th:for="|${dto.pk}label|">[[${dto.videoName}]]</label>
+                    <label th:for="|${dto.pk}label|" th:text="|${idx.count}. ${dto.videoName}|"></label>
                     <br>
-                    <video th:id="|${dto.pk}label|" width="600" height="auto" controls>
+                    <video th:id="|${dto.pk}label|" class="embed-responsive embed-responsive-4by3" controls>
                         <source th:src="${dto.url}" type="video/mp4">
                     </video>
                     
                     <!-- 기존에 달린 피드백 부분 -->
-                    <div th:each="fdto : ${result.feedbackList}" th:if="${dto.pk == fdto.videoId}">
+                    <div class="mt-2" th:each="fdto : ${result.feedbackList}" th:if="${dto.pk == fdto.videoId}">
                         <form th:action="@{/interview/feedback/delete}" th:method="post">
-                            <label th:for="|${fdto.pk}feedback|">
-                                <a th:href="@{|/mypage/${fdto.nickname}|}">[[${fdto.nickname}]]</a>님의 피드백
-                            </label>
-                            <br>
-                            <textarea th:id="|${fdto.pk}feedback|" cols="80" readonly>[[${fdto.comment}]]</textarea>
+<!--                            <label th:for="|${fdto.pk}feedback|">[[${fdto.nickname}]]님의 피드백</label>-->
+                            <div class="form-inline">
+                                <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left" th:for="|${fdto.pk}question|">↳ <b>[[${fdto.nickname}]]</b>님의 피드백</label>
+                                <button class="btn btn-link btn-sm ml-2" type="submit"
+                                        th:if="${loginNickname == fdto.nickname || loginNickname == result.writer}">X</button>
+                            </div>
+                            <textarea class="form-control" style="pointer-events: none" th:id="|${fdto.pk}feedback|">[[${fdto.comment}]]</textarea>
                             <input style="display: none" name="ib_pk" th:value="${result.pk}">
                             <input style="display: none" name="feedback_pk" th:value="${fdto.pk}">
-                            <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${loginNickname == fdto.nickname || loginNickname == result.writer}">삭제</button>
                         </form>
                     </div>
                     
                     <!-- 피드백 달기 -->
                     <div th:id="${dto.pk}"></div>
-                    <input class="feedbackBtn" type="button" value="피드백 달기"
+                    <input class="btn-outline-info feedbackBtn mt-2 form-control" type="button" value="피드백 달기"
                            th:attr="onclick=|make_feedback('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_feedbackBtn()|">
                 </div>
-    
-                <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만 -->
-                <div th:if="${loginNickname == result.writer}" style="float: right">
-                    <button class="btn btn-secondary" type="button">
-                        <a th:href="@{/interview/board/update/{pk}(pk=${result.pk})}" style="color: white">게시물 수정</a>
-                    </button>
-                    <button class="btn btn-secondary" type="button" style="background-color: red">
-                        <a th:href="@{/interview/board/delete/{pk}(pk=${result.pk})}" style="color: white">게시물 삭제</a>
-                    </button>
-                </div>
-                
-            </div>
-            <br>
-            <hr>
-
-            <!-- 댓글 -->
-            <div class="reply-space">
-                <h3>댓글</h3>
-    
+                <br>
+                <hr>
+                <!-- 댓글 -->
+    <!--            <h3>댓글</h3>-->
                 <!-- 기존 댓글 표시해줄 부분 -->
-                <div th:each="dto : ${result.replyList}">
+                <div class="mb-2" th:each="dto : ${result.replyList}">
                     <form th:action="@{/interview/reply/delete}" th:method="post">
-                        <label><a th:href="@{|/mypage/${dto.nickname}|}">[[${dto.nickname}]]</a>님의 댓글</label>
-                        <br>
-                        <textarea cols="80" readonly>[[${dto.content}]]</textarea>
+                        <div class="form-inline">
+                            <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left">↳ <b>[[${dto.nickname}]]</b>님</label>
+                            <button class="btn btn-link btn-sm ml-2" type="submit"
+                                    th:if="${loginNickname == dto.nickname}">X</button>
+                        </div>
+                        <div style="padding-right: 4%; padding-left: 4%">[[${dto.content}]]</div>
                         <input style="display: none" name="ib_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
-                        <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${loginNickname == dto.nickname || loginNickname == result.writer}">삭제</button>
                     </form>
                 </div>
-    
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
-                <input id="reply_input" type="button" value="댓글 달기"
+                <input class="btn btn-outline-info form-control" id="reply_input" type="button" value="댓글 달기"
                        th:attr="onclick=|make_reply('${pk}', '${loginNickname}'); remove_replyBtn()|">
+                <br><br>
             </div>
+
+            <div class="right-space">
+                <!-- 여기 밑에 피드백 알림창 html간격맞출라고 넣은거임 -->
+                <div class="dropdown" style="visibility: hidden">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        피드백([[${result.fCnt}]]개)
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" th:each="dto : ${result.feedbackList}"
+                           th:href="@{/essay/board/feedback/{pk}(pk=${dto.pk})}" th:text="|${dto.nickname}님의 피드백|">
+                        </a>
+                    </div>
+                </div>
+                <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만 -->
+                <div>
+                    <div th:if="${loginNickname == result.writer}">
+                        <button class="btn btn-outline-info btn-block" type="button" th:onclick="|location.href='@{/interview/board/update/{pk}(pk=${result.pk})}'|">
+                            게시물 수정
+                        </button>
+                        <button class="btn btn-outline-danger mt-2 btn-block" type="button" th:onclick="|location.href='@{/interview/board/delete/{pk}(pk=${result.pk})}'|">
+                            게시물 삭제
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <br><br>
         </div>
+
+
     
         <!-- 댓글 달기 기능 -->
         <script th:inline="javascript">
@@ -115,21 +140,21 @@
             
             //댓글 달기를 누를 때
             function make_reply(pk, nickname){
-                document.getElementById("new_reply").innerHTML+= `<form action="/interview/reply" method="post">`+
-                        '<label>'+nickname+'님의 댓글</label><br>'+
-                        `<textarea name="content" cols="80" rows="3" placeholder="내용을 입력해주세요."></textarea>`+
+                document.getElementById("new_reply").innerHTML+= `<form class="mt-2" action="/interview/reply" method="post">`+
+                        // '<label>'+nickname+'님의 댓글</label><br>'+
+                        `<textarea class="form-control" name="content" rows="3" placeholder="내용을 입력해주세요." required></textarea>`+
                         `<input type="text" name="pk" style="display: none" value="`+pk+`">`+
-                        `<button type="submit" style="border: 1px black; background-color: lightgray">확인</button></form><br>`;
+                        `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
             
             //피드백 달기를 누를 때
             function make_feedback(pk, id, nickname){
-                document.getElementById(id).innerHTML += `<form action="/interview/feedback" method="post">`+
-                        '<label>'+nickname+'님의 피드백</label><br>'+
-                        `<textarea name="feedbackContent" cols="80" placeholder="예상질문을 입력해주세요."></textarea>`+
+                document.getElementById(id).innerHTML += `<form class="mt-2" action="/interview/feedback" method="post">`+
+                        // '<label>'+nickname+'님의 피드백</label><br>'+
+                        `<textarea class="form-control" name="feedbackContent" placeholder="피드백을 입력해주세요." required></textarea>`+
                         `<input type="text" name="interview_pk" style="display: none" value="`+pk+`">`+
                         `<input type="text" name="video_pk" style="display: none" value="`+id+`">`+
-                        `<button type="submit" style="border: 1px black; background-color: lightgray">확인</button></form><br>`;
+                        `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
         </script>
         
