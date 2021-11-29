@@ -88,7 +88,7 @@
         <script th:inline="javascript">
             const selectedObj = window.getSelection();
             let btnWidth, btnHeight;
-            let curStart, curEnd, curQuestion = 0;
+            let curStart, curEnd, curQuestion = 0, curRange;
             let start, end, comment, selectedString, commentBuf, rangeBuf, container, remainEdit, addBtn;
             let mouseX, mouseY;
             let startPoint = 0;
@@ -99,6 +99,7 @@
                 mouseX = e.pageX;
                 mouseY = e.pageY;
                 if (curQuestion > 0 && e.target.id != addBtn[curQuestion - 1].id) { //활성화된 버튼을 클릭하지 않은 경우 버튼 none 처리
+                    console.log('이 버튼 안누름!!!');
                     addBtn[curQuestion - 1].style.display = "none";
                 }
             })
@@ -115,6 +116,7 @@
                 addBtn = new Array([[${questions.size()}]]);
                 remainEdit = new Array([[${questions.size()}]]);
 
+                curRange = new Range();
                 for (let i = 0; i < start.length; i++) { //2차원 배열처럼 사용하기 위해 설정
                     start[i] = [];
                     end[i] = [];
@@ -165,6 +167,7 @@
                 console.log('[dragStart] idx : ', idx, ' startPoint : ', startPoint);
                 if (startPoint == idx) { //드래그가 아직 종료되지 않은 경우 실패
                     selectedObj.removeAllRanges();
+                    return;
                 }
                 startPoint = idx;
             }
@@ -174,10 +177,12 @@
                 console.log('==========================');
                 console.log('[dragUpdate] idx : ', idx, ' startPoint : ', startPoint);
 
+                console.log('cur type : ', selectedObj.getRangeAt(0));
                 if (inputArea.length > 0 || remainEdit[idx - 1] > 0) { //기존에 첨삭중인 하이라이트가 있는 경우
                     selectedObj.removeAllRanges(); //모든 레인지 삭제
                     alert('현재 문제의 기존 첨삭을 완료하거나 취소하세요.');
-                } else if (selectedObj.type == "Caret" || startPoint != idx) { //드래그 상태가 아니거나 드래그 시작 문제가 끝 문제가 다른 경우 실패 (다른 문제에서 드래그 시작 or 현재 문제에서 드래그 시작 → 다른 문제에서 끝 or 문제 이외의 부분에서 끝)
+                } else if (selectedObj.getRangeAt(0) == curRange || selectedObj.type == "Caret" || startPoint != idx) { //드래그 상태가 아니거나 드래그 시작 문제가 끝 문제가 다른 경우 실패 (다른 문제에서 드래그 시작 or 현재 문제에서 드래그 시작 → 다른 문제에서 끝 or 문제 이외의 부분에서 끝)
+                    selectedObj.removeAllRanges(); //모든 레인지 삭제
                     alert('문장을 올바르게 선택하세요.');
                 } else { //드래그 정보 업데이트
                     let range = selectedObj.getRangeAt(0);
@@ -190,6 +195,7 @@
             }
 
             function dragCheckAndProcess(idx) { //드래그 후 검사
+                console.log('cur type : ', selectedObj.getRangeAt(0));
                 console.log('==========================');
                 console.log('[dragCheckAndProcess] idx : ', idx);
                 for (let i = 0; i < start[idx - 1].length; i++) { //겹치지 않는지 검사
@@ -202,6 +208,7 @@
 
                 //현재 드래그의 range 객체를 저장
                 rangeBuf[idx - 1] = selectedObj.getRangeAt(0);
+                curRange = rangeBuf[idx - 1];
 
                 //첨삭을 추가하는 버튼 위치 조정
                 addBtn[idx - 1].style.left = `${mouseX - btnWidth * 0.5}px`;

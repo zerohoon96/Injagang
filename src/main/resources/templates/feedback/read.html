@@ -59,13 +59,6 @@
         <br>
 
         <!--첨삭 수정, 삭제, 이전 버튼-->
-        <div th:if="${feedback.curUserNickname} == ${feedback.essayWriter}">
-            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
-               th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>
-            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
-               th:href="|/essay/feedback/update/${feedback.feedbackId}|">수정</a>
-        </div>
-
         <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
             <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
                th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>

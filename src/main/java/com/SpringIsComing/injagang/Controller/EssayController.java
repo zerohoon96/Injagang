@@ -193,7 +193,6 @@ public class EssayController {
         feedback.setContent(content);
         feedback.setEssayPostName(essay.getEssayTitle());
         feedback.setFeedbackWriter(essayFeedback.getMember().getNickname());
-        feedback.setEssayWriter(essay.getWriter().getNickname());
         feedback.setFeedbackId(feedbackId);
         feedback.setEssayId(essay.getId());
         feedback.setCurUserNickname(nickname);
@@ -252,7 +251,6 @@ public class EssayController {
         readFeedback.setContent(content);
         readFeedback.setEssayPostName(essay.getEssayTitle());
         readFeedback.setFeedbackWriter(essayFeedback.getMember().getNickname());
-        readFeedback.setEssayWriter(essay.getWriter().getNickname());
         readFeedback.setFeedbackId(feedbackId);
         readFeedback.setEssayId(essay.getId());
         readFeedback.setCurUserNickname(nickname);
