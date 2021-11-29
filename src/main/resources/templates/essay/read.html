@@ -19,7 +19,7 @@
       </style>
     </head>
     <body>
-    <form class="container-fluid" action method="get">
+    <form class="container-fluid" th:action="@{/essay/delete/{essayId}(essayId=${essayDTO.id})}" method="post">
       <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
       <br>
 
@@ -46,9 +46,12 @@
         </div>
         <br>
       </div>
-      <!-- 수정, 확인버튼 -->
-      <div class="form-group">
+      <!-- 게시글 삭제 -->
+      <div class="text-center">
+        <input class="btn btn-outline-danger px-5" id="delete" type="submit" value="게시글 삭제">
       </div>
+      <br>
+      <br>
     </form>
     </body>
 

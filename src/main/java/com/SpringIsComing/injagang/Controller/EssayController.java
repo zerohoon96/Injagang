@@ -2,8 +2,6 @@ package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.*;
-import com.SpringIsComing.injagang.Repository.EssayRepository;
-import com.SpringIsComing.injagang.Repository.TemplateRepository;
 import com.SpringIsComing.injagang.Service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +21,8 @@ import java.util.*;
 public class EssayController {
 
     private final MemberService memberService;
-    private final TemplateServiceImpl ts;
-    private final EssayServiceImpl es;
     private final EssayService essayService;
+    private final TemplateService templateService;
     private final FeedbackService feedbackService;
     private final FeedbackCommentService feedbackCommentService;
     private final Comparator<EssayFeedbackComment> comparator = new Comparator<EssayFeedbackComment>() { //첨삭 정렬
@@ -44,7 +41,7 @@ public class EssayController {
      */
     @GetMapping("/write")
     String essayInit(@SessionAttribute("loginSession") String nickname, Model model) {
-        TemplateDTO dto = ts.readTemplate();
+        TemplateDTO dto = templateService.readTemplate();
         model.addAttribute("templateDTO", dto);
         model.addAttribute("loginNickname", nickname);
 
@@ -95,9 +92,9 @@ public class EssayController {
 
 
         //return으로 ID를 반환받고 redirect~~에 add하고 key:value로 저장하면 됨
-        Member member = es.findMember(nickname);
+        Member member = essayService.findMember(nickname);
         Essay e = Essay.createEssay(essayTitle, templateTitle, ec, member);
-        Long essayId = es.storeEssay(e);
+        Long essayId = essayService.storeEssay(e);
         redirectAttributes.addAttribute("essayId", essayId);
 
         return "redirect:/essay/read/{essayId}";
@@ -107,10 +104,17 @@ public class EssayController {
     @GetMapping("/read/{essayId}")
     String essayRead(@SessionAttribute("loginSession") String nickname,
                      @PathVariable Long essayId, Model model) throws Exception {
-        EssayWriteDTO dto = es.readEssay(essayId);
+        EssayWriteDTO dto = essayService.readEssay(essayId);
         model.addAttribute("essayDTO", dto);
         model.addAttribute("loginNickname", nickname);
         return "essay/read";
+    }
+
+    @PostMapping("/delete/{essayId}")
+    String essayDelete(@SessionAttribute("loginSession") String nickname,
+                       @PathVariable Long essayId) {
+        essayService.deleteEssay(essayId);
+        return "redirect:/mypage/" + nickname;
     }
 
     @GetMapping("/feedback/{essayId}/write")
@@ -118,8 +122,8 @@ public class EssayController {
     String writeFeedback(Model model,
                          @SessionAttribute("loginSession") String nickname,
                          @PathVariable Long essayId,
-                         @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
-        Essay essay = es.findEssay(essayId);
+                         @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) throws Exception {
+        Essay essay = essayService.findEssay(essayId);
         List<EssayContent> essayContents = essay.getContents();
         List<String> questions = new ArrayList<>();
         List<String> answers = new ArrayList<>();
@@ -139,12 +143,12 @@ public class EssayController {
     String addFeedback(Model model,
                        @SessionAttribute("loginSession") String nickname,
                        @PathVariable Long essayId,
-                       @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+                       @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) throws Exception {
         LocalDateTime time = LocalDateTime.now();
 
         //레포지토리에 피드백 객체 저장
         Member writer = memberService.findByNickname(nickname);
-        Essay essay = es.findEssay(essayId);
+        Essay essay = essayService.findEssay(essayId);
 
         //feedback 저장
         Long feedbackId = feedbackService.storeFeedback(writer, essay, feedback);
@@ -156,9 +160,9 @@ public class EssayController {
     String readFeedback(Model model,
                         @SessionAttribute("loginSession") String nickname,
                         @PathVariable Long feedbackId,
-                        @ModelAttribute("feedback") EssayFeedbackReadDTO feedback) {
+                        @ModelAttribute("feedback") EssayFeedbackReadDTO feedback) throws Exception {
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
-        Essay essay = es.findEssay(essayFeedback.getEssay().getId()); //essay 저장
+        Essay essay = essayService.findEssay(essayFeedback.getEssay().getId()); //essay 저장
         List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findById(feedbackId); //첨삭 목록 저장
         List<EssayContent> essayContents = essay.getContents(); //자기소개서 내용 저장
         List<EssayFeedbackQuestionDTO> everyComment = new ArrayList<>();
@@ -225,10 +229,10 @@ public class EssayController {
     String updateFeedback(Model model,
                           @SessionAttribute("loginSession") String nickname,
                           @PathVariable Long essayId,
-                          @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+                          @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) throws Exception {
         //레포지토리에 피드백 객체 저장
         Member writer = memberService.findByNickname(nickname);
-        Essay essay = es.findEssay(essayId);
+        Essay essay = essayService.findEssay(essayId);
 
         Long feedbackId = feedbackService.storeFeedback(writer, essay, feedback);
         return "redirect:/essay/feedback/read/" + feedbackId; //첨삭 읽기로 redirect
@@ -261,7 +265,7 @@ public class EssayController {
             }
         }
 
-        ts.storeEssayTemplate(EssayTemplate.createEssayTemplate(templateTitle, etc));
+        templateService.storeEssayTemplate(EssayTemplate.createEssayTemplate(templateTitle, etc));
 
 
         return "redirect:/essay/add";

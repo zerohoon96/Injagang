@@ -6,12 +6,9 @@
     <th:block th:fragment="content">
         <head>
             <style>
-
-
                 .body{
                     display: flex;
-                    height: 100%;
-                    background: #f5f6f7;
+                    /*background: #f5f6f7;*/
                     justify-content: center;
                     align-items: center;
                 }
@@ -24,49 +21,8 @@
                     align-items: center;
                 }
 
-                .container-fluid {
-                    background-color: #f5f6f7;
-                    height: 100%;
-                }
-                .input{
-                    display: block;
-                    width: 100%;
-                    height: 51px;
-                    border: solid 1px #dadada;
-                    padding: 10px 14px 10px 14px;
-                    box-sizing: border-box;
-                    background: #fff;
-                    /* position: relative; */
-                }
-                .flex{
-                    display: flex;
-                }
-
-                .justify-content-even{
-                    justify-content:space-evenly
-                }
-
-                .w-300{
-                    width: 300px;
-                }
-
                 .w-400 {
                     width: 400px;
-                }
-                .margin-top-30{
-                    margin-top: 30px;
-                }
-
-                .margin-bottom-10 {
-                    margin-bottom: 10px;
-                }
-
-                .margin-bottom-30 {
-                    margin-bottom: 30px;
-                }
-
-                .margin-bottom-50 {
-                    margin-bottom: 50px;
                 }
 
                 .btn{
@@ -80,61 +36,61 @@
 
             </style>
         </head>
-
-
         <body>
+        <h1 class="mt-4">회원 정보 수정</h1>
+        <hr>
         <div class="body">
             <div id="content">
-
-                <a href="#" class="margin-top-30"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
-
                 <form action th:object="${member}" method="post">
+                    <div class="mt-3">
+                        <label for="name">이름 </label>
+                        <input style="pointer-events: none" type="text" id="name" th:field="*{name}" class="form-control w-400">
+                    </div>
 
-                    <div class="margin-bottom-10">
+                    <div class="mt-3">
+                        <label for="loginId">아이디</label>
+                        <input style="pointer-events: none" type="text" id="loginId" th:field="*{loginId}" class="form-control w-400">
+                    </div>
+
+                    <div class="mt-3">
+                        <label for="email">이메일</label>
+                        <input style="pointer-events: none" type="email" id="email" th:field="*{email}" class="form-control w-400">
+                    </div>
+
+                    <div class="mt-3">
                         <label for="curPassword">기존 비밀번호</label>
-                        <input type="password" id="curPassword" th:field="*{curPassword}" class="input w-400">
+                        <input type="password" id="curPassword" th:field="*{curPassword}" class="form-control w-400">
                         <span th:errors="*{curPassword}" class="field-error">기존 비밀번호 오류</span>
                     </div>
 
-                    <div class="margin-bottom-10">
-                        <label for="loginId">아이디</label>
-                        <input type="text" id="loginId" th:field="*{loginId}" class="input w-400" readonly>
-                    </div>
-
-                    <div class="margin-bottom-10">
+                    <div class="mt-3">
                         <label for="newPassword">새로운 비밀번호</label>
-                        <input type="password" id="newPassword" th:field="*{newPassword}" class="input w-400">
+                        <input type="password" id="newPassword" th:field="*{newPassword}" class="form-control w-400">
                         <span th:errors="*{newPassword}" class="field-error">비밀번호 오류</span>
                     </div>
 
 
-                    <div class="margin-bottom-10">
+                    <div class="mt-3">
                         <label for="passwordCheck">비밀번호 확인 </label>
-                        <input type="password" id="passwordCheck" th:field="*{passwordCheck}" class="input w-400">
+                        <input type="password" id="passwordCheck" th:field="*{passwordCheck}" class="form-control w-400">
                         <span th:errors="*{passwordCheck}" class="field-error">비밀번호 확인 오류</span>
                     </div>
 
-                    <div class="margin-bottom-10">
-                        <label for="name">이름 </label>
-                        <input type="text" id="name" th:field="*{name}" class="input w-400" readonly>
-                    </div>
-
-                    <div class="margin-bottom-10">
+                    <div class="mt-3">
                         <label for="nickname">닉네임</label>
-                        <input type="text" id="nickname" th:field="*{nickname}" class="input w-400">
+                        <input type="text" id="nickname" th:field="*{nickname}" class="form-control w-400">
                         <span th:errors="*{nickname}" class="field-error">닉네임 오류</span>
                     </div>
-
-                    <div class="margin-bottom-30">
-                        <label for="email">이메일</label>
-                        <input type="email" id="email" th:field="*{email}" class="input w-400" readonly>
-                    </div>
-
-                    <div>
-                        <button class="w-400 btn btn-primary">확인</button>
-                        <button class="w-400 btn btn-primary" th:onclick="|location.href='@{/mypage/member.nickname}'|">취소</button>
+                    <br>
+                    <div class="mt-1 text-center">
+                        <button class="btn btn-outline-info px-5" type="submit">확인</button>
                     </div>
                 </form>
+                <div class="mt-1 text-center">
+                    <button class="btn btn-outline-danger px-5" th:onclick="|location.href='@{/mypage/{nickname}(nickname = ${member.nickname})}'|">취소</button>
+                </div>
+                <br>
+                <br>
             </div>
         </div>
         </body>
