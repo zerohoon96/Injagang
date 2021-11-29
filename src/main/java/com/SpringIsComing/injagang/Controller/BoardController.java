@@ -34,7 +34,7 @@ public class BoardController {
 
     //자소서 게시판
     @GetMapping("/essay/board")
-    public String essayBoard(@SessionAttribute("loginSession") String nickname,
+    public String essayBoard(@SessionAttribute(value = "loginSession",required = false) String nickname,
                              @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model){
         log.info("==========essayBoard==========");
 
@@ -45,7 +45,7 @@ public class BoardController {
 
     //면접 게시판
     @GetMapping("/interview/board")
-    public String interviewBoard(@SessionAttribute("loginSession") String nickname,
+    public String interviewBoard(@SessionAttribute(value = "loginSession",required = false) String nickname,
                                  @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) {
         log.info("==========interviewBoard==========");
 
