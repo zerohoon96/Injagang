@@ -64,12 +64,12 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+              <!-- 로그인 되어 있으면 환영 글귀 띄워줌 -->
               <li id="welcome_nickname" class="nav-item active">
               </li>
-<!--            <li class="nav-item active">-->
-<!--              <a class="nav-link"-->
-<!--                 th:href="@{/mypage/{loginNickname}(loginNickname=${loginNickname})}">[[${loginNickname}]]님 환영합니다! <span class="sr-only">(current)</span></a>-->
-<!--            </li>-->
+              <!-- 로그인 되어 있으면 로그아웃 버튼 생성 -->
+              <li id="logoutBtn" class="nav-item">
+              </li>
             <li class="nav-item">
               <a class="nav-link" href="#">포인트(...)</a>
             </li>
@@ -106,6 +106,8 @@
         if(loginNickname != null) {
             $('#welcome_nickname').append('<a class="nav-link"' +
                     ' href="/mypage/' + loginNickname + '">'+ loginNickname + '님 환영합니다! <span class="sr-only">(current)</span></a>');
+            
+            $('#logoutBtn').append('<a class="nav-link" href="/logout">로그아웃</a>');
         }
         // console.log("loginNickname: " + loginNickname);
     }

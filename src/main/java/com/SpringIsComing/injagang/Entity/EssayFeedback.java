@@ -30,7 +30,7 @@ public class EssayFeedback {
     @JoinColumn(name = "MEMBER_ID")
     private Member member; //FK
 
-    @OneToMany(mappedBy = "essayFeedback")
+    @OneToMany(mappedBy = "essayFeedback",cascade = CascadeType.ALL)
     @Builder.Default
     private List<EssayFeedbackComment> feedbackComments= new ArrayList<>();
 

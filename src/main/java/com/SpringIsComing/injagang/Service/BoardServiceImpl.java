@@ -2,6 +2,7 @@ package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.*;
+import com.SpringIsComing.injagang.Entity.alarm.EssayAlarm;
 import com.SpringIsComing.injagang.Entity.alarm.InterviewAlarm;
 import com.SpringIsComing.injagang.Repository.*;
 import com.querydsl.core.BooleanBuilder;
@@ -180,21 +181,29 @@ public class BoardServiceImpl implements BoardService{
     @Transactional
     public void deleteEssayBoard(Long pk) {
         Essay essay = essayRepository.findById(pk).get();
+        List<EssayAlarm> alarms = alarmRepository.findAlarmsByEssay(essay);
+
         essay.setAccess(0);
         essay.setTitle("");
         essay.setText("");
 
         List<Reply> replies = essay.getReplies();
         List<EssayFeedback> feedbacks = essay.getFeedbacks();
+        List<EssayContent> contents = essay.getContents();
         for (Reply reply : replies) {
             replyRepository.delete(reply);
         }
         for (EssayFeedback feedback : feedbacks) {
             essayFeedbackRepository.delete(feedback);
         }
+        for (EssayContent content : contents) {
+            questionRepository.deleteAll(content.getQuestions());
+            content.clearQuestions();
+        }
 
         essay.clearReplies();
         essay.clearFeedbacks();
+        alarmRepository.deleteAll(alarms);
     }
 
     @Override

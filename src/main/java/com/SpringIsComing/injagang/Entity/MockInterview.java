@@ -6,25 +6,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-//자기소개서 첨삭 댓글 Entity
+//모의면접 Entity
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EssayFeedbackComment {
+public class MockInterview {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "EFC_ID")
+    @Column(name = "MockInterviewId")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "EF_ID")
-    private EssayFeedback essayFeedback;
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
-    private int num; //문항 번호
-    private int start; //시작 인덱스
-    private int end; //종료 인덱스
-    private String content; //피드백 내용
+    private String title; //면접 제목
+
+    private Integer qCnt; //면접에서 본 질문 개수
+
+    private LocalDateTime date;
 }

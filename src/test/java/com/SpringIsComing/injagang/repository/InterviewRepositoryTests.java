@@ -22,7 +22,7 @@ public class InterviewRepositoryTests {
     @Test
     public void insertInterviews() {
         IntStream.rangeClosed(1,100).forEach(i -> {
-            long member_id = (long)(Math.random()*50) + 1;
+            long member_id = (long)(Math.random()*51) + 1;
             Member member = memberRepository.findById(member_id).get();
 
             Interview interview = Interview.builder()
