@@ -52,7 +52,7 @@ public interface EssayService {
                 .essayTitle(essay.getEssayTitle())
                 .feedbackNum(essay.getFeedbacks().size())
                 .questionNum(cnt)
-                .createTime(essay.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+                .createTime(essay.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .build();
 
         if(essay.getAccess() == null)

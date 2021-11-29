@@ -10,7 +10,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 public class InjagangApplication {
 
 	public static void main(String[] args) {
-		System.out.println("InjagangApplication.main~~~");
+
+		System.out.println("${com.SpringIsComing.injagang.upload.path}");
 		SpringApplication.run(InjagangApplication.class, args);
 	}
 

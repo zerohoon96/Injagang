@@ -50,4 +50,7 @@ public class EssayContent {
         this.essay = essay;
     }
 
+    public void clearQuestions() {
+        this.questions = new ArrayList<>();
+    }
 }

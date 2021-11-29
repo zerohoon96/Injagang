@@ -30,7 +30,7 @@ public class EssayRepositoryTests {
     @Test
     public void insertEssays(){
         IntStream.rangeClosed(1,100).forEach(i -> {
-            Long member_id = (long)(Math.random()*50) + 1;
+            Long member_id = (long)(Math.random()*51) + 1;
             Member member = memberRepository.findById(member_id).get();
 
             Essay essay = Essay.builder()
@@ -38,6 +38,7 @@ public class EssayRepositoryTests {
                     .text("Essay Content..."+i)
                     .access(2)
                     .essayTitle("Sample Essay Title..."+i)
+                    .templateTitle("Sample Template")
                     .date(LocalDateTime.now())
                     .writer(member)
                     .build();

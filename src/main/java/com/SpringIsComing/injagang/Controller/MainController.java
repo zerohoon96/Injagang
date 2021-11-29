@@ -8,6 +8,7 @@ import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.Entity.Member;
+import com.SpringIsComing.injagang.Entity.MockInterview;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
@@ -94,15 +95,20 @@ public class MainController {
             }
         }
 
+        List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(nickname);
 
         model.addAttribute("essayList", essayService.findEssays(targetMember).stream()
                 .map(e -> essayService.toMypageEssayDTO(e)).collect(toList()));
+
         model.addAttribute("interviewList", interviewService.findInterviews(targetMember).stream()
                 .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList()));
+
+        model.addAttribute("mockInterviewList", mockInterviewDTOList);
 
         model.addAttribute("friendList", targetFriends.stream()
                 .map(f -> friendService.toMypageDTO(f)).collect(toList()));
 
+//        log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
         log.info("깐부={}", friendState);
         model.addAttribute("friendState", friendState);
         model.addAttribute("nickname", curNickname);
@@ -251,6 +257,11 @@ public class MainController {
 
 
         if (redirectURL == null) {
+            redirectAttributes.addAttribute("nickname", loginMember.getNickname());
+            return "redirect:/mypage/{nickname}";
+        }
+        // "/"에서 로그인 할 경우 에러나는 것 처리
+        else if(redirectURL.equals("/")){
             redirectAttributes.addAttribute("nickname", loginMember.getNickname());
             return "redirect:/mypage/{nickname}";
         }
@@ -419,10 +430,10 @@ public class MainController {
 //    @PostConstruct
 //    public void init(){
 //        RegisterDTO registerDTO = new RegisterDTO();
-//        registerDTO.setEmail("zxcv0069@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-//        registerDTO.setName("황재환");
-//        registerDTO.setLoginId("zxcv0069");
-//        registerDTO.setNickname("test");
+//        registerDTO.setEmail("kimsm@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+//        registerDTO.setName("김수만");
+//        registerDTO.setLoginId("kimsuman");
+//        registerDTO.setNickname("smkim");
 //        registerDTO.setPassword("test");
 //        registerDTO.setPasswordCheck("test");
 //

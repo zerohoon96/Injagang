@@ -276,7 +276,7 @@ public class BoardController {
         return "redirect:/interview/board/" + interview_pk;
     }
 
-    //자소서 게시물에서 자기가 쓴 예상질문 삭제하기
+    //자소서 게시물에서 자기가 쓴 예상질문 or 자기 게시물에 달린 예상질문 삭제하기
     @PostMapping("/essay/question/delete")
     public String deleteEssayBoardQuestion(@SessionAttribute("loginSession") String nickname,
                                       @RequestParam Long eb_pk, @RequestParam Long question_pk) {
@@ -287,7 +287,7 @@ public class BoardController {
         return "redirect:/essay/board/" + eb_pk;
     }
 
-    //자소서 게시물에서 자기가 쓴 댓글 삭제하기
+    //자소서 게시물에서 자기가 쓴 댓글 or 자기 게시물에 달린 댓글 삭제하기
     @PostMapping("/essay/reply/delete")
     public String deleteEssayBoardReply(@SessionAttribute("loginSession") String nickname,
                                    @RequestParam Long eb_pk, @RequestParam Long reply_pk) {
@@ -298,7 +298,7 @@ public class BoardController {
         return "redirect:/essay/board/" + eb_pk;
     }
 
-    //면접 게시물에서 자기가 쓴 댓글 삭제하기
+    //면접 게시물에서 자기가 쓴 댓글 or 자기 게시물에 달린 댓글 삭제하기
     @PostMapping("interview/reply/delete")
     public String deleteInterviewBoardReply(@SessionAttribute("loginSession") String nickname,
                                        @RequestParam Long ib_pk, @RequestParam Long reply_pk) {
@@ -309,7 +309,7 @@ public class BoardController {
         return "redirect:/interview/board/" + ib_pk;
     }
 
-    //면접 게시물에서 자기가 쓴 피드백 삭제하기
+    //면접 게시물에서 자기가 쓴 피드백 or 자기 게시물에 달린 피드백 삭제하기
     @PostMapping("interview/feedback/delete")
     public String deleteInterviewBoardFeedback(@SessionAttribute("loginSession") String nickname,
                                                @RequestParam Long ib_pk, @RequestParam Long feedback_pk) {

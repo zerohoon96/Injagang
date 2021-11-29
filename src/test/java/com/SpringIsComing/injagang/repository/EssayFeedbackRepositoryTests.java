@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.stream.IntStream;
 
 @SpringBootTest
@@ -25,10 +26,10 @@ public class EssayFeedbackRepositoryTests {
 
     @Test
     public void insertEssayFeedbacks() {
-        //300개의 피드백을 무작위 자소서 게시물에 생성
-        IntStream.rangeClosed(1,200).forEach(i -> {
+
+        IntStream.rangeClosed(1,150).forEach(i -> {
             long essay_id = (long)(Math.random()*100) + 1;
-            long member_id = (long)(Math.random()*50) + 1;
+            long member_id = (long)(Math.random()*51) + 1;
             Essay essay = essayRepository.findById(essay_id).get();
             Member member = memberRepository.findById(member_id).get();
 
@@ -36,6 +37,7 @@ public class EssayFeedbackRepositoryTests {
                     .content("Sample feedback..."+i)
                     .essay(essay)
                     .member(member)
+                    .date(LocalDateTime.now())
                     .build();
 
             essayFeedbackRepository.save(essayFeedback);

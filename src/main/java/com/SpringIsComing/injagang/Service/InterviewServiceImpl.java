@@ -1,13 +1,18 @@
 package com.SpringIsComing.injagang.Service;
 
+import com.SpringIsComing.injagang.DTO.MockInterviewDTO;
 import com.SpringIsComing.injagang.Entity.*;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Repository.InterviewRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
+import com.SpringIsComing.injagang.Repository.MockInterviewRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,12 +21,12 @@ import java.util.Map;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class InterviewServiceImpl implements InterviewService{
 
     private final MemberRepository memberRepository;
     private final InterviewRepository interviewRepository;
-    private final EssayRepository essayRepository;
-
+    private final MockInterviewRepository mockInterviewRepository;
 
     @Override
     public List<Interview> findInterviews(Member member) {
@@ -43,6 +48,39 @@ public class InterviewServiceImpl implements InterviewService{
                 essayMap.put(essay.getEssayTitle(), cnt);
             }
         });
+    }
+
+    //모의면접 객체 저장
+    @Override
+    public void registerTestInterview(int qCnt, String interviewName, String nickname) {
+
+        MockInterview mockInterview = MockInterview.builder()
+                            .member(memberRepository.findByNickname(nickname))
+                            .qCnt(qCnt)
+                            .title(interviewName)
+                            .date(LocalDateTime.now())
+                            .build();
+
+        mockInterviewRepository.save(mockInterview);
+    }
+
+    @Override
+    public List<MockInterviewDTO> findMockInterviews(String nickname){
+        Member member = memberRepository.findByNickname(nickname);
+        List<MockInterview> mockInterview = mockInterviewRepository.findMockInterviewsByMember(member);
+
+        List<MockInterviewDTO> dtoList = new ArrayList<>();
+        mockInterview.forEach(mock -> {
+            dtoList.add(MockInterviewDTO.builder()
+                            .pk(mock.getId())
+                            .nickname(mock.getMember().getNickname())
+                            .title(mock.getTitle())
+                            .qCnt(mock.getQCnt())
+                            .date(mock.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                            .build());
+        });
+
+        return dtoList;
     }
 
     @Override
