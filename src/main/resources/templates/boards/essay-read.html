@@ -39,7 +39,6 @@
                 <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
                 <!-- 게시물 글 내용 -->
                 [[${result.text}]]
-<!--                <textarea class="form-control" rows="5" style="pointer-events: none; border: 0;">[[${result.text}]]</textarea>-->
                 <br><br>
                 
                 <div class="form-group" th:each="dto, idx : ${result.contentList}">
@@ -52,7 +51,7 @@
                     <div class="mt-2" th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
                         <form th:action="@{/essay/question/delete}" th:method="post">
                             <div class="form-inline">
-                                <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left" th:for="|${qdto.pk}question|">↳ [[${qdto.nickname}]]님의 예상질문</label>
+                                <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left" th:for="|${qdto.pk}question|">↳ <b>[[${qdto.nickname}]]</b>님의 예상질문</label>
                                 <button class="btn btn-link btn-sm ml-2" type="submit"
                                         th:if="${loginNickname == qdto.nickname}">X</button>
                             </div>
@@ -69,18 +68,17 @@
                 </div>
                 <br>
                 <hr>
-                <br>
                 <!-- 댓글 -->
 <!--                <h3 class="text-center">댓글</h3>-->
                 <!-- 기존 댓글 표시 -->
-                <div class="mb-4" th:each="dto : ${result.replyList}">
+                <div class="mb-2" th:each="dto : ${result.replyList}">
                     <form th:action="@{/essay/reply/delete}" th:method="post">
                         <div class="form-inline">
                             <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left">↳ <b>[[${dto.nickname}]]</b>님</label>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
                         </div>
-                        [[${dto.content}]]
+                        <div style="padding-left: 4%; padding-right: 4%">[[${dto.content}]]</div>
 <!--                    <label class="form-control" style="pointer-events: none; border: 0; padding-left: 0;" align="left">[[${dto.content}]]</label>-->
                         <input style="display: none" name="eb_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
@@ -106,7 +104,7 @@
                         </a>
                     </div>
                 </div>
-                <div style="float: bottom">
+                <div>
                     <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만-->
                     <div th:if="${loginNickname == result.writer}">
                         <button class="btn btn-outline-info btn-block" type="button"th:onclick="|location.href='@{/essay/board/update/{pk}(pk=${result.pk})}'|" >
@@ -144,19 +142,20 @@
             function make_reply(pk, nickname){
                 document.getElementById("new_reply").innerHTML+= `<form class="mt-2" action="/essay/reply" method="post">`+
                         // '<label>'+nickname+'님의 댓글</label><br>'+
-                `<textarea class="form-control" name="replyContent" rows="3" placeholder="내용을 입력해주세요." required></textarea>`+
-                        `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
-                `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
+                    `<textarea class="form-control" name="replyContent" rows="3" placeholder="내용을 입력해주세요." required></textarea>`+
+                    `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
+                    `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
+
             
             //예상질문 쓰기를 누를 때
             function make_expectedQuestion(pk, id, nickname){
                 document.getElementById(id).innerHTML += `<form class="mt-2" action="/essay/question" method="post">`+
                         // '<p>'+nickname+'님의 예상질문</p>'+
-                `<textarea class="form-control" name="questionContent" placeholder="예상질문을 입력해주세요." required></textarea>`+
-                        `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
-                        `<input type="text" name="content_pk" style="display: none" value="`+id+`">`+
-                `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
+                    `<textarea class="form-control" name="questionContent" placeholder="예상질문을 입력해주세요." required></textarea>`+
+                    `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
+                    `<input type="text" name="content_pk" style="display: none" value="`+id+`">`+
+                    `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
         </script>
         

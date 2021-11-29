@@ -24,19 +24,21 @@
     <form id="addT" name="addT" class="container" action method="post">
       <div class="form-group" style="padding-right: 10%; padding-left: 10%">
         <div class="form-inline">
-          <label class="mr-2">템플릿 제목 : </label>
-          <input class="form-control col-md" type="text" id="inputTemplateTitle" name="inputTemplateTitle" placeholder="템플릿 제목을 입력해주세요." required>
+          <h5 class="mr-2">템플릿 제목 : </h5>
+          <input class="form-control col-md" type="text" id="inputTemplateTitle" name="inputTemplateTitle" placeholder="템플릿 제목을 입력해주세요.">
         </div>
         <br>
         <div>
           <!--질문 추가 입력-->
+          <h5 class="mt-2">질문 추가</h5>
+          *질문 개수는 2~5로 설정해주세요.<br><br>
           <div id="newQuestion"></div>
           <input class="btn btn-outline-info" id="addButton" type="button" value="+">
         </div>
       </div>
       <br>
       <div class="text-center">
-        <input class="btn btn-primary px-5" id="save" type="button" value="저장">
+        <input class="btn btn-outline-info px-5" id="save" type="button" value="저장">
       </div>
       <br>
       <br>
@@ -54,7 +56,7 @@
                   `<form>
                       <div class="form-inline mb-1">
                           <label class="col-1">${i+1}. </label>
-                          <input class="form-control col-md" type="text" id="addQ${i+1}" name="addQ${i+1}" value="${addQ[i]}" placeholder="질문을 입력해주세요." onChange="addQ[i]=this.value" required>
+                          <input class="form-control col-md" type="text" id="addQ${i+1}" name="addQ${i+1}" value="${addQ[i]}" placeholder="질문을 입력해주세요." onChange="addQ[${i}]=this.value">
                           <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
                       </div>
                   </form>`;
@@ -71,8 +73,25 @@
         $("#save").click(function (event) {
           // 질문 갯수가 2개 이상 5개 이하 일 경우 가능
           if (addQ.length >= 2 && addQ.length <= 5) {
-            alert("저장되었습니다.");
-            document.getElementById("addT").submit();
+            if (document.getElementById("inputTemplateTitle").value.length == 0) {
+              alert("템플릿 제목이 입력되지 않았습니다.");
+            }
+            else {
+              let check = true;
+              console.log(addQ);
+              // 생성한 질문을 전부 입력했는지 검사
+              for (let i=0; i<addQ.length; i++) {
+                if (addQ[i].length == 0) {
+                  alert(i+1+"번째 질문이 입력되지 않았습니다.");
+                  check = false;
+                  break;
+                }
+              }
+              if (check == true) {
+                alert("저장되었습니다.");
+                document.getElementById("addT").submit();
+              }
+            }
           }
           else {
             alert("질문 개수를 2개~5개로 설정해주세요");
@@ -93,8 +112,8 @@
                     `<form>
                         <div class="form-inline mb-1">
                               <label class="col-1">${addQ.length}. </label>
-                              <input class="form-control col-md" type="text" name="addQ${addQ.length}" value="${addQ[addQ.length - 1]}" placeholder="질문을 입력해주세요." onChange="addQ[addQ.length-1]=this.value" required>
-                              <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${addQ.length - 1});">
+                              <input class="form-control col-md" type="text" id="addQ${addQ.length}" name="addQ${addQ.length}" value="${addQ[addQ.length-1]}" placeholder="질문을 입력해주세요." onChange="addQ[addQ.length-1]=this.value">
+                              <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${addQ.length -1});">
                         </div>
                         <br>
                     </form>`;

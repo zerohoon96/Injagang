@@ -3,6 +3,13 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
+        <head>
+            <style>
+                tr {
+                    text-align: center;
+                }
+            </style>
+        </head>
         <h1 class="mt-4">면접 게시판</h1>
         <!-- 임시 테이블 -->
         <!--
@@ -42,7 +49,7 @@
         <table id="board_body" class="table table-striped">
             <thead>
             <tr>
-                <th scope="col">제목</th>
+                <th class="text-left" scope="col">제목</th>
                 <th scope="col">피드백</th>
                 <th scope="col">글쓴이</th>
                 <th scope="col">날짜</th>
@@ -50,12 +57,12 @@
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}">
-                <td><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
+                <td class="text-left"><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
                 type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
-                    [[${dto.title}]]</a></span><span>[댓글:[[${dto.rCnt}]]]</span></td>
-                <th>[[${dto.fCnt}]]</th>
+                    [[${dto.title}]]</a></span><span class="ml-1" th:text="|[${dto.rCnt}]|"></span></td>
+                <td>[[${dto.fCnt}]]</td>
                 <td>[[${dto.writer}]]</td>
-                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH/mm')}]]</td>
+                <td>[[${#temporals.format(dto.date, 'yyyy/MM/dd HH:mm')}]]</td>
             </tr>
             </tbody>
         </table>

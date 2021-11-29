@@ -49,7 +49,7 @@ public class InterviewController {
         List<String> questionList = new ArrayList<>();
         int baseQuestion = Integer.parseInt(allParameters.get("baseQuestion").toString());
         int csQuestion = Integer.parseInt(allParameters.get("csQuestion").toString());
-        int expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
+//        int expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
         int userAddQuestion;
 
         log.info("크기 : " + allParameters.size());
@@ -68,7 +68,7 @@ public class InterviewController {
 
 
         // 예상 댓글 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
-        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
+//        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
 
         // 질문 순서 섞기
         Collections.shuffle(questionList);

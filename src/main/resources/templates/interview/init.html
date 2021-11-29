@@ -3,6 +3,15 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
         <head>
+            <style>
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
+                }
+            </style>
             <script th:inline="javascript">
                 var questionValue = new Array(0);
                 var cur = "";
@@ -23,13 +32,13 @@
                     for (i = 0; i < questionValue.length; i++)
                         document.getElementById('inputQuestion').innerHTML += createInput(i);
                     //새로운 입력창 띄움
-                    document.getElementById('inputQuestion').innerHTML += "<input class='input width-70' type='text' name='question' value='"+cur+"' placeholder='면접 질문을 추가해보세요(입력 후 변경 불가)' onChange='cur=this.value' >  " +
-                        "<input class='btn btn-style-mini' type='button' name='addBtn' value='추가' onclick='addInput();'><br>";
+                    document.getElementById('inputQuestion').innerHTML += "<div class='form-inline mt-1'><input class='form-control col-md' type='text' name='question' value='"+cur+"' placeholder='면접 질문을 추가해보세요.' onChange='cur=this.value' >  " +
+                        "<input class='btn btn-outline-info col-1 ml-1' type='button' name='addBtn' value='추가' onclick='addInput();'></div>";
                 }
 
                 function createInput(idx) { //기존에 저장한 추가 질문 및 삭제 버튼을 추가하는 함수
-                    return "<input class='input width-70' type='text' name='question" + (idx + 1) + "' value='" + questionValue[idx] + "' readonly>  " +
-                        "<input class='btn btn-style-mini' type='button' value='삭제' onclick='deleteInput(" + (idx) + ");''></div><br>";
+                    return "<div class='form-inline mt-1'><input class='form-control col-md' style='pointer-events: none' type='text' name='question" + (idx + 1) + "' value='" + questionValue[idx] + "'>  " +
+                        "<input class='btn btn-link btn-sm col-1 ml-1' type='button' value='X' onclick='deleteInput(" + (idx) + ");'></div>";
                 }
 
                 function deleteInput(idx) { //삭제 버튼 눌렀을때
@@ -60,64 +69,71 @@
             <title>면접 보기</title>
         </head>
         <body>
-        <h4 class="mt-4">면접 설정</h4>
+        <h1 class="mt-4">면접 설정</h1>
         <hr>
-        <div class="container-fluid">
+        <div class="container-fluid" style="padding-left: 15%; padding-right: 15%">
 <!--            <div id="headLine">-->
 <!--                <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>-->
 <!--            </div>-->
             <form name="interview" action="/interview/test" method="post">
-                <label class="form-control">면접 제목</label>
-                <div class="margin-bottom-10">
-                    <label class=bold for="interviewName">면접 제목</label><br>
-                    <input class="input width-100" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요" required>
-                </div><br>
-
-                <div class="margin-bottom-10">
-                    <label class=bold>기본 문제 선택</label><br>
-                    <label class="center width-40" for="baseQuestion">인성 면접 질문</label>
-                    <select class="input width-40 center" id="baseQuestion" name="baseQuestion" required>
-                        <option class=center value="" hidden>-- 문제 수 선택 --</option>
-                        <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
-                            <option th:value="${num}"><p th:text="${num}"></p></option>
-                        </th:block>
-                    </select><br>
-
-                    <label class="center width-40" for="csQuestion">CS 면접 질문</label>
-                    <select class="input width-40 center" id="csQuestion" name="csQuestion" required>
-                        <option value="" hidden>-- 문제 수 선택 --</option>
+                <h5 for="interviewName">면접 제목</h5>
+                <input class="form-control" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요." required>
+                <br>
+                <br>
+                <h5>기본 문제 선택</h5>
+                <div class="form-inline">
+                <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="baseQuestion">인성 면접 질문</p>
+                <select class="form-control col-6 text-center" id="baseQuestion" name="baseQuestion" required>
+                    <option class="text-center" value="" hidden>문제 수 선택</option>
+                    <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                        <option th:value="${num}"><p th:text="${num}"></p></option>
+                    </th:block>
+                </select>
+                </div>
+                <br>
+                <br>
+                <div class="form-inline">
+                    <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="csQuestion">CS 면접 질문</p>
+                    <select class="form-control col-6 text-center" id="csQuestion" name="csQuestion" required>
+                        <option class="text-center" value="" hidden>문제 수 선택</option>
                         <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
                             <option th:value="${num}"><p th:text="${num}"></p></option>
                         </th:block>
                     </select>
-                </div><br>
+                </div>
+                <br>
+                <br>
 
-                <div class="margin-bottom-10">
-                    <label class=bold>예상 질문 댓글</label><br>
-
-                    <select class="center input width-70" id="essaySelect" name="essayName" onChange="afterSelect()" required>
-                        <option value="" hidden>-- 불러올 자기소개서를 선택하세요 --</option>
+                <h5>예상 질문 댓글</h5>
+                <div class="form-inline mt-1">
+                    <select class="form-control text-center col-md" id="essaySelect" name="essayName" onChange="afterSelect()" required>
+                        <option value="" hidden>불러올 자기소개서를 선택하세요.</option>
                         <th:block th:each="essay: ${essayMap}">
                             <option th:value="${essay.key}"><p th:text="${essay.key}"></p></option>
                         </th:block>
                         <option value="">선택 안함</option>  <!--선택 안함 : essayName이 null로 전송됨-->
                     </select>
-                    <select class="input width-20" id="expectedQuestion" name="expectedQuestion" required>
-                        <option value="">질문 수</option>
+                    <select class="form-control text-center col-3 ml-1" id="expectedQuestion" name="expectedQuestion" required>
+                        <option value="">질문 수 선택</option>
                     </select>
-                </div><br>
+                </div>
+                <br>
+                <br>
 
-                <div class="margin-bottom-10">
-                    <label class=bold>직접 입력하기</label><br>
-                    *앞서 선택한 문제들과 겹칠 수가 있습니다.<br>
-                    *영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)<br>
-                    <div id="inputQuestion">
-                        <script>
-                            display();
-                        </script>
-                    </div>
-                </div><br>
-                <input class="btn btn-style-big" type="submit" name="" value="면접 시작">
+                <h5>직접 입력하기</h5>
+                *앞서 선택한 문제들과 겹칠 수가 있습니다.<br>
+                *영어 약자의 경우 한 글자씩 써주세요! (ex. IT → I T)<br>
+                <div id="inputQuestion" class="mt-1">
+                    <script>
+                        display();
+                    </script>
+                </div>
+                <br>
+                <br>
+                <input class="btn btn-outline-info form-control" type="submit" name="" value="면접 시작">
+                <br>
+                <br>
+                <br>
             </form>
         </div>
         </body>

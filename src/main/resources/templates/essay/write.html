@@ -117,7 +117,6 @@
                 if (select == "emptyTemplate") return;
 
                 //템플릿 질문 갯수만큼 생성
-
                 let templateIdx = [[${templateDTO.templateTitle}]].indexOf(select);
                 let question = [[${templateDTO.questions}]][templateIdx];
                 for (let ele in question) {
@@ -140,7 +139,7 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${i+1}.</label>
-                                <input class="form-control col-md" type="text" id="direect_question${i}" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
+                                <input class="form-control col-md" type="text" id="direect_question${i}" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[${i}]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
                             </div>
                             <textarea class="form-control mb-1" rows=10 id="direct_answer${i}" name="direct_answer${i}" placeholder="내용을 입력해주세요." onChange="direct_answer[${i}]=this.value">${direct_answer[i]}</textarea>
@@ -159,7 +158,6 @@
 
             //버튼 클릭시
             $(document).ready(function () {
-
                 $("#save").click(function (event) {
                     //아무 내용이 없다면
                     if (select=="emptyTemplate" && direct_question.length == 0) {
@@ -210,7 +208,7 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${direct_question.length}.  </label>
-                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
+                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[${direct_question.length-1}]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${direct_question.length-1});">
                             </div>
                             <textarea class="form-control mb-1" rows=10 name="direct_answer${direct_question.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[${direct_answer.length-1}]=this.value">${direct_answer[direct_question.length-1]}</textarea>

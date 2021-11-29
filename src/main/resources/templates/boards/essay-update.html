@@ -28,7 +28,11 @@
                 </div>
 
             </form>
-            <br><br><hr><br>
+            <br><br><br>
+
+            <h5>내가 작성한 글</h5>
+            *해당 부분은 참고를 위해 읽기만 가능합니다.
+            <hr>
             <!-- 자소서 문항 내용 -->
             <div class="form-group" th:each="dto, idx: ${result.contentList}">
                 <label th:text="|${idx.count}. ${dto.title}|"></label>

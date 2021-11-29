@@ -6,15 +6,6 @@
             <meta charset="utf-8"/>
             <title>면접 보기</title>
             <style>
-                .btn-style {
-                    color: #fff;
-                    background-color: plum;
-                    border-color: plum;
-                    text-align: center;
-                    width: 200px;
-                    height: 50px;
-                }
-
                 #p1 {
                     font-family: 함초롬바탕;
                     font-size: 35px;
@@ -41,7 +32,6 @@
                 .body {
                     display: flex;
                     height: 100%;
-                    background: #f5f6f7;
                     justify-content: center;
                     align-items: center;
                 }
@@ -104,9 +94,10 @@
             function initGuide() { //초기 화면 설정 (시작하기 포함)
                 document.getElementById('guide').innerHTML =
                     "<div>" +
-                    "<p id='p1'>" +
-                    "<span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>진행 방법</span>" +
+                    "<p id='p1' style='margin-bottom: 0'>" +
+                    "<span style='padding: 0 0 0 0.2em;'>진행 방법</span>" +
                     "</p>" +
+                    "<hr style='margin-top: 0'>" +
                     "<p id='p2'><br><br>" +
                     "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
                     "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
@@ -117,7 +108,7 @@
                     "</p>" +
                     "</div>";
 
-                document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-style' type='button' value='시작하기' onclick='startInterview(0)'/>";
+                document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info form-control' style='width:300px' type='button' value='시작하기' onclick='startInterview(0)'/><br><br>";
             }
 
             function startVideo() { //화면에 카메라를 띄우는 함수
@@ -221,7 +212,7 @@
                     let btnValue = "다음문제";
                     if (idx == questions.length - 1)
                         btnValue = "면접종료";
-                    document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-style' type='button' value=" + btnValue + " onClick='processVideo(" + (idx + 1) + ")'/>";
+                    document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info form-control' type='button' style='width: 300px' value=" + btnValue + " onClick='processVideo(" + (idx + 1) + ")'/>";
                     resolve();
                 });
             }
