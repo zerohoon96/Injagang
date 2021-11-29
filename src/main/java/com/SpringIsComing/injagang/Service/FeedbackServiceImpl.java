@@ -50,4 +50,9 @@ public class FeedbackServiceImpl implements FeedbackService {
         return essayFeedbackRepository.findFeedbackById(essayFeedbackId);
     }
 
+    @Override
+    public void deleteById(Long essayFeedbackId) {
+        essayFeedbackRepository.deleteById(essayFeedbackId);
+    }
+
 }

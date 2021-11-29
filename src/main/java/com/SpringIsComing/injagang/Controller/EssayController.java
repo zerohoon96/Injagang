@@ -150,8 +150,8 @@ public class EssayController {
     @GetMapping("/feedback/read/{feedbackId}")
         //첨삭 읽기를 눌렀을때
     String readFeedback(Model model,
+                        @SessionAttribute("loginSession") String nickname,
                         @PathVariable Long feedbackId,
-//                        @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback,
                         @ModelAttribute("feedback") EssayFeedbackReadDTO feedback) {
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
         Essay essay = es.findEssay(essayFeedback.getEssay().getId()); //essay 저장
@@ -178,23 +178,6 @@ public class EssayController {
         System.out.println("***첨삭 목록***" + feedbackComment.size());
 
         for (EssayFeedbackComment comment : feedbackComment) { //DTO에 데이터 삽입
-//            if (comment.getNum() > curQuestion) { //문제가 바뀔 때마다 추가
-//                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
-//                eachQuestion.setCommentList(commentList);
-//                everyComment.add(eachQuestion);
-//                curQuestion++;
-//                commentList = new ArrayList<>();
-//            }
-//            EssayFeedbackCommentDTO eachComment = new EssayFeedbackCommentDTO();
-//            eachComment.setStart(comment.getStart());
-//            eachComment.setEnd(comment.getEnd());
-//            eachComment.setComment(comment.getContent());
-//            commentList.add(eachComment);
-//            if (++idx == feedbackComment.size()) { //마지막 처리
-//                EssayFeedbackQuestionDTO eachQuestion = new EssayFeedbackQuestionDTO();
-//                eachQuestion.setCommentList(commentList);
-//                everyComment.add(eachQuestion);
-//            }
             numList.add(comment.getNum());
             startList.add(comment.getStart());
             endList.add(comment.getEnd());
@@ -216,20 +199,21 @@ public class EssayController {
         feedback.setContent(content);
         feedback.setEssayPostName(essay.getEssayTitle());
         feedback.setFeedbackWriter(essayFeedback.getMember().getNickname());
-
-//        feedback.setEveryComment(everyComment); //첨삭 목록 저장
-//        feedback.setContent(content); //총평 저장
-//        System.out.println("*******모델 어트리뷰트에 저장된 총평*******");
-//        for (EssayFeedbackQuestionDTO a : feedback.getEveryComment()) {
-//            for (EssayFeedbackCommentDTO b : a.getCommentList()) {
-//                System.out.println(b);
-//            }
-//        }
-//        model.addAttribute("feedbackWriter", essayFeedback.getMember().getNickname());
+        feedback.setEssayWriter(essay.getWriter().getNickname());
+        feedback.setFeedbackId(feedbackId);
+        feedback.setEssayId(essay.getId());
+        feedback.setCurUserNickname(nickname);
         System.out.println("feedback = " + feedback);
         return "feedback/read";
     }
 
+    @GetMapping("/feedback/delete/{feedbackId}") //첨삭 삭제를 눌렀을때
+    String deleteFeedback(@RequestParam Long essayId,
+                          @PathVariable Long feedbackId) {
+
+        feedbackService.deleteById(feedbackId);
+        return "redirect:/essay/board/" + essayId;
+    }
 
     @PostMapping("/feedback/update/{feedbackId}")
         //첨삭 수정을 눌렀을때 ///////////////////////////////////////////아직 안함

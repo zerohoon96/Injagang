@@ -284,22 +284,36 @@
                 end[idx - 1].push(curEnd);
                 comment[idx - 1].push(commentBuf[idx - 1]);
 
+                console.log('***add feedback 중간***');
+                comment[idx-1].forEach((data)=>{
+                    console.log(data);
+                });
+                console.log('길이 : ',comment[idx-1].length);
+                if(comment[idx-1].length>1)
+                    console.log('첫 피드백 내용 : ',document.getElementById('commentContent10').value);
                 //기존 첨삭 내용을 입력창에서 삭제
+                console.log(comment[idx - 1][comment[idx - 1].length - 1]);
                 document.getElementById('input' + idx).value = '';
                 commentBuf[idx - 1] = '';
 
+                displayFeedback(idx);
                 //해당 innerHtml += (인덱스 정보 + 피드백 내용)
-                document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (start[idx - 1].length - 1) + '].start">';
-                document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (end[idx - 1].length - 1) + '].end">';
-                document.getElementById('comment' + idx).innerHTML += '<b>선택 문장 ' + (selectedString[idx - 1].length) + ' : </b><span>' + selectedString[idx - 1][selectedString[idx - 1].length - 1] + '</span><br>' +
-                    '<textarea class="width-60 background-color-gray" id="commentContent' + idx + (comment[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (comment[idx - 1].length - 1) + '].comment" rows="3" readonly>' + comment[idx - 1][comment[idx - 1].length - 1] + '</textarea><br>' +
-                    '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '1" onclick="deleteFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ')">삭제</button> ' +
-                    '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '2" onclick="editFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ')">수정</button> ' +
-                    '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '3" onclick="processEditFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ',1)">확인</button> ' +
-                    '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '4" onclick="processEditFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ',2)">취소</button><br>';
-                document.getElementById('start' + idx + (start[idx - 1].length - 1)).value = start[idx - 1][start[idx - 1].length - 1];
-                document.getElementById('end' + idx + (start[idx - 1].length - 1)).value = end[idx - 1][start[idx - 1].length - 1];
-                console.log('==========================');
+                // document.getElementById('start' + idx).innerHTML += '<input type="hidden" id="start' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (start[idx - 1].length - 1) + '].start">';
+                // document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + (start[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (end[idx - 1].length - 1) + '].end">';
+                // document.getElementById('comment' + idx).innerHTML += '<b>선택 문장 ' + (selectedString[idx - 1].length) + ' : </b><span>' + selectedString[idx - 1][selectedString[idx - 1].length - 1] + '</span><br>' +
+                //     '<textarea class="width-60 background-color-gray" id="commentContent' + idx + (comment[idx - 1].length - 1) + '" name="everyComment[' + (idx - 1) + '].commentList[' + (comment[idx - 1].length - 1) + '].comment" rows="3" readonly>' + comment[idx - 1][comment[idx - 1].length - 1] + '</textarea><br>' +
+                //     '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '1" onclick="deleteFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ')">삭제</button> ' +
+                //     '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '2" onclick="editFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ')">수정</button> ' +
+                //     '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '3" onclick="processEditFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ',1)">확인</button> ' +
+                //     '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + (comment[idx - 1].length - 1) + '4" onclick="processEditFeedback(' + idx + ',' + (container[idx - 1].length - 1) + ',2)">취소</button><br>';
+                // document.getElementById('start' + idx + (start[idx - 1].length - 1)).value = start[idx - 1][start[idx - 1].length - 1];
+                // document.getElementById('end' + idx + (start[idx - 1].length - 1)).value = end[idx - 1][start[idx - 1].length - 1];
+                console.log('***add feedback html 추가***');
+                comment[idx-1].forEach((data)=>{
+                    console.log(data);
+                });
+                console.log('첫 피드백 내용 : ',document.getElementById('commentContent10').value);
+
             }
 
             function makeHighlight(idx, color) {
@@ -393,8 +407,18 @@
 
                 if (mode == 1) { //확인 버튼 -> 새로운 값으로 리스트 업데이트
                     comment[curIdx - 1][multiIdx] = commentTextArea.value;
+                    console.log('***수정 완료 결과***');
+                    comment[curIdx-1].forEach((data)=>{
+                        console.log(data);
+                    });
+                    console.log('수정값 : ',commentTextArea.value);
                 } else { //취소 버튼 -> 기존 값으로 되돌림
                     commentTextArea.value = comment[curIdx - 1][multiIdx];
+                    console.log('***수정 취소 결과***');
+                    comment[curIdx-1].forEach((data)=>{
+                        console.log(data);
+                    });
+
                 }
 
             }

@@ -61,8 +61,15 @@
         <div th:text="${feedback.content}" style="border: 1px solid black;"></div>
         <br>
 
-        <!--최종 첨삭 저장 버튼-->
-        <button type="button" class="margin-bottom-10 w-300 btn btn-primary" onclick="window.history.back()">이전</button>
+        <!--첨삭 수정, 삭제, 이전 버튼-->
+        <div th:if="${feedback.curUserNickname} == ${feedback.essayWriter}">
+            <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
+                <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/feedback/delete/${feedback.feedbackId}?essayId=${feedback.essayId}|">삭제</a>
+                <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/feedback/update/${feedback.feedbackId}?essayId=${feedback.essayId}|">수정</a>
+            </div>
+        </div>
+        <a type="button" style="color:white;" class="margin-bottom-10 w-300 btn btn-primary"
+           onclick="window.history.back()">이전</a>
         <br>
 
         <script type="text/javascript">
