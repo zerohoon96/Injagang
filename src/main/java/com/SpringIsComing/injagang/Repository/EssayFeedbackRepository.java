@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EssayFeedbackRepository extends JpaRepository<EssayFeedback, Long> {
-    EssayFeedback findFeedbackByMemberAndEssay(Member member, Essay essay);
+    EssayFeedback findFeedbackById(Long essayFeedbackId);
+    void deleteById(Long essayFeedbackId);
 }

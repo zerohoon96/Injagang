@@ -6,5 +6,5 @@ import com.SpringIsComing.injagang.Entity.EssayFeedbackComment;
 import java.util.List;
 
 public interface FeedbackCommentService {
-    public List<EssayFeedbackComment> findFeedbackComment(String nickname, Long essayId, Long essayFeedbackId);
+    public List<EssayFeedbackComment> findById(Long essayFeedbackId);
 }

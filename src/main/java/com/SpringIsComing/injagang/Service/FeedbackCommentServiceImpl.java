@@ -23,12 +23,10 @@ public class FeedbackCommentServiceImpl implements FeedbackCommentService{
     private final FeedbackCommentRepository feedbackCommentRepository;
 
     @Override
-    public List<EssayFeedbackComment> findFeedbackComment(String nickname, Long essayId, Long essayFeedbackId) {
-        Member member = memberRepository.findByNickname(nickname);
-        Essay essay = essayRepository.findById(essayId).orElseThrow(
-                ()-> new IllegalArgumentException("자소서 없어요")
+    public List<EssayFeedbackComment> findById(Long essayFeedbackId) {
+        EssayFeedback essayFeedback = essayFeedbackRepository.findById(essayFeedbackId).orElseThrow(
+                ()-> new IllegalArgumentException("피드백 없어요")
         );
-        EssayFeedback essayFeedback = essayFeedbackRepository.findFeedbackByMemberAndEssay(member, essay);
         return feedbackCommentRepository.findByEssayFeedback(essayFeedback);
     }
 }

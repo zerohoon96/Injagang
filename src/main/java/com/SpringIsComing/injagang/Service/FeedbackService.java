@@ -6,6 +6,7 @@ import com.SpringIsComing.injagang.Entity.EssayFeedback;
 import com.SpringIsComing.injagang.Entity.Member;
 
 public interface FeedbackService {
-    public void storeFeedback(Member member, Essay essay, EssayFeedbackInfoDTO essayFeedbackInfoDTO);
-    public EssayFeedback findFeedback(String nickname, Long essayId);
+    public Long storeFeedback(Member member, Essay essay, EssayFeedbackInfoDTO essayFeedbackInfoDTO);
+    public EssayFeedback findById(Long essayFeedbackId);
+    public void deleteById(Long essayFeedbackId);
 }
