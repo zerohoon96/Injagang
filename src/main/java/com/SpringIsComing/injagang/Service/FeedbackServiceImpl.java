@@ -10,9 +10,12 @@ import com.SpringIsComing.injagang.Repository.EssayFeedbackRepository;
 import com.SpringIsComing.injagang.Repository.EssayRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.jni.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -29,6 +32,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .member(member)
                 .essay(essay)
                 .content(essayFeedbackInfoDTO.getContent())
+                .date(LocalDateTime.now())
                 .build();
         for (int i = 0; i < essayFeedbackInfoDTO.getEveryComment().size(); i++) { //한 문제씩 탐색
             for (EssayFeedbackCommentDTO eachFeedback : essayFeedbackInfoDTO.getEveryComment().get(i).getCommentList()) { //각 문제의 첨삭을 하나씩 탐색

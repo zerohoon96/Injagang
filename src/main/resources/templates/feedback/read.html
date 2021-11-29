@@ -32,9 +32,8 @@
 
         </head>
         <body>
-        <label class="form-control text-center mt-3"
-               th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></label><br>
-
+        <label class="form-control text-center mt-3" th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></label><br>
+        <p th:text="|작성시간 : ${feedback.writeTime}|"></p>
         <div th:each="idx : ${#numbers.sequence(0,feedback.questions.size()-1)}">
 
             <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
@@ -68,9 +67,8 @@
                 <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/feedback/update/${feedback.feedbackId}?essayId=${feedback.essayId}|">수정</a>
             </div>
         </div>
-        <a type="button" style="color:white;" class="margin-bottom-10 w-300 btn btn-primary"
-           onclick="window.history.back()">이전</a>
-        <br>
+        <a type="button" class="margin-bottom-10 w-300 btn btn-primary" th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
+
 
         <script type="text/javascript">
             const selectedObj = window.getSelection();

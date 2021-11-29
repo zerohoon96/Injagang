@@ -12,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
@@ -138,6 +140,8 @@ public class EssayController {
                        @SessionAttribute("loginSession") String nickname,
                        @PathVariable Long essayId,
                        @ModelAttribute("feedback") EssayFeedbackInfoDTO feedback) {
+        LocalDateTime time = LocalDateTime.now();
+
         //레포지토리에 피드백 객체 저장
         Member writer = memberService.findByNickname(nickname);
         Essay essay = es.findEssay(essayId);
@@ -203,6 +207,7 @@ public class EssayController {
         feedback.setFeedbackId(feedbackId);
         feedback.setEssayId(essay.getId());
         feedback.setCurUserNickname(nickname);
+        feedback.setWriteTime(essayFeedback.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         System.out.println("feedback = " + feedback);
         return "feedback/read";
     }

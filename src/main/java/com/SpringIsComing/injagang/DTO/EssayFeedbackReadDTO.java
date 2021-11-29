@@ -15,9 +15,9 @@ public class EssayFeedbackReadDTO {
     private String essayPostName;
     private String essayWriter;
     private String feedbackWriter;
-    private String content;
     private String curUserNickname;
+    private String content;
+    private String writeTime;
     private Long feedbackId;
     private Long essayId;
-
 }
