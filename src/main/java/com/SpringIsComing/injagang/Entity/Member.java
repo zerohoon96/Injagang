@@ -29,6 +29,9 @@ public class Member {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
+
     @Builder.Default
     private boolean auth = false;
 
