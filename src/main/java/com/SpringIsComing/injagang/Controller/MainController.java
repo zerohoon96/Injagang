@@ -115,8 +115,8 @@ public class MainController {
         }
 
         for (Friend friend : loginFriends) {
-            log.info("김건부={}", friend.getNickname());
-            if (friend.getNickname().equals(targetMember.getNickname())) {
+            log.info("김건부={}", friend.getLoginId());
+            if (friend.getLoginId().equals(targetMember.getLoginId())) {
                 friendState = 1;
                 break;
             }
@@ -131,7 +131,8 @@ public class MainController {
         List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(nickname);
 
         List<MypageFriendDTO> friendDTOList = targetFriends.stream()
-                .map(f -> friendService.toMypageDTO(f)).collect(toList());
+                .map(f -> memberService.findByLoginId(f.getLoginId()))
+                .map(m -> friendService.toMypageDTO(m.getNickname())).collect(toList());
 
         Collections.sort(essayDTOList, new Comparator<MypageEssayDTO>() {
             @Override
@@ -461,7 +462,8 @@ public class MainController {
         Member targetMember = memberService.findByNickname(targetNickname);
 
         friendService.addFriendRequest(loginMember.getId(), targetMember.getId());
-        redirectAttributes.addAttribute(targetNickname, targetNickname);
+        alarmService.addFriendRequestAlarm(targetNickname, loginNickname);
+//        redirectAttributes.addAttribute(targetNickname, targetNickname);
 
         return "redirect:/mypage/{targetNickname}";
 
@@ -476,7 +478,8 @@ public class MainController {
         Member targetMember = memberService.findByNickname(targetNickname);
 
         friendService.acceptFriendRequest(loginMember.getId(), targetMember.getId());
-        redirectAttributes.addAttribute(targetNickname, targetNickname);
+        alarmService.addFriendAcceptAlarm(targetNickname, loginNickname);
+//        redirectAttributes.addAttribute(targetNickname, targetNickname);
 
         return "redirect:/mypage/{targetNickname}";
     }
@@ -487,20 +490,29 @@ public class MainController {
 //        RegisterDTO registerDTO = new RegisterDTO();
 //        registerDTO.setEmail("abcde@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
 //        registerDTO.setName("홍준표");
-//        registerDTO.setLoginId("hongjunpyo");
+//        registerDTO.setLoginId("a");
 //        registerDTO.setNickname("muyahong");
 //        registerDTO.setPassword("test");
 //        registerDTO.setPasswordCheck("test");
 //
 //        memberService.save(registerDTO);
 //
+//        RegisterDTO registerDTO1 = new RegisterDTO();
+//        registerDTO1.setEmail("abcde22@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+//        registerDTO1.setName("홍준표");
+//        registerDTO1.setLoginId("b");
+//        registerDTO1.setNickname("muyahong22");
+//        registerDTO1.setPassword("test");
+//        registerDTO1.setPasswordCheck("test");
+//
+//        memberService.save(registerDTO1);
+//
+//
 //
 //    }
 
-        memberService.save(registerDTO);
 
 
-    }
 
 
 }
