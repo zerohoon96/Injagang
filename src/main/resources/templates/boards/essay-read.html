@@ -82,8 +82,8 @@
                         <hr th:unless="${idx.count} == 1">
 
                         <div class="form-inline">
-                            <label class="form-control col-md" style="border: 0;" align="left">
-                                ↳ <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a>님</label>
+                            <label class="form-control col-md" style="border: 0; padding: 0" align="left">
+                                <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a></label>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
                         </div>
