@@ -6,9 +6,11 @@
         <h3>Admin Page</h3>
         <br>
         
-        <label>질문 추가</label>&nbsp;
-        <input>
-    
+        <form th:action="@{/admin/add}" th:method="get">
+            <button class="btn btn-outline-primary">질문 추가</button>
+        </form>
+        <br>
+        
         <table id="board_body" class="table table-striped col-12">
         <thead>
         <tr style="border-top:none !important;">

@@ -4,12 +4,14 @@ import com.SpringIsComing.injagang.DTO.TemplateViewDTO;
 import com.SpringIsComing.injagang.Entity.InterviewQuestion;
 import com.SpringIsComing.injagang.Entity.QuestionType;
 import com.SpringIsComing.injagang.Service.InterviewQuestionService;
+import com.SpringIsComing.injagang.Service.MemberService;
 import com.SpringIsComing.injagang.Service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -19,12 +21,20 @@ import java.util.List;
 public class AdminController {
     private final TemplateService templateService;
     private final InterviewQuestionService interviewQuestionService;
+    private final MemberService memberService;
 
     //관리자 권한이 있는 사람만 접속 가능
     @GetMapping("/admin")
-    public String adminPage(@SessionAttribute("loginSession") String nickname, Model model) {
+    public String adminPage(@SessionAttribute("loginSession") String nickname, Model model,
+                            RedirectAttributes redirectAttributes) {
         List<TemplateViewDTO> dtoList = templateService.findTemplates();
 
+        //admin 권한이 없는 사람은 마이페이지로 리다이렉트
+        if (!memberService.isAdmin(nickname)) {
+            redirectAttributes.addAttribute("nickname", nickname);
+            return "redirect:/mypage/{nickname}";
+        }
+        
         log.info("dtoList = {}", dtoList);
         model.addAttribute("templateList", dtoList);
         return "admin/main";

@@ -12,10 +12,8 @@
             </style>
         </head>
 
-        <div class="container-fluid mt-3">
-
+        <div class="container-fluid mt-3" style="padding-left: 15%; padding-right: 15%">
             <!-- 게시물 내용 부분 -->
-
             <form id="updateForm" th:action="@{/interview/board/update/{pk}(pk=${result.pk})}" th:method="post">
                 <!-- 게시물 제목 -->
                 <div>
@@ -26,8 +24,8 @@
                 <!-- 게시물 글 내용 -->
                 <br><br>
                 <div>
-                    <h5>글 수정</h5>
-                    <textarea name="text" class="form-control">[[${result.text}]]</textarea>
+                    <h5>내용 수정</h5>
+                    <textarea rows=8 name="text" class="form-control">[[${result.text}]]</textarea>
                 </div>
 
                 <br>
@@ -39,12 +37,12 @@
                         <label class="mr-1" th:text="|${idx.count}.|"></label>
                         <input name="videoNames" class="form-control mb-2 col-5" th:value="${dto.videoName}">
                     </div>
-                    <video width='60%' controls>
+                    <video width='640' height='auto' controls>
                         <source th:src="${dto.url}" type="video/mp4">
                     </video>
                 </div>
             </form>
-            <br><br>
+            <br>
 
             <!-- 수정 완료 버튼-->
             <div class="text-center">

@@ -17,6 +17,7 @@ public interface AlarmService {
     List<InterviewAlarm> findInterviewAlarmsByMember(Member member);
     List<FriendAlarm> findFriendAlarmsByMember(Member member);
 
+    Long addProofreadAlarm(Long essayId, String nickname);
     Long addEssayReplyAlarm(Long essayId,String nickname);
     Long addFeedbackAlarm(Long essayId,String nickname);
     Long addExpectedQuestionAlarm(Long essayId, String nickname);
