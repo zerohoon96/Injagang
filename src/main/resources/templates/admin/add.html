@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+
+
+        <body>
+               <div>
+                <form action th:object="${question}" method="post">
+                    <div>
+                    <label for="title">질문</label>
+                    <input type="text" id="title" th:field="*{title}">
+                    </div>
+
+                    <div th:each="type : ${questionTypes}">
+                        <input type="radio" th:field="*{questionType}" th:value="${type.name()}">
+                        <label th:for="${#ids.prev('questionType')}" th:text="${type.description}"></label>
+                    </div>
+                    <button type="submit">등록</button>
+                </form>
+               </div>
+
+        </body>
+    </th:block>
+</th:block>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+    <th:block th:fragment="content">
+
+        <h3>Admin Page</h3>
+        <br>
+
+        <table id="board_body" class="table table-striped col-12">
+            <thead>
+            <tr>
+                <th class="text-center" scope="col">질문</th>
+                <th class="text-center" scope="col">타입</th>
+                <th class="text-center" scope="col">삭제</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="question : ${questions}">
+                <td>[[${question.title}]]</td>
+                <td>[[${question.questionType}]]</td>
+                <td><button class="btn btn-danger" type="button" th:onclick="|location.href='@{/admin/delete/{id}(id=${question.id})}'|">삭제</button></td>
+            </tr>
+            </tbody>
+        </table>
+
+
+
+
+    </th:block>
+</th:block>
