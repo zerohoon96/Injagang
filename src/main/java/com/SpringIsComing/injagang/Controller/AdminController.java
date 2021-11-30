@@ -1,15 +1,15 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.TemplateViewDTO;
+import com.SpringIsComing.injagang.Entity.InterviewQuestion;
+import com.SpringIsComing.injagang.Entity.QuestionType;
 import com.SpringIsComing.injagang.Service.InterviewQuestionService;
 import com.SpringIsComing.injagang.Service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -61,11 +61,40 @@ public class AdminController {
     }
 
 
-    @GetMapping("/admin/question")
+    @GetMapping("/admin/questions")
     public String question(Model model) {
 
         model.addAttribute("questions", interviewQuestionService.findAll());
 
-        return "admin/fucking";
+        return "admin/questions";
+    }
+
+    @GetMapping("/admin/add")
+    public String addQuestion(@ModelAttribute("question") InterviewQuestion interviewQuestion) {
+
+        return "admin/add";
+    }
+
+    @PostMapping("/admin/add")
+    public String saveQuestion(@ModelAttribute("question") InterviewQuestion interviewQuestion) {
+        log.info("병신={}",interviewQuestion.getTitle());
+        log.info("병신2={}",interviewQuestion.getQuestionType());
+
+        interviewQuestionService.save(interviewQuestion);
+
+        return "redirect:/admin/add";
+    }
+
+    @ModelAttribute("questionTypes")
+    public QuestionType[] questionTypes(){
+        return QuestionType.values();
+    }
+
+
+    @GetMapping("/admin/delete/{id}")
+    public String deleteQuestion(@PathVariable("id") Long id) {
+        interviewQuestionService.deleteInterviewQuestions(id);
+
+        return "redirect:/admin/questions";
     }
 }

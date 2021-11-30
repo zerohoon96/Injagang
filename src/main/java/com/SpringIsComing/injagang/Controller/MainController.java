@@ -45,15 +45,24 @@ public class MainController {
     private final AuthTokenService authTokenService;
     private final AlarmService alarmService;
 
-//    /**
-//     * 메인 페이지 - 마이 페이지로 리다이렉트
-//     * 로그인 후 메인 페이지로 이동 시 마이 페이지로 이동
-//     */
-//    @GetMapping("/")
-//    public String mainPage(@SessionAttribute("loginSession") String nickname, RedirectAttributes redirectAttributes){
-//        redirectAttributes.addAttribute("nickname", nickname);
-//        return "redirect:/mypage/{nickname}";
-//    }
+    /**
+     * 메인 페이지 - 마이 페이지로 리다이렉트
+     * 로그인 후 메인 페이지로 이동 시 마이 페이지로 이동
+     */
+    @GetMapping("/")
+    public String mainPage(HttpServletRequest request, RedirectAttributes redirectAttributes){
+
+        HttpSession session = request.getSession(false);
+
+        String loginSession = (String) session.getAttribute("loginSession");
+
+        if (session == null || loginSession == null) {
+            return "mainPage";//아직 안됨
+        }
+
+        redirectAttributes.addAttribute("nickname", loginSession);
+        return "redirect:/mypage/{nickname}";
+    }
 
     @PostMapping("/switch/range")
     public @ResponseBody ResponseEntity<Boolean> switchRange(Long essay_id) {
@@ -72,7 +81,7 @@ public class MainController {
     /**
      * 마이페이지
      */
-    @GetMapping({"/mypage/{nickname}", "/"})
+    @GetMapping("/mypage/{nickname}")
     public String myPage(@SessionAttribute(value = "loginSession", required = false) String nickname, @PathVariable(value = "nickname",required = false) String curNickname
             , Model model) {
 

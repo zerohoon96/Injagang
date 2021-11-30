@@ -3,6 +3,7 @@ package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
 import com.SpringIsComing.injagang.Entity.Member;
+import com.SpringIsComing.injagang.Entity.MemberType;
 import com.SpringIsComing.injagang.Repository.AuthTokenRepository;
 import com.SpringIsComing.injagang.Repository.MemberRepository;
 import com.SpringIsComing.injagang.token.AuthToken;
@@ -39,6 +40,7 @@ public class MemberServiceImpl implements MemberService {
                 .name(registerDTO.getName())
                 .nickname(registerDTO.getNickname())
                 .email(registerDTO.getEmail())
+                .type(MemberType.GUEST)
                 .auth(true)
                 .build();
 

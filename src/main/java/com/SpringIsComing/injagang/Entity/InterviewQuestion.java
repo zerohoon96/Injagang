@@ -1,10 +1,14 @@
 package com.SpringIsComing.injagang.Entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 public class InterviewQuestion {
 
     @Id
@@ -12,7 +16,7 @@ public class InterviewQuestion {
     @Column(name = "INTERVIEW_QUESTION_ID")
     private Long id;
 
-    private String question;
+    private String title;
 
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;

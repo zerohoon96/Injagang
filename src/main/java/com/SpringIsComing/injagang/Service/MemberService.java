@@ -43,6 +43,7 @@ public interface MemberService {
                 .loginId(member.getLoginId())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
+                .name(member.getName())
                 .build();
 
     }
