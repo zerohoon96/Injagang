@@ -26,7 +26,7 @@
       <br>
     
         <div id="authRange" style="float: right" th:if="${essayDTO.writer == loginNickname}">
-            <label>공개 범위</label>&nbsp
+            <label th:if="${essayDTO.access != 2}">공개 범위</label>&nbsp
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
                     th:if="${essayDTO.access == null}" type="button">나만 보기</button>
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
