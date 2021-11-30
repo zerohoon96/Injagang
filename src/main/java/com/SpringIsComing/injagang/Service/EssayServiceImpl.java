@@ -44,9 +44,9 @@ public class EssayServiceImpl implements EssayService {
 
         if(opt.isPresent()){
             Essay essay = opt.get();
-            int access = essay.getAccess();
+            Integer access = essay.getAccess();
 
-            if(access == 0) access = 1;
+            if(access == null || access == 0) access = 1;
             else if(access == 1) access = 0;
 
             essay.setAccess(access);

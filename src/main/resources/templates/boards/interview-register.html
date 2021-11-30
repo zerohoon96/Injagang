@@ -9,14 +9,16 @@
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
+                <input th:if="!${isNoVideo}" type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
+                <input th:if="${isNoVideo}" type="text" class="form-control" name="title" th:value="${title}" required>
             </div>
             <br>
     
             <!-- 게시물 내용 글 입력 -->
             <div class="form-group">
                 <label>Content</label>
-                <textarea class="form-control" rows="8" name="text" required></textarea>
+                <textarea th:if="!${isNoVideo}"class="form-control" rows="8" name="text" required></textarea>
+                <textarea th:if="${isNoVideo}" class="form-control" rows="8" name="text" required>[[${text}]]</textarea>
             </div>
             
             <!-- 면접 영상 업로드하기 -->
@@ -105,6 +107,13 @@
                     }
                 });
             });
+
+            function checkVideo() {
+                if ([[${isNoVideo}]]) {
+                    alert("영상을 한개 이상 업로드 해야합니다.");
+                }
+            }
+            checkVideo();
         </script>
         
     </th:block>

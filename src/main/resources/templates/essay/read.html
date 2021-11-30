@@ -48,7 +48,9 @@
         <div class="authRange" style="float: right">
             <label>공개 범위</label>&nbsp
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == 0} or ${essayDTO.access == null}">나만 보기</button>
+                    th:if="${essayDTO.access == null}">나만 보기</button>
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == 0}">나만 보기</button>
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
                     th:if="${essayDTO.access == 1}">친구 공개</button>
         </div>
