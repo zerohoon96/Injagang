@@ -34,6 +34,7 @@ public interface EssayService {
                 .essayTitle(essay.getEssayTitle())
                 .templateTitle(essay.getTemplateTitle())
                 .access(essay.getAccess())
+                .writer(essay.getWriter().getNickname())
                 .tc(tData)
                 .dc(dData)
                 .build();
