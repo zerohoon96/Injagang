@@ -16,6 +16,7 @@ public class EssayWriteDTO {
     private Long id;
     private String essayTitle;
     private String templateTitle;
+    private Integer access;
     //tc : template contents, dc : direct contents
     private List<EssayContent> tc, dc;
 }

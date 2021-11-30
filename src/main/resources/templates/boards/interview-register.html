@@ -21,14 +21,16 @@
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input it="title" type="text" class="form-control" name="title" placeholder="제목을 입력하세요." required>
+                <input th:if="!${isNoVideo}" type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
+                <input th:if="${isNoVideo}" type="text" class="form-control" name="title" th:value="${title}" required>
             </div>
             <br>
 
             <!-- 게시물 내용 글 입력 -->
             <div class="form-group mt-1">
                 <label>내용</label>
-                <textarea id="content" style="resize: none" class="form-control" rows="8" name="text" placeholder="내용을 입력하세요." required></textarea>
+                <textarea th:if="!${isNoVideo}"class="form-control" rows="8" name="text" required></textarea>
+                <textarea th:if="${isNoVideo}" class="form-control" rows="8" name="text" required>[[${text}]]</textarea>
             </div>
             <br>
             <!-- 면접 영상 업로드하기 -->
@@ -82,9 +84,6 @@
                     document.getElementById('videoUrls').innerHTML =
                         '<input name="videoUrls" value=' + urls + ' style="display: none">';
                 }
-                else {
-                    alert("영상이 선택되지 않았습니다.");
-                }
             }
 
             function uploadVideos() {
@@ -132,24 +131,12 @@
                 });
             });
 
-            //게시물 저장 버튼 클릭시
-            $("#save").click(function () {
-                console.log(urls.length);
-                if (document.getElementById("title").value.length == 0) {
-                    alert("제목이 입력되지 않았습니다.");
+            function checkVideo() {
+                if ([[${isNoVideo}]]) {
+                    alert("영상을 한개 이상 업로드 해야합니다.");
                 }
-                else if (document.getElementById("content").value.length == 0) {
-                    alert("내용이 입력되지 않았습니다.");
-                }
-                else if (urls.length == 0) {
-                    pushVideoURLs();
-                    alert("면접 영상을 선택해주세요.");
-                }
-                else {
-                    alert("게시물이 저장되었습니다.");
-                    document.getElementById("addT").submit();
-                }
-            })
+            }
+            checkVideo();
         </script>
 
     </th:block>

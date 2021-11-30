@@ -75,6 +75,9 @@ public class BoardController {
     @GetMapping("/interview/board/{pk}")
     public String interviewViewer(@SessionAttribute("loginSession") String nickname,
                                   @PathVariable("pk") Long ib_pk,
+                                  @RequestParam(required = false) boolean isNoVideo,
+                                  @RequestParam(required = false) boolean title,
+                                  @RequestParam(required = false) boolean text,
                                   @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
         log.info("----------interviewViewer----------");
 
@@ -159,12 +162,18 @@ public class BoardController {
 
     //자소서 게시판 글쓰기 화면
     @GetMapping("/essay/board/add")
-    public String registerEssayBoard(@SessionAttribute("loginSession") String nickname, Model model) {
+    public String registerEssayBoard(@SessionAttribute("loginSession") String nickname, Model model,
+                                     @RequestParam(required = false) boolean isNoEssay,
+                                     @RequestParam(required = false) String title,
+                                     @RequestParam(required = false) String text) {
         log.info("----------registerEssayBoard----------");
 
         //현재 로그인 되어있는 nickname으로 그 사람이 쓴 자소서 리스트 불러오기
         List<EssayDTO> dtoList = service.getEssays(nickname);
 
+        model.addAttribute("isNoEssay", isNoEssay);
+        model.addAttribute("title", title);
+        model.addAttribute("text", text);
         model.addAttribute("essayList", dtoList);
         model.addAttribute("loginNickname", nickname);
         return "boards/essay-register";
@@ -173,22 +182,37 @@ public class BoardController {
     //자소서 글쓰기 완료 버튼 눌렀을 때
     @PostMapping("/essay/board/add")
     public String registerEssayBoardPost(@SessionAttribute("loginSession") String nickname,
-                                         @ModelAttribute("dto") EssayDTO dto) {
+                                         @ModelAttribute("dto") EssayDTO dto,
+                                         RedirectAttributes redirectAttributes) {
         log.info("----------registerEssayBoardPost----------");
 
         /**
          * 게시물 등록하고 자소서 게시판으로 리다이렉트
          **/
-        //log.info("dto: " + dto);
+        log.info("dto: " + dto);
+
+        if(dto.getPk() == -1){
+            log.info("===============No Essay uploaded===============");
+            redirectAttributes.addAttribute("isNoEssay", true);
+            redirectAttributes.addAttribute("title", dto.getTitle());
+            redirectAttributes.addAttribute("text", dto.getText());
+            return "redirect:/essay/board/add";
+        }
         service.registerEssay(dto);
         return "redirect:/essay/board";
     }
 
     //면접 게시판 글쓰기 화면
     @GetMapping("interview/board/add")
-    public String registerInterviewBoard(@SessionAttribute("loginSession") String nickname, Model model) {
+    public String registerInterviewBoard(@SessionAttribute("loginSession") String nickname, Model model,
+                                         @RequestParam(required = false) boolean isNoVideo,
+                                         @RequestParam(required = false) String title,
+                                         @RequestParam(required = false) String text) {
         log.info("----------registerInterviewBoard----------");
 
+        model.addAttribute("isNoVideo", isNoVideo);
+        model.addAttribute("title", title);
+        model.addAttribute("text", text);
         model.addAttribute("loginNickname", nickname);
         return "boards/interview-register";
     }
@@ -199,9 +223,18 @@ public class BoardController {
                                              @RequestParam("title") String title,
                                              @RequestParam("text") String text,
                                              @RequestParam(value = "videoNames", required = false) List<String> videoNames,
-                                             @RequestParam("videoUrls") List<String> files) throws Exception{
+                                             @RequestParam("videoUrls") List<String> files,
+                                             RedirectAttributes redirectAttributes) throws Exception{
         log.info("----------registerInterviewBoardPost----------");
         log.info("title: " + title + " text: " + text);
+
+        //영상을 한개도 업로드 안하고 올릴 시 예외 처리
+        if (videoNames == null) {
+            redirectAttributes.addAttribute("isNoVideo", true);
+            redirectAttributes.addAttribute("title", title);
+            redirectAttributes.addAttribute("text", text);
+            return "redirect:/interview/board/add";
+        }
 
         if (videoNames.size() != files.size()) {
             log.info("--------------------WARNING: video names and urls don't match--------------------");

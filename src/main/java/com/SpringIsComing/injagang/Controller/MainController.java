@@ -13,6 +13,8 @@ import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -53,10 +55,24 @@ public class MainController {
 //        return "redirect:/mypage/{nickname}";
 //    }
 
+    @PostMapping("/switch/range")
+    public @ResponseBody ResponseEntity<Boolean> switchRange(Long essay_id) {
+        boolean result = essayService.changeRange(essay_id);
+
+        if(result) {
+            log.info("result: true");
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        else {
+            log.info("result: false");
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * 마이페이지
      */
-    @GetMapping({"/mypage/{nickname}", "/"})
+    @GetMapping({"/mypage/{nickname}"})
     public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable(value = "nickname",required = false) String curNickname
             , Model model) {
 
