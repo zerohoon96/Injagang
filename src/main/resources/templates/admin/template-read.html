@@ -3,9 +3,24 @@
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
         <!--템플릿 보여주는 페이지-->
-        <label class="form-control text-center mt-3" ></label>
+        <label class="form-control text-center mt-3" th:text="${dto.title}"></label>
         <br>
+    
+        <!--템플릿의 질문들-->
+        <div th:each="q : ${dto.questions}">
+            <h4 class="text-center mt-3" th:text="${q}"></h4>
+            <br>
+        </div>
         
+        <!--승인 버튼-->
+        <button class="btn btn-outline-primary px-5" type="button"
+                th:onclick="|location.href='@{/template/accept(id=${dto.id})}'|">승인</button>
+        <!--불허 버튼-->
+        <button class="btn btn-outline-secondary px-5" type="button"
+                th:onclick="|location.href='@{/template/revoke(id=${dto.id})}'|">불허</button>
+        <!--삭제 버튼-->
+        <button class="btn btn-outline-danger px-5" type="button"
+                th:onclick="|location.href='@{/template/delete(id=${dto.id})}'|">삭제</button>
         
     </th:block>
 </th:block>

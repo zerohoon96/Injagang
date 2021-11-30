@@ -40,6 +40,7 @@ public class TemplateServiceImpl implements TemplateService {
                     .id(template.getId())
                     .title(template.getTemplateTitle())
                     .questions(questions)
+                    .checked(template.getChecked())
                     .build());
         });
 
@@ -48,7 +49,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public TemplateDTO readTemplate() {
-        List<EssayTemplate> all = templateRepository.findAll();
+        List<EssayTemplate> all = templateRepository.findEssayTemplatesByChecked(true);
         List<String> title = new ArrayList<>();
         List<List<String>> questions = new ArrayList<>();
         for (int i=0; i<all.size(); i++) {
@@ -86,5 +87,24 @@ public class TemplateServiceImpl implements TemplateService {
                 .build();
 
         return dto;
+    }
+
+    @Override
+    public void grantTemplate(Long id) {
+        EssayTemplate essayTemplate = templateRepository.findById(id).get();
+
+        essayTemplate.setChecked(true);
+    }
+
+    @Override
+    public void revokeTemplate(Long id) {
+        EssayTemplate essayTemplate = templateRepository.findById(id).get();
+
+        essayTemplate.setChecked(false);
+    }
+
+    @Override
+    public void deleteTemplate(Long id) {
+        templateRepository.deleteById(id);
     }
 }

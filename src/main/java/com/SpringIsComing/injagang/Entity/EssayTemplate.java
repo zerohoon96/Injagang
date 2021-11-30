@@ -32,6 +32,11 @@ public class EssayTemplate {
     @Builder.Default
     private boolean checked = false;
 
+    //checked는 getter 안먹어서 만듦
+    public boolean getChecked(){
+        return this.checked;
+    }
+
     public static EssayTemplate createEssayTemplate(String templateTitle, List<EssayTemplateContent> essayTemplateContents) {
         EssayTemplate essayTemplate = EssayTemplate.builder()
                 .templateTitle(templateTitle)
@@ -50,5 +55,9 @@ public class EssayTemplate {
         contents.add(essayTemplateContent);
         //역으로도 연결시켜줘야함
         essayTemplateContent.addEssayTemplate(this);
+    }
+
+    public void setChecked(boolean val) {
+        this.checked = val;
     }
 }
