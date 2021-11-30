@@ -58,10 +58,11 @@ public class InterviewController {
 
         if (allParameters.get("expectedQuestion").toString().equals(" ")) {
             expectedQuestion = 0;
+            log.info("No Expected Question");
         } else {
             expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
+            log.info("expectedQuestion: " + expectedQuestion);
         }
-        log.info("크기 : " + allParameters.size());
         log.info("" + allParameters);
 
         for(userAddQuestion=0; userAddQuestion<allParameters.size(); userAddQuestion++){

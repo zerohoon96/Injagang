@@ -51,7 +51,9 @@
                     <div class="mt-2" th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
                         <form th:action="@{/essay/question/delete}" th:method="post">
                             <div class="form-inline">
-                                <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left" th:for="|${qdto.pk}question|">↳ <b>[[${qdto.nickname}]]</b>님의 예상질문</label>
+                                <label class="form-control col-md" style="border: 0;" align="left" th:for="|${qdto.pk}question|">
+                                    ↳ <a th:href="@{/mypage/{nickname}(nickname=${qdto.nickname})}"><b>[[${qdto.nickname}]]</b></a>님의 예상질문
+                                </label>
                                 <button class="btn btn-link btn-sm ml-2" type="submit"
                                         th:if="${loginNickname == qdto.nickname}">X</button>
                             </div>
@@ -74,7 +76,8 @@
                 <div class="mb-2" th:each="dto : ${result.replyList}">
                     <form th:action="@{/essay/reply/delete}" th:method="post">
                         <div class="form-inline">
-                            <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left">↳ <b>[[${dto.nickname}]]</b>님</label>
+                            <label class="form-control col-md" style="border: 0;" align="left">
+                                ↳ <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a>님</label>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
                         </div>
