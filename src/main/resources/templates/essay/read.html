@@ -18,41 +18,21 @@
         }
       </style>
         
-        <script th:inline="javascript">
-            
-            function changeRange(access) {
-                let essayId = [[${essayDTO.id}]];
-                $.post("/switch/range", {essay_id: essayId}, function (result){
-                    console.log(result);
-                    if (result == true) {
-                        console.log("post success");
-                        if(access == 0 || access == null) {
-                            $('.authRange').innerHTML = `<label>공개 범위</label>` +
-                                    `<button onclick="changeRange(1)">친구 공개</button>`;
-                        }
-                        else if (access == 1) {
-                            $('.authRange').innerHTML = `<label>공개 범위</label>` +
-                                    `<button onclick="changeRange(0)">나만 보기</button>`;
-                        }
-                    }
-                });
-            }
-        </script>
-        
     </head>
     <body>
+    
     <form class="container-fluid" th:action="@{/essay/delete/{essayId}(essayId=${essayDTO.id})}" method="post">
       <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
       <br>
-
-        <div class="authRange" style="float: right">
+    
+        <div id="authRange" style="float: right">
             <label>공개 범위</label>&nbsp
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == null}">나만 보기</button>
+                    th:if="${essayDTO.access == null}" type="button">나만 보기</button>
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == 0}">나만 보기</button>
+                    th:if="${essayDTO.access == 0}" type="button">나만 보기</button>
             <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == 1}">친구 공개</button>
+                    th:if="${essayDTO.access == 1}" type="button">친구 공개</button>
         </div>
         <br>
         
@@ -86,7 +66,31 @@
       <br>
       <br>
     </form>
+
+    <script th:inline="javascript">
+    
+        function changeRange(access) {
+            let essayId = [[${essayDTO.id}]];
+            $.post("/switch/range", {essay_id: essayId}, function (result){
+                console.log("before: " + access);
+                if (result == true) {
+                    if(access == 0 || access == null) {
+                        console.log("비공개 -> 친구공개");
+                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(1)" type="button">친구 공개</button>`;
+                    }
+                    else if (access == 1) {
+                        console.log("친구공개 -> 비공개")
+                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(0)" type="button">나만 보기</button>`;
+                    }
+                }
+            });
+        }
+    </script>
+    
     </body>
+    
 
   </th:block>
 </th:block>

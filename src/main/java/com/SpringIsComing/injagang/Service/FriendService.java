@@ -17,11 +17,11 @@ public interface FriendService {
     void addFriend(String loginNickname, String targetNickname);
 
 
-    default MypageFriendDTO toMypageDTO(Friend friend) {
+    default MypageFriendDTO toMypageDTO(String nickname) {
 
 
         return MypageFriendDTO.builder()
-                .nickname(friend.getNickname())
+                .nickname(nickname)
                 .build();
 
     }

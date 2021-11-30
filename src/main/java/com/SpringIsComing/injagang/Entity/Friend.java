@@ -25,6 +25,6 @@ public class Friend {
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    private String nickname;
+    private String loginId;
 
 }

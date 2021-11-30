@@ -29,6 +29,9 @@ public class EssayTemplate {
 
     private String templateTitle;
 
+    @Builder.Default
+    private boolean checked = false;
+
     public static EssayTemplate createEssayTemplate(String templateTitle, List<EssayTemplateContent> essayTemplateContents) {
         EssayTemplate essayTemplate = EssayTemplate.builder()
                 .templateTitle(templateTitle)
