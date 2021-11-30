@@ -3,51 +3,74 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
+        <head>
+            <style>
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
+                }
+            </style>
+        </head>
         <h2 class="mt-4">면접 게시판 글쓰기</h2>
-    
-        <form th:action="@{/interview/board/add}" th:method="post">
+        <hr>
+
+        <form id="addT" name="addT" th:action="@{/interview/board/add}" th:method="post">
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요">
+                <input th:if="!${isNoVideo}" type="text" class="form-control" name="title" placeholder="제목을 입력하세요." required>
+                <input th:if="${isNoVideo}" type="text" class="form-control" name="title" th:value="${title}" required>
             </div>
             <br>
-    
+
             <!-- 게시물 내용 글 입력 -->
-            <div class="form-group">
-                <label>Content</label>
-                <textarea class="form-control" rows="8" name="text"></textarea>
+            <div class="form-group mt-1">
+                <label>내용</label>
+                <textarea th:if="!${isNoVideo}"class="form-control" rows="8" name="text" style="resize: none" placeholder="내용을 입력하세요." required></textarea>
+                <textarea th:if="${isNoVideo}" class="form-control" rows="8" name="text" required>[[${text}]]</textarea>
             </div>
-            
+            <br>
             <!-- 면접 영상 업로드하기 -->
-            <div class="form-group">
-                <label><b>면접 영상 업로드</b></label>
-                <input name="uploadFiles" type="file" onchange="uploadVideos()" multiple>
-            </div>
-            
+            <br>
+            <h5>면접 영상 선택</h5>
+            <hr style="margin-top: 0">
             <div class="uploadResult"></div>
             <div id="videoUrls"></div>
-            
+
+            <div class="form-inline">
+                <label class="form-control mr-1 text-center btn btn-outline-info" for="file">+</label>
+                <!--                <input class="upload-name form-control col-md" style="pointer-events: none; color: gray" value="첨부파일" placeholder="첨부파일">-->
+                <input id="file" style="display: none" name="uploadFiles" type="file" onchange="uploadVideos()" multiple required>
+            </div>
             <br>
-            <button type="submit" class="btn btn-primary registerInterview" style="float: right" onclick="pushVideoURLs()">
-                게시물 저장
-            </button>
+            <div class="text-center">
+                <!--                <input id="save" type="button" class="btn btn-outline-info px-5" value="게시물 저장">-->
+                <button type="submit" class="btn btn-outline-info px-5" onclick="pushVideoURLs()">
+                    게시물 저장
+                </button>
+            </div>
+            <br>
+            <br>
         </form>
-        
+
         <script th:inline="javascript">
             let urls = []; //영상들의 저장 경로
             //업로드한 비디오 보여주기
             function showUploadedVideos(arr){
                 console.log(arr);
                 let divArea = $('.uploadResult');
-    
+
                 let str = ""
                 for (let i = 0; i < arr.length; i++) {
                     str += "<div>";
-                    str += '<label>영상 제목</label>&nbsp';
-                    str += '<input name="videoNames"><br>'; //영상 제목 입력란
-                    str += "<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
-                    str += "<input class='btn btn-outline-info removeBtn' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
+                    str += '<div class="form-inline"><label class="mr-1">영상 제목</label>';
+                    str += '<input class="form-control col-4" name="videoNames" placeholder="영상 제목을 입력해주세요." required></div>'; //영상 제목 입력란
+                    // str += '<label class="form-control ml-1 btn btn-link" for="removeId">X</label>'
+                    str += "<video class='mt-1' width='640' height='auto' controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
+                    str += "<input id='removeId' class='btn btn-link removeBtn ml-1' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
                     str += "</div>";
                     urls.push(arr[i].videoURL);
                 }
@@ -57,20 +80,22 @@
             //업로드하는 최종 영상들의 url들을 저장
             function pushVideoURLs() {
                 console.log("final onclick");
-                document.getElementById('videoUrls').innerHTML =
-                        '<input name="videoUrls" value='+urls+' style="display: none">';
+                if (urls.length != 0) {
+                    document.getElementById('videoUrls').innerHTML =
+                        '<input name="videoUrls" value=' + urls + ' style="display: none">';
+                }
             }
 
             function uploadVideos() {
                 let formData = new FormData();
                 let inputFile = $("input[type='file']");
                 let files = inputFile[0].files;
-    
+
                 for (let i = 0; i < files.length; i++) {
                     console.log(files[i]);
                     formData.append("uploadFiles", files[i]);
                 }
-    
+
                 //실제 업로드 부분
                 //upload ajax
                 $.ajax({
@@ -93,9 +118,9 @@
                 let target = $(this);
                 let fileName = target.data("name");
                 let targetDiv = $(this).closest("div");
-    
+
                 console.log(fileName);
-    
+
                 $.post('/removeFile', {fileName: fileName}, function (result) {
                     console.log(result);
                     if (result == true) {
@@ -105,7 +130,14 @@
                     }
                 });
             });
+
+            function checkVideo() {
+                if ([[${isNoVideo}]]) {
+                    alert("영상을 한개 이상 업로드 해야합니다.");
+                }
+            }
+            checkVideo();
         </script>
-        
+
     </th:block>
 </th:block>

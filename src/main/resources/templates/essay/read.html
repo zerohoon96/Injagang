@@ -17,12 +17,25 @@
           pointer-events: none;
         }
       </style>
+        
     </head>
     <body>
-    <form class="container-fluid" action method="get">
+    
+    <form class="container-fluid" th:action="@{/essay/delete/{essayId}(essayId=${essayDTO.id})}" method="post">
       <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
       <br>
-
+    
+        <div id="authRange" style="float: right">
+            <label>공개 범위</label>&nbsp
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == null}" type="button">나만 보기</button>
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == 0}" type="button">나만 보기</button>
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == 1}" type="button">친구 공개</button>
+        </div>
+        <br>
+        
       <!-- 템플릿 입력 내용 -->
       <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
         <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>
@@ -46,11 +59,38 @@
         </div>
         <br>
       </div>
-      <!-- 수정, 확인버튼 -->
-      <div class="form-group">
+      <!-- 게시글 삭제 -->
+      <div class="text-center">
+        <input class="btn btn-outline-danger px-5" id="delete" type="submit" value="게시글 삭제">
       </div>
+      <br>
+      <br>
     </form>
+
+    <script th:inline="javascript">
+    
+        function changeRange(access) {
+            let essayId = [[${essayDTO.id}]];
+            $.post("/switch/range", {essay_id: essayId}, function (result){
+                console.log("before: " + access);
+                if (result == true) {
+                    if(access == 0 || access == null) {
+                        console.log("비공개 -> 친구공개");
+                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(1)" type="button">친구 공개</button>`;
+                    }
+                    else if (access == 1) {
+                        console.log("친구공개 -> 비공개")
+                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(0)" type="button">나만 보기</button>`;
+                    }
+                }
+            });
+        }
+    </script>
+    
     </body>
+    
 
   </th:block>
 </th:block>

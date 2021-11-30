@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,17 +23,18 @@ public class InterviewController {
      * 면접 세팅 화면
      **/
     @GetMapping("/init")
-    String interviewInit(@SessionAttribute("loginSession") String nickname, Model model) {
+    String interviewInit(@SessionAttribute("loginSession") String nickname, Model model,
+                         @RequestParam(required = false) boolean isNoQuestion) {
+
+        log.info("=========interview init=========");
+
         Map<String, Integer> essayMap = new HashMap<>(); //예상 질문이 있는 자기소개서만 추가 (면접 설정을 할때 무조건 질문 개수가 1개 이상이 되도록..)
-//        essayMap.put("2021 하반기 삼성전자",5);
-//        essayMap.put("2021 하반기 LG전자",6);
-//        essayMap.put("2021 하반기 Kakao",3);
-//        essayMap.put("2021 하반기 Naver",9);
 
         //예상질문이 달린 자소서들 가지고 오기
         service.getEssays(essayMap, nickname);
 //        log.info("essayMap = {}", essayMap);
 
+        model.addAttribute("isNoQuestion", isNoQuestion);
         model.addAttribute("baseQuestion",10); //인성면접 개수
         model.addAttribute("csQuestion",6); //전공면접 개수
         model.addAttribute("essayMap",essayMap); //자소서 이름, 질문수
@@ -46,17 +48,23 @@ public class InterviewController {
     @PostMapping("/test") //이거 새로 생성한 면접 객체 PK로 바꿔야함.. (/{interviewId}) pathvariable로 밑에서 쓰면 될듯
     String interviewSubmit(@SessionAttribute("loginSession") String nickname,
                            @RequestParam Map<String, Object> allParameters,
-                           Model model) {
+                           Model model, RedirectAttributes redirectAttributes) {
+
         List<String> questionList = new ArrayList<>();
         int baseQuestion = Integer.parseInt(allParameters.get("baseQuestion").toString());
         int csQuestion = Integer.parseInt(allParameters.get("csQuestion").toString());
-        int expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
+        int expectedQuestion;
         int userAddQuestion;
 
+        if (allParameters.get("expectedQuestion").toString().equals(" ")) {
+            expectedQuestion = 0;
+        } else {
+            expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
+        }
         log.info("크기 : " + allParameters.size());
         log.info("" + allParameters);
 
-        for(userAddQuestion=0;userAddQuestion<allParameters.size();userAddQuestion++){
+        for(userAddQuestion=0; userAddQuestion<allParameters.size(); userAddQuestion++){
             if(!allParameters.containsKey("question"+(userAddQuestion+1))) {
                 break;
             }
@@ -65,11 +73,17 @@ public class InterviewController {
             }
         }
 
+        //선택한 문항이 하나도 없을 때 예외 처리
+        if(baseQuestion + csQuestion + expectedQuestion + userAddQuestion == 0){
+            redirectAttributes.addAttribute("isNoQuestion", true);
+            return "redirect:/interview/init";
+        }
+
         // 인성, cs 면접 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
 
 
         // 예상 댓글 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
-        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
+//        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
 
         // 질문 순서 섞기
         Collections.shuffle(questionList);
@@ -86,16 +100,16 @@ public class InterviewController {
     //면접 마쳤을 때
     @GetMapping("/test")
     String test(@SessionAttribute("loginSession") String nickname, Model model,
-                @RequestParam int qCnt, @RequestParam("interviewName") String title) {
+                @RequestParam int qCnt, @RequestParam("interviewName") String title, RedirectAttributes redirectAttributes) {
 
         log.info("qCnt = {}", qCnt);
         log.info("interviewName = {}", title);
 
         //모의면접 객체 저장
         service.registerTestInterview(qCnt, title, nickname);
-
+        redirectAttributes.addAttribute("nickname",nickname);
 //        model.addAttribute("loginNickname", nickname);
-        return "redirect:/mypage/" + nickname;
+        return "redirect:/mypage/{nickname}";
     }
 
 }

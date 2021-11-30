@@ -5,12 +5,9 @@
     <th:block th:fragment="content">
         
         <head>
+<!--            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
+
             <style>
-                .essay-content{
-                    box-sizing: border-box;
-                    width: 100%;
-                    margin-top: 30px;
-                }
                 .left-space{
                     display: inline-block;
                     width:80%;
@@ -24,63 +21,75 @@
                     display: inline-block;
                     height: auto;
                 }
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
+                }
             </style>
         </head>
         
-        <div class="essay-content">
-    
+        <div class="container-fluid">
             <!-- 게시물 내용 부분 -->
-            <div class="left-space">
+            <div class="left-space mt-3">
                 <!-- 게시물 제목 -->
-                <div>
-                    <h3>[[${result.title}]]</h3>
-                </div>
-    
+                <h3 class="text-center mb-2">[[${result.title}]]</h3>
+                <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
                 <!-- 게시물 글 내용 -->
-                <br>
-                <div>
-                    <textarea rows="8" style="border: none; width: 100%" readonly>[[${result.text}]]</textarea>
-                </div>
-                <br>
+                [[${result.text}]]
+                <br><hr><br>
                 
-                <div class="form-group" th:each="dto : ${result.contentList}">
+                <div class="form-group" th:each="dto, idx : ${result.contentList}">
                     <br>
-                    <label th:for="|${dto.pk}content|">[[${dto.title}]]</label>
+                    <label th:for="|${dto.pk}content|" th:text="|${idx.count}. ${dto.title}|"></label>
                     <br>
-                    <input th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:value="${dto.text}" readonly>
+                    <textarea rows=10 style="pointer-events: none" th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:text="${dto.text}"></textarea>
             
                     <!-- 예상질문 부분 -->
-                    <div th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
+                    <div class="mt-2" th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
                         <form th:action="@{/essay/question/delete}" th:method="post">
-                            <label th:for="|${qdto.pk}question|">
-                                <a th:href="@{|/mypage/${qdto.nickname}|}">[[${qdto.nickname}]]</a>님의 예상질문
-                            </label>
-                            <br>
-                            <textarea th:id="|${qdto.pk}question|" cols="80" readonly>[[${qdto.content}]]</textarea>
+                            <div class="form-inline">
+                                <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left" th:for="|${qdto.pk}question|">↳ <b>[[${qdto.nickname}]]</b>님의 예상질문</label>
+                                <button class="btn btn-link btn-sm ml-2" type="submit"
+                                        th:if="${loginNickname == qdto.nickname}">X</button>
+                            </div>
+                            <textarea class="form-control" style="pointer-events: none" th:id="|${qdto.pk}question|">[[${qdto.content}]]</textarea>
                             <input style="display: none" name="eb_pk" th:value="${result.pk}">
                             <input style="display: none" name="question_pk" th:value="${qdto.pk}">
-                            <button type="submit" style="border: 1px black; background-color: red"
-                                    th:if="${loginNickname == qdto.nickname || loginNickname == result.writer}">삭제</button>
                         </form>
                     </div>
-            
+
                     <!-- 예상질문 달기 -->
                     <div th:id="${dto.pk}"></div>
-                    <input class="questionButton" type="button" value="예상질문 달기"
+                    <input class="btn btn-outline-info questionButton mt-2 px-5" type="button" value="예상질문 달기"
                            th:attr="onclick=|make_expectedQuestion('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_questionBtn()|">
                 </div>
                 <br>
-                
-                <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만-->
-                <div th:if="${loginNickname == result.writer}" style="float: right">
-                    <button class="btn btn-secondary" type="button">
-                        <a th:href="@{/essay/board/update/{pk}(pk=${result.pk})}" style="color: white">게시물 수정</a>
-                    </button>
-                    <button class="btn btn-secondary" type="button" style="background-color: red">
-                        <a th:href="@{/essay/board/delete/{pk}(pk=${result.pk})}" style="color: white">게시물 삭제</a>
-                    </button>
+                <hr>
+                <!-- 댓글 -->
+<!--                <h3 class="text-center">댓글</h3>-->
+                <!-- 기존 댓글 표시 -->
+                <div class="mb-2" th:each="dto : ${result.replyList}">
+                    <form th:action="@{/essay/reply/delete}" th:method="post">
+                        <div class="form-inline">
+                            <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left">↳ <b>[[${dto.nickname}]]</b>님</label>
+                            <button class="btn btn-link btn-sm ml-2" type="submit"
+                                    th:if="${loginNickname == dto.nickname}">X</button>
+                        </div>
+                        <div style="padding-left: 4%; padding-right: 4%">[[${dto.content}]]</div>
+<!--                    <label class="form-control" style="pointer-events: none; border: 0; padding-left: 0;" align="left">[[${dto.content}]]</label>-->
+                        <input style="display: none" name="eb_pk" th:value="${result.pk}">
+                        <input style="display: none" name="reply_pk" th:value="${dto.pk}">
+                    </form>
                 </div>
-                
+
+                <!-- 댓글 달기 -->
+                <div id="new_reply"></div>
+                <input class="btn btn-outline-info  px-5" id="reply_input" type="button" value="댓글 달기"
+                       th:attr="onclick=|make_reply('${result.pk}', '${loginNickname}'); remove_replyBtn()|">
+                <br><br>
             </div>
     
             <!-- 피드백 보기 부분-->
@@ -96,40 +105,27 @@
                         </a>
                     </div>
                 </div>
-            </div>
-            
-            <!-- 첨삭쓰기 버튼 -->
-            <div style="float: right; display: inline-block">
-                <div th:if="${result.writer != loginNickname}">
-                <button class="btn btn-primary">
-                    <a th:href="@{/essay/feedback/{essayId}/write(essayId=${result.pk})}" style="color: white;">첨삭 쓰기</a>
-                </button>
+                <div>
+                    <!-- 수정, 삭제 버튼 - 로그인한 사람이 글쓴이일 때만-->
+                    <div th:if="${loginNickname == result.writer}">
+                        <button class="btn btn-outline-info btn-block" type="button"th:onclick="|location.href='@{/essay/board/update/{pk}(pk=${result.pk})}'|" >
+                            게시물 수정
+                        </button>
+                        <button class="btn btn-outline-danger mt-2 btn-block" type="button" th:onclick="|location.href='@{/essay/board/delete/{pk}(pk=${result.pk})}'|">
+                            게시물 삭제
+                        </button>
+                    </div>
+                    <!-- 첨삭쓰기 버튼 -->
+                    <div class="mt-2">
+                        <div th:if="${result.writer != loginNickname}">
+                            <a class="btn btn-outline-warning btn-block" th:href="@{/essay/feedback/{essayId}/write(essayId=${result.pk})}" >
+                                첨삭 쓰기
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <hr>
-            
-            <!-- 댓글 -->
-            <div class="reply-space">
-                <h3>댓글</h3>
-                
-                <!-- 기존 댓글 표시 -->
-                <div th:each="dto : ${result.replyList}">
-                    <form th:action="@{/essay/reply/delete}" th:method="post">
-                        <label><a th:href="@{|/mypage/${dto.nickname}|}">[[${dto.nickname}]]</a>님의 댓글</label>
-                        <br>
-                        <textarea cols="80" readonly>[[${dto.content}]]</textarea>
-                        <input style="display: none" name="eb_pk" th:value="${result.pk}">
-                        <input style="display: none" name="reply_pk" th:value="${dto.pk}">
-                        <button type="submit" style="border: 1px black; background-color: red"
-                                th:if="${loginNickname == dto.nickname || loginNickname == result.writer}">삭제</button>
-                    </form>
-                </div>
-    
-                <!-- 댓글 달기 -->
-                <div id="new_reply"></div>
-                <input id="reply_input" type="button" value="댓글 달기"
-                       th:attr="onclick=|make_reply('${result.pk}', '${loginNickname}'); remove_replyBtn()|">
-            </div>
+            <br><br>
         </div>
         
         
@@ -147,21 +143,22 @@
             
             //댓글 달기를 누를 때
             function make_reply(pk, nickname){
-                document.getElementById("new_reply").innerHTML+= `<form action="/essay/reply" method="post">`+
-                        '<label>'+nickname+'님의 댓글</label><br>'+
-                `<textarea name="replyContent" cols="80" rows="3" placeholder="내용을 입력해주세요."></textarea>`+
-                        `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
-                `<button type="submit" style="border: 1px black; background-color: lightgray">확인</button></form><br>`;
+                document.getElementById("new_reply").innerHTML+= `<form class="mt-2" action="/essay/reply" method="post">`+
+                        // '<label>'+nickname+'님의 댓글</label><br>'+
+                    `<textarea class="form-control" name="replyContent" rows="3" placeholder="내용을 입력해주세요." required></textarea>`+
+                    `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
+                    `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
+
             
             //예상질문 쓰기를 누를 때
             function make_expectedQuestion(pk, id, nickname){
-                document.getElementById(id).innerHTML += `<form action="/essay/question" method="post">`+
-                        '<label>'+nickname+'님의 예상질문</label><br>'+
-                `<textarea name="questionContent" cols="80" placeholder="예상질문을 입력해주세요."></textarea>`+
-                        `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
-                        `<input type="text" name="content_pk" style="display: none" value="`+id+`">`+
-                `<button type="submit" style="border: 1px black; background-color: lightgray">확인</button></form><br>`;
+                document.getElementById(id).innerHTML += `<form class="mt-2" action="/essay/question" method="post">`+
+                        // '<p>'+nickname+'님의 예상질문</p>'+
+                    `<textarea class="form-control" name="questionContent" placeholder="예상질문을 입력해주세요." required></textarea>`+
+                    `<input type="text" name="essay_pk" style="display: none" value="`+pk+`">`+
+                    `<input type="text" name="content_pk" style="display: none" value="`+id+`">`+
+                    `<button class="mt-1 form-control col-1 float-right btn-outline-info" type="submit">확인</button></form><br>`;
             }
         </script>
         

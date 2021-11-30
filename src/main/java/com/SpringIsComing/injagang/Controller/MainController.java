@@ -13,6 +13,8 @@ import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,19 +45,35 @@ public class MainController {
     private final AuthTokenService authTokenService;
     private final AlarmService alarmService;
 
+//    /**
+//     * 메인 페이지 - 마이 페이지로 리다이렉트
+//     * 로그인 후 메인 페이지로 이동 시 마이 페이지로 이동
+//     */
+//    @GetMapping("/")
+//    public String mainPage(@SessionAttribute("loginSession") String nickname, RedirectAttributes redirectAttributes){
+//        redirectAttributes.addAttribute("nickname", nickname);
+//        return "redirect:/mypage/{nickname}";
+//    }
 
-    @GetMapping("/sibal")
-    public String sibal(){
+    @PostMapping("/switch/range")
+    public @ResponseBody ResponseEntity<Boolean> switchRange(Long essay_id) {
+        boolean result = essayService.changeRange(essay_id);
 
-        return "mypage/test";
+        if(result) {
+            log.info("result: true");
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        }
+        else {
+            log.info("result: false");
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-
 
     /**
      * 마이페이지
      */
     @GetMapping({"/mypage/{nickname}", "/"})
-    public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable(value = "nickname",required = false) String curNickname
+    public String myPage(@SessionAttribute(value = "loginSession", required = false) String nickname, @PathVariable(value = "nickname",required = false) String curNickname
             , Model model) {
 
 
@@ -464,15 +482,20 @@ public class MainController {
     }
 
 
-    @PostConstruct
-    public void init(){
-        RegisterDTO registerDTO = new RegisterDTO();
-        registerDTO.setEmail("kimsm@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
-        registerDTO.setName("김수만");
-        registerDTO.setLoginId("kimsuman");
-        registerDTO.setNickname("smkim");
-        registerDTO.setPassword("test");
-        registerDTO.setPasswordCheck("test");
+//    @PostConstruct
+//    public void init(){
+//        RegisterDTO registerDTO = new RegisterDTO();
+//        registerDTO.setEmail("abcde@naver.com");//자신의 이메일을 넣어서 테스트해보세욤
+//        registerDTO.setName("홍준표");
+//        registerDTO.setLoginId("hongjunpyo");
+//        registerDTO.setNickname("muyahong");
+//        registerDTO.setPassword("test");
+//        registerDTO.setPasswordCheck("test");
+//
+//        memberService.save(registerDTO);
+//
+//
+//    }
 
         memberService.save(registerDTO);
 

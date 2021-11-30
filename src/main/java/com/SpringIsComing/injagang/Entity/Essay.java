@@ -25,7 +25,7 @@ public class Essay{
     @JoinColumn(name = "MEMBER_ID")
     private Member writer;
 
-    @OneToMany(mappedBy = "essay")
+    @OneToMany(mappedBy = "essay", cascade = CascadeType.ALL)
     @Builder.Default
     private List<Reply> replies = new ArrayList<>(); //달린 댓글들
 

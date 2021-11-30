@@ -8,10 +8,10 @@
             <title>essay_write_page</title>
 
             <style>
-                .container-fluid {
-                    padding-left: 9%;
-                    padding-right: 9%;
-                }
+                /*.container-fluid {*/
+                /*    padding-left: 9%;*/
+                /*    padding-right: 9%;*/
+                /*}*/
                 .btn-link {
                     mid-width: 100px;
                     border-radius: 0px;
@@ -33,8 +33,10 @@
 
         </head>
         <body>
+        <h1 class="mt-4">자소서 쓰기</h1>
+        <hr>
         <!--동적 게시글 작성 양식-->
-        <form class="container-fluid" id="createTemplate" name="createTemplate" action method="post">
+        <form class="container-fluid" style="padding-left: 9%; padding-right: 9%" id="createTemplate" name="createTemplate" action method="post">
             <div class="form-group" style="padding-right: 20%; padding-left: 20%">
                 <!--템플릿 불러오기 칸-->
                 <select class="form-control" name="template_select" id="template_select" onchange="Change_template();">
@@ -56,7 +58,7 @@
             <br>
             <br>
             <div class="text-center">
-                <input class="btn btn-primary px-5" id="save" type="button" value="저장">
+                <input class="btn btn-outline-info px-5" id="save" type="button" value="저장">
             </div>
             <br>
             <br>
@@ -75,8 +77,8 @@
                             <input type="text" class="form-control" name="titleName" required>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
-                            <button type="submit" class="btn btn-primary">확인</button>
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">취소</button>
+                            <button type="submit" class="btn btn-outline-info">확인</button>
                         </div>
                     </div>
                 </div>
@@ -115,7 +117,6 @@
                 if (select == "emptyTemplate") return;
 
                 //템플릿 질문 갯수만큼 생성
-
                 let templateIdx = [[${templateDTO.templateTitle}]].indexOf(select);
                 let question = [[${templateDTO.questions}]][templateIdx];
                 for (let ele in question) {
@@ -138,7 +139,7 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${i+1}.</label>
-                                <input class="form-control col-md" type="text" id="direect_question${i}" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
+                                <input class="form-control col-md" type="text" id="direect_question${i}" name="direct_question${i}" value="${direct_question[i]}" placeholder="질문을 입력해주세요." onChange="direct_question[${i}]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${i});">
                             </div>
                             <textarea class="form-control mb-1" rows=10 id="direct_answer${i}" name="direct_answer${i}" placeholder="내용을 입력해주세요." onChange="direct_answer[${i}]=this.value">${direct_answer[i]}</textarea>
@@ -157,7 +158,6 @@
 
             //버튼 클릭시
             $(document).ready(function () {
-
                 $("#save").click(function (event) {
                     //아무 내용이 없다면
                     if (select=="emptyTemplate" && direct_question.length == 0) {
@@ -208,7 +208,7 @@
                         `<form>
                             <div class="form-inline mb-1">
                                 <label class="mr-2">${direct_question.length}.  </label>
-                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[direct_question.length-1]=this.value">
+                                <input class="form-control col-md" type="text" name="direct_question${direct_question.length}" value="${direct_question[direct_question.length-1]}" placeholder="질문을 입력해주세요." onChange="direct_question[${direct_question.length-1}]=this.value">
                                 <input class="btn btn-link btn-sm ml-2" type="button" value="X" onclick="deleteInput(${direct_question.length-1});">
                             </div>
                             <textarea class="form-control mb-1" rows=10 name="direct_answer${direct_question.length}" placeholder="내용을 입력해주세요." onChange="direct_answer[${direct_answer.length-1}]=this.value">${direct_answer[direct_question.length-1]}</textarea>

@@ -3,8 +3,8 @@ package com.SpringIsComing.injagang.Service;
 import com.SpringIsComing.injagang.DTO.EssayWriteDTO;
 import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.EssayContent;
-import com.SpringIsComing.injagang.Repository.EssayRepository;
-import com.SpringIsComing.injagang.Repository.MemberRepository;
+import com.SpringIsComing.injagang.Entity.alarm.EssayAlarm;
+import com.SpringIsComing.injagang.Repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +22,10 @@ import java.util.Optional;
 @Transactional
 public class EssayServiceImpl implements EssayService {
 
+    private final EssayContentRepository essayContentRepository;
     private final EssayRepository essayRepository;
     private final MemberRepository memberRepository;
+    private final AlarmRepository alarmRepository;
 
     @Override
     public List<Essay> findEssays(Member member) {
@@ -36,6 +38,24 @@ public class EssayServiceImpl implements EssayService {
     public Long save(Essay essay) {
         Essay save = essayRepository.save(essay);
         return save.getId();
+    }
+
+    @Override
+    public boolean changeRange(Long essay_id) {
+        Optional<Essay> opt = essayRepository.findById(essay_id);
+
+        if(opt.isPresent()){
+            Essay essay = opt.get();
+            Integer access = essay.getAccess();
+
+            if(access == null || access == 0) access = 1;
+            else if(access == 1) access = 0;
+
+            essay.setAccess(access);
+            return true;
+        }
+        else
+            return false;
     }
 
 
@@ -58,13 +78,23 @@ public class EssayServiceImpl implements EssayService {
         return save.getId();
     }
 
+    @Override
     public Essay findEssay(Long essayId) {
         return essayRepository.findById(essayId)
                 .orElseThrow(()-> new IllegalArgumentException("아몰랑"));
     }
 
+    @Override
     public EssayWriteDTO readEssay(Long id) {
         Optional<Essay> result = essayRepository.findById(id);
         return result.isPresent() ? essayEntityToDto(result.get()) : null;
+    }
+
+    @Override
+    public void deleteEssay(Long essayId) {
+        List<EssayAlarm> alarmsByEssay = alarmRepository.findAlarmsByEssay(essayRepository.findById(essayId).get());
+        alarmRepository.deleteAll(alarmsByEssay);
+
+        essayRepository.deleteById(essayId);
     }
 }
