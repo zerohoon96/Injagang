@@ -181,9 +181,9 @@ public class MainController {
     @GetMapping("/mypage/update")
     public String updateStart(@SessionAttribute(value = "loginSession", required = false) String nickname, Model model) {
 
-        if (nickname == null) {
-            return "redirect:/login";
-        }
+//        if (nickname == null) {
+//            return "redirect:/login";
+//        }
 
         Member loginMember = memberService.findByNickname(nickname);
         UpdateDTO updateDTO = memberService.toUpdateDTO(loginMember);
