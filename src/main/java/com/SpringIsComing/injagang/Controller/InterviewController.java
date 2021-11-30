@@ -83,7 +83,7 @@ public class InterviewController {
 
 
         // 예상 댓글 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
-//        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
+        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
 
         // 질문 순서 섞기
         Collections.shuffle(questionList);
