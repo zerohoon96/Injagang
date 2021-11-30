@@ -72,8 +72,8 @@ public class MainController {
     /**
      * 마이페이지
      */
-    @GetMapping({"/mypage/{nickname}"})
-    public String myPage(@SessionAttribute("loginSession") String nickname, @PathVariable(value = "nickname",required = false) String curNickname
+    @GetMapping({"/mypage/{nickname}", "/"})
+    public String myPage(@SessionAttribute(value = "loginSession", required = false) String nickname, @PathVariable(value = "nickname",required = false) String curNickname
             , Model model) {
 
 
