@@ -33,9 +33,6 @@
                     width: 60%;
                 }
 
-                .background-color-gray {
-                    background-color: #F2F2F2;
-                }
 
                 textarea {
                     resize: none;
@@ -44,22 +41,30 @@
                 textarea::selection {
                     background-color: plum;
                 }
+                .border-gray {
+                    border: 1px solid #CFD4D9;
+                    border-top-left-radius : 4px;
+                    border-top-right-radius : 4px;
+                    border-bottom-right-radius : 4px;
+                    border-bottom-left-radius : 4px;
+                }
             </style>
 
         </head>
         <body>
         <form class="container-fluid" action method="post" th:object="${writeFeedback}">
-            <label class="form-control text-center mt-3"
-                   th:text="|${readFeedback.essayPostName} 게시물에 저장된 첨삭을 수정하고 있습니다.|"></label><br>
+            <h3 class="mt-3 text-center" th:text="|${readFeedback.essayPostName} 게시물에 저장된 첨삭을 수정하고 있습니다.|"></h3>
+            <hr>
+<!--            <label class="form-control text-center mt-3"-->
+<!--                   th:text="|${readFeedback.essayPostName} 게시물에 저장된 첨삭을 수정하고 있습니다.|"></label><br>-->
 
             <div th:each="idx : ${#numbers.sequence(0,readFeedback.questions.size()-1)}">
 
                 <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${readFeedback.questions[idx]}|"></label>
-                <div type="text" style="border: 1px solid black;" th:id="|answer${idx+1}|"
+                <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap;" type="text" th:id="|answer${idx+1}|"
                      th:text="${readFeedback.answers[idx]}" th:onmouseup="|dragUpdate(${idx+1})|"
                      th:onmousedown="|dragStart(${idx+1})|">
                 </div>
-                <br>
 
                 <!--전송에 필요한 데이터-->
                 <div th:id="|start${idx+1}|"></div>
@@ -86,13 +91,21 @@
             </div>
 
             <!--총평 입력-->
-            <label for="totalComment">총평</label>
+            <label for="totalComment"><b>총평</b></label>
             <textarea type="text" id="totalComment" th:field="*{content}" class="form-control" rows=3 required></textarea><br>
 
             <!--최종 첨삭 저장 버튼-->
-            <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>
-            <button type="buttton" class="margin-bottom-10 w-300 btn btn-primary" href="window.history.back()">취소</button>
+            <div class="text-center mt-2">
+                <button type="submit" class="btn btn-outline-info px-5">수정 저장</button>
+                <button type="submit" class="btn btn-outline-danger px-5">수정 취소</button>
+            </div>
             <br>
+            <br>
+
+<!--            &lt;!&ndash;최종 첨삭 저장 버튼&ndash;&gt;-->
+<!--            <button type="submit" class="margin-bottom-10 w-300 btn btn-primary">확인</button>-->
+<!--            <button type="buttton" class="margin-bottom-10 w-300 btn btn-primary" href="window.history.back()">취소</button>-->
+<!--            <br>-->
         </form>
 
         <script th:inline="javascript">
@@ -214,12 +227,14 @@
                     document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].end">';
                     document.getElementById('start' + idx + i).value = start[idx - 1][i];
                     document.getElementById('end' + idx + i).value = end[idx - 1][i];
-                    document.getElementById('comment' + idx).innerHTML += '<b>선택 문장 ' + (i + 1) + ' : </b><span>' + selectedString[idx - 1][i] + '</span><br>' +
-                        '<textarea class="width-60 background-color-gray" id="commentContent' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea><br>' +
-                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '1" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button> ' +
-                        '<button class="btn btn-secondary" type="button" style="display: inline" id="commentBtn' + idx + i + '2" onclick="editFeedback(' + idx + ',' + i + ')">수정</button> ' +
-                        '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '3" onclick="processEditFeedback(' + idx + ',' + i + ',1)">확인</button> ' +
-                            '<button class="btn btn-secondary" type="button" style="display: none" id="commentBtn' + idx + i + '4" onclick="processEditFeedback(' + idx + ',' + i + ',2)">취소</button><br>';
+                    document.getElementById('comment' + idx).innerHTML += '<br></r><b>선택 문장 ' + (i + 1) + ') </b><span>' + selectedString[idx - 1][i] + '</span><br>' +
+                        '<textarea class="mt-1 mb-1 form-control" id="commentContent' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea>' +
+                        '<div class="text-right">' +
+                        '<button class="btn btn-outline-warning" type="button" style="display: inline" id="commentBtn' + idx + i + '2" onclick="editFeedback(' + idx + ',' + i + ')">수정</button> ' +
+                        '<button class="btn btn-outline-danger" type="button" style="display: inline" id="commentBtn' + idx + i + '1" onclick="deleteFeedback(' + idx + ',' + i + ')">삭제</button> ' +
+                        '<button class="btn btn-outline-info" type="button" style="display: none" id="commentBtn' + idx + i + '3" onclick="processEditFeedback(' + idx + ',' + i + ',1)">확인</button> ' +
+                         '<button class="btn btn-outline-danger" type="button" style="display: none" id="commentBtn' + idx + i + '4" onclick="processEditFeedback(' + idx + ',' + i + ',2)">취소</button><br>' +
+                        '</div>';
                 }
             }
 
@@ -344,9 +359,11 @@
                 }
 
                 document.getElementById('getFeedback' + idx).innerHTML = '<br><b>현재 선택 문장 : </b><span>' + rangeBuf[idx - 1].toString() + '</span><br>' +
-                    '<textarea id="input' + idx + '" type="text" class="form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea><br>' +
-                    '<button class="btn btn-secondary" type="button" onclick="addFeedback(' + idx + ')">확인</button> ' +
-                    '<button class="btn btn-secondary" type="button" onclick="cancelFeedback(' + idx + ')">취소</button>';
+                    '<div class="text-right">' +
+                    '<textarea id="input' + idx + '" type="text" class="mt-1 mb-1 form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea>' +
+                    '<button class="btn btn-outline-info" type="button" onclick="addFeedback(' + idx + ')">확인</button> ' +
+                    '<button class="btn btn-outline-danger" type="button" onclick="cancelFeedback(' + idx + ')">취소</button>' +
+                    '</div>';
             }
 
             function cancelFeedback(idx) { //첨삭 취소 버튼을 눌렀을때 처리
@@ -437,7 +454,7 @@
                 document.getElementById('commentBtn' + curIdx + editIdx + '3').style.display = "inline"; //확인 버튼 활성화
                 document.getElementById('commentBtn' + curIdx + editIdx + '4').style.display = "inline"; //취소 버튼 활성화
                 commentTextArea.readOnly = false; //textarea 수정 가능으로 변경
-                commentTextArea.style.backgroundColor = "#FFFFFF";
+                // commentTextArea.style.backgroundColor = "#FFFFFF";
                 remainEdit[curIdx - 1]++;
             }
 
@@ -448,7 +465,7 @@
                 document.getElementById('commentBtn' + curIdx + multiIdx + '3').style.display = "none"; //확인 버튼 비활성화
                 document.getElementById('commentBtn' + curIdx + multiIdx + '4').style.display = "none";  //수정 버튼 비활성화
                 commentTextArea.readOnly = true; //textarea 수정 불가능으로 변경
-                commentTextArea.style.backgroundColor = "#F2F2F2";
+                // commentTextArea.style.backgroundColor = "#F2F2F2";
                 remainEdit[curIdx - 1]--;
 
                 if (mode == 1) { //확인 버튼 -> 새로운 값으로 리스트 업데이트

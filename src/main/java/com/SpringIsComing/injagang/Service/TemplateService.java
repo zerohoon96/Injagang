@@ -12,7 +12,16 @@ import java.util.List;
 public interface TemplateService {
 
     List<TemplateViewDTO> findTemplates();
-    public void storeEssayTemplate(EssayTemplate essayTemplate);
-    public TemplateDTO readTemplate();
-    public TemplateViewDTO findTemplate(Long id);
+
+    void storeEssayTemplate(EssayTemplate essayTemplate);
+
+    TemplateDTO readTemplate();
+
+    TemplateViewDTO findTemplate(Long id);
+
+    void grantTemplate(Long id);
+
+    void revokeTemplate(Long id);
+
+    void deleteTemplate(Long id);
 }

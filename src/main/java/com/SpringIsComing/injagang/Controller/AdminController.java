@@ -39,6 +39,27 @@ public class AdminController {
         return "admin/template-read";
     }
 
+    @GetMapping("/template/accept")
+    public String templateAccept(@RequestParam Long id) {
+        log.info("-----------templateAccept-----------");
+        templateService.grantTemplate(id);
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/template/revoke")
+    public String templateRevoke(@RequestParam Long id) {
+        log.info("-----------templateRevoke-----------");
+        templateService.revokeTemplate(id);
+        return "redirect:/admin";
+    }
+
+    @GetMapping("/template/delete")
+    public String templateDelete(@RequestParam Long id) {
+        log.info("-----------templateDelete-----------");
+        templateService.deleteTemplate(id);
+        return "redirect:/admin";
+    }
+
 
     @GetMapping("/admin/question")
     public String question(Model model) {
