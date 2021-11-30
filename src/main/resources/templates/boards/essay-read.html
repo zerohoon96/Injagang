@@ -5,6 +5,7 @@
     <th:block th:fragment="content">
         
         <head>
+
 <!--            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
 
             <style>
@@ -82,7 +83,7 @@
                         <hr th:unless="${idx.count} == 1">
 
                         <div class="form-inline">
-                            <label class="form-control col-md" style="border: 0;" align="left">
+                            <label class="form-control col-md" style="border: 0; padding: 0" align="left">
                                 <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a></label>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
@@ -96,7 +97,7 @@
 
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
-                <input class="btn btn-outline-info  px-5" id="reply_input" type="button" value="댓글 달기"
+                <input class="btn btn-outline-info px-5 mt-2" id="reply_input" type="button" value="댓글 달기"
                        th:attr="onclick=|make_reply('${result.pk}', '${loginNickname}'); remove_replyBtn()|">
                 <br><br>
             </div>

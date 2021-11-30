@@ -2,96 +2,102 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
-  <th:block th:fragment="content">
-    <head>
-      <meta charset="UTF-8">
-      <title>essay_read_page</title>
-      <style>
-        .container-fluid {
-          padding-left: 9%;
-          padding-right: 9%;
-        }
-
-        textarea {
-          resize: none;
-          pointer-events: none;
-        }
-      </style>
-        
-    </head>
-    <body>
-    
-    <form class="container-fluid" th:action="@{/essay/delete/{essayId}(essayId=${essayDTO.id})}" method="post">
-      <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
-      <br>
-    
-        <div id="authRange" style="float: right" th:if="${essayDTO.writer == loginNickname}">
-            <label th:if="${essayDTO.access != 2}">공개 범위</label>&nbsp
-            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == null}" type="button">나만 보기</button>
-            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == 0}" type="button">나만 보기</button>
-            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
-                    th:if="${essayDTO.access == 1}" type="button">친구 공개</button>
-        </div>
-        <br>
-        
-      <!-- 템플릿 입력 내용 -->
-      <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
-        <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>
-        <hr>
-        <div th:each="t, idx : ${essayDTO.tc}">
-          <label th:text="|${idx.count}. ${t.question}|"></label>
-          <textarea class="form-control mt-1" rows=10 th:text="${t.answer}"></textarea>
-          <br>
-        </div>
-        <br>
-      </div>
-
-      <!-- 직접 입력 내용 -->
-      <div class="form-group" th:if="${essayDTO.dc.size() > 0}">
-        <h4 class="text-center mt-3">직접 입력</h4>
-        <hr>
-        <div th:each="d, idx : ${essayDTO.dc}">
-          <label th:text="|${idx.count}. ${d.question}|"></label>
-          <textarea class="form-control mt-1" rows=10 th:text="${d.answer}"></textarea>
-          <br>
-        </div>
-        <br>
-      </div>
-      <!-- 게시글 삭제 -->
-      <div class="text-center">
-        <input th:if="${essayDTO.writer == loginNickname}"
-                class="btn btn-outline-danger px-5" id="delete" type="submit" value="자소서 삭제">
-      </div>
-      <br>
-    </form>
-
-    <script th:inline="javascript">
-    
-        function changeRange(access) {
-            let essayId = [[${essayDTO.id}]];
-            $.post("/switch/range", {essay_id: essayId}, function (result){
-                console.log("before: " + access);
-                if (result == true) {
-                    if(access == 0 || access == null) {
-                        console.log("비공개 -> 친구공개");
-                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
-                                `<button class="btn btn-secondary" onclick="changeRange(1)" type="button">친구 공개</button>`;
-                    }
-                    else if (access == 1) {
-                        console.log("친구공개 -> 비공개")
-                        document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
-                                `<button class="btn btn-secondary" onclick="changeRange(0)" type="button">나만 보기</button>`;
-                    }
+    <th:block th:fragment="content">
+        <head>
+            <style>
+                .container-fluid {
+                    padding-left: 9%;
+                    padding-right: 9%;
                 }
-            });
-        }
-    </script>
-    
-    </body>
-    
 
-  </th:block>
+                textarea {
+                    resize: none;
+                }
+            </style>
+
+        </head>
+        <body>
+
+        <form class="container-fluid" th:action="@{/essay/delete/{essayId}(essayId=${essayDTO.id})}" method="post">
+            <!--      <input class="form-control text-center mt-3 mb-1" style="border-color:black; font-weight: bold; pointer-events: none" th:value="${essayDTO.essayTitle}">-->
+
+            <label class="form-control text-center mt-3" style="border: 0" th:text="${essayDTO.essayTitle}"></label>
+            <hr style="margin-top: 0;">
+
+            <div id="authRange" style="float: right" th:if="${essayDTO.writer == loginNickname}">
+                <label th:if="${essayDTO.access != 2}">공개 범위</label>&nbsp
+                <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                        th:if="${essayDTO.access == null}" type="button">나만 보기
+                </button>
+                <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                        th:if="${essayDTO.access == 0}" type="button">나만 보기
+                </button>
+                <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                        th:if="${essayDTO.access == 1}" type="button">친구 공개
+                </button>
+            </div>
+            <br>
+            <br>
+            <!-- 템플릿 입력 내용 -->
+            <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
+                <input class="form-control text-center mt-3 mb-1"
+                       style="border-color:black; font-weight: bold; pointer-events: none"
+                       th:value="${essayDTO.templateTitle}">
+
+                <!--        <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>-->
+                <div th:each="t, idx : ${essayDTO.tc}">
+                    <label th:text="|${idx.count}. ${t.question}|"></label>
+                    <textarea class="form-control mt-1" rows=10 th:text="${t.answer}" readonly></textarea>
+                    <br>
+                </div>
+                <br>
+            </div>
+
+            <!-- 직접 입력 내용 -->
+            <div class="form-group" th:if="${essayDTO.dc.size() > 0}">
+                <input class="form-control text-center mt-3 mb-1"
+                       style="border-color:black; font-weight: bold; pointer-events: none" value="직접 입력">
+
+                <!--        <h4 class="text-center mt-3">직접 입력</h4>-->
+                <div th:each="d, idx : ${essayDTO.dc}">
+                    <label th:text="|${idx.count}. ${d.question}|"></label>
+                    <textarea class="form-control mt-1" rows=10 th:text="${d.answer}" readonly></textarea>
+                    <br>
+                </div>
+                <br>
+            </div>
+            <!-- 게시글 삭제 -->
+            <div class="text-center">
+                <input th:if="${essayDTO.writer == loginNickname}"
+                       class="btn btn-outline-danger px-5" id="delete" type="submit" value="자소서 삭제">
+            </div>
+            <br>
+        </form>
+
+        <script th:inline="javascript">
+
+            function changeRange(access) {
+                let essayId = [[${essayDTO.id}]];
+                $.post("/switch/range", {essay_id: essayId}, function (result) {
+                    console.log("before: " + access);
+                    if (result == true) {
+                        if (access == 0 || access == null) {
+                            console.log("비공개 -> 친구공개");
+                            document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(1)" type="button">친구 공개</button>`;
+                        } else if (access == 1) {
+                            console.log("친구공개 -> 비공개")
+                            document.getElementById('authRange').innerHTML = `<label>공개 범위</label>&nbsp` +
+                                `<button class="btn btn-secondary" onclick="changeRange(0)" type="button">나만 보기</button>`;
+                        }
+                    }
+                });
+            }
+        </script>
+
+        </body>
+
+
+    </th:block>
 </th:block>
 </html>
