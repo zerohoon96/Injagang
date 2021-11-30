@@ -72,6 +72,8 @@
                         th:onclick="|addPlusBtn(${idx+1})|">+
                 </button>
             </div>
+            <br>
+            <hr>
 
             <!--총평 입력-->
             <label for="totalComment"><b>총평</b></label>
@@ -362,7 +364,7 @@
                 document.getElementById('commentBtn' + curIdx + editIdx + '3').style.display = "inline"; //확인 버튼 활성화
                 document.getElementById('commentBtn' + curIdx + editIdx + '4').style.display = "inline"; //취소 버튼 활성화
                 commentTextArea.readOnly = false; //textarea 수정 가능으로 변경
-                commentTextArea.style.backgroundColor = "#FFFFFF";
+                // commentTextArea.style.backgroundColor = "#FFFFFF";
                 remainEdit[curIdx - 1]++;
             }
 
@@ -373,7 +375,7 @@
                 document.getElementById('commentBtn' + curIdx + multiIdx + '3').style.display = "none"; //확인 버튼 비활성화
                 document.getElementById('commentBtn' + curIdx + multiIdx + '4').style.display = "none";  //수정 버튼 비활성화
                 commentTextArea.readOnly = true; //textarea 수정 불가능으로 변경
-                commentTextArea.style.backgroundColor = "#F2F2F2";
+                // commentTextArea.style.backgroundColor = "#F2F2F2";
                 remainEdit[curIdx - 1]--;
 
                 if (mode == 1) { //확인 버튼 -> 새로운 값으로 리스트 업데이트
