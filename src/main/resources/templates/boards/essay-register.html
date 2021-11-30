@@ -25,7 +25,6 @@
             <br>
             <select class="form-control" id="essaySelect" th:name="pk" onchange="checkEssay();">
                 <option value="emptyEssay">자소서 선택</option>
-                <option th:if="${essayList.isEmpty()}">쓴 자소서가 없습니다.</option>
                 <option th:each="dto : ${essayList}" th:value="${dto.pk}" th:utext="${dto.essayTitle}"></option>
             </select>
             <br><br>

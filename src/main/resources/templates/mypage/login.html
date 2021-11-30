@@ -125,8 +125,8 @@
                 <a href="#" class="margin-bottom-50 margin-top-30"><img style="width: 350px" th:src="@{/인자강.png}" src="../../static/인자강.png"></a>
                 <form action th:object="${member}" method="post">
                     <div>
-                        <input type="text" class="input w-300 margin-bottom-10" placeholder="아이디" th:field="*{loginId}">
-                        <input type="password" class="input w-300 margin-bottom-10" placeholder="비밀번호"
+                        <input type="text" class="form-control w-300 margin-bottom-10" placeholder="아이디" th:field="*{loginId}">
+                        <input type="password" class="form-control w-300 margin-bottom-10" placeholder="비밀번호"
                                th:field="*{password}">
                     </div>
 
@@ -144,7 +144,7 @@
 
 
                     <div th:if="${#fields.hasGlobalErrors()}">
-                        <p th:each="err : ${#fields.globalErrors()}" class="field-error mt-3" th:text="${err}">글로벌 오류
+                        <p th:each="err : ${#fields.globalErrors()}" class="field-error text-center mt-3" th:text="${err}">글로벌 오류
                             메시지</p>
                     </div>
 
