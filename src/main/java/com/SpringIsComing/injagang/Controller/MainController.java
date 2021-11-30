@@ -68,7 +68,10 @@ public class MainController {
             return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @GetMapping("/hey")
+    public String hey() {
+        return "hey";
+    }
     /**
      * 마이페이지
      */
