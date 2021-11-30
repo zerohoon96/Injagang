@@ -31,6 +31,7 @@ public interface EssayService {
                 .id(essay.getId())
                 .essayTitle(essay.getEssayTitle())
                 .templateTitle(essay.getTemplateTitle())
+                .access(essay.getAccess())
                 .tc(tData)
                 .dc(dData)
                 .build();
@@ -40,6 +41,8 @@ public interface EssayService {
     List<Essay> findEssays(Member member);
 
     Long save(Essay essay);
+
+    boolean changeRange(Long essay_id);
 
     default MypageEssayDTO toMypageEssayDTO(Essay essay) {
 

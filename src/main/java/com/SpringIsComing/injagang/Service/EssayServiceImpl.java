@@ -38,6 +38,24 @@ public class EssayServiceImpl implements EssayService {
         return save.getId();
     }
 
+    @Override
+    public boolean changeRange(Long essay_id) {
+        Optional<Essay> opt = essayRepository.findById(essay_id);
+
+        if(opt.isPresent()){
+            Essay essay = opt.get();
+            int access = essay.getAccess();
+
+            if(access == 0) access = 1;
+            else if(access == 1) access = 0;
+
+            essay.setAccess(access);
+            return true;
+        }
+        else
+            return false;
+    }
+
 
     @Override
     public Member findMember(String nickName) {

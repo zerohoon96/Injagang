@@ -17,12 +17,43 @@
           pointer-events: none;
         }
       </style>
+        
+        <script th:inline="javascript">
+            
+            function changeRange(access) {
+                let essayId = [[${essayDTO.id}]];
+                $.post("/switch/range", {essay_id: essayId}, function (result){
+                    console.log(result);
+                    if (result == true) {
+                        console.log("post success");
+                        if(access == 0 || access == null) {
+                            $('.authRange').innerHTML = `<label>공개 범위</label>` +
+                                    `<button onclick="changeRange(1)">친구 공개</button>`;
+                        }
+                        else if (access == 1) {
+                            $('.authRange').innerHTML = `<label>공개 범위</label>` +
+                                    `<button onclick="changeRange(0)">나만 보기</button>`;
+                        }
+                    }
+                });
+            }
+        </script>
+        
     </head>
     <body>
     <form class="container-fluid" action method="get">
       <label class="form-control text-center mt-3" th:text="${essayDTO.essayTitle}"></label>
       <br>
 
+        <div class="authRange" style="float: right">
+            <label>공개 범위</label>&nbsp
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == 0} or ${essayDTO.access == null}">나만 보기</button>
+            <button class="btn btn-secondary" th:onclick="|changeRange(${essayDTO.access})|"
+                    th:if="${essayDTO.access == 1}">친구 공개</button>
+        </div>
+        <br>
+        
       <!-- 템플릿 입력 내용 -->
       <div class="form-group" th:if="${essayDTO.tc.size() > 0}">
         <h4 class="text-center mt-3" th:text="${essayDTO.templateTitle}"></h4>
