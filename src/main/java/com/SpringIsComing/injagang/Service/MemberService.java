@@ -6,25 +6,35 @@ import com.SpringIsComing.injagang.DTO.UpdateDTO;
 import com.SpringIsComing.injagang.Entity.Member;
 
 public interface MemberService {
+    Long save(RegisterDTO registerDTO);
 
-    public Long save(RegisterDTO registerDTO);
-    public Member login(String loginId, String password);
-    public Boolean loginDuplicateCheck(String loginId);
-    public Boolean nicknameDuplicateCheck(String nickname);
-    public Boolean emailDuplicateCheck(String email);
-    public void confirmEmail(String token);
-    public Member confirmEmailForPassword(String token);
+    Member login(String loginId, String password);
+
+    Boolean loginDuplicateCheck(String loginId);
+
+    Boolean nicknameDuplicateCheck(String nickname);
+
+    Boolean emailDuplicateCheck(String email);
+
+    void confirmEmail(String token);
+    Member confirmEmailForPassword(String token);
 
 
-    public Boolean passwordCheck(Member member,String password);
-    public void changePassword(String nickname, String password);
+    Boolean passwordCheck(Member member, String password);
 
-    public Member findByEmail(String email);
-    public Member findByNickname(String nickname);
+    void changePassword(String nickname, String password);
 
-    public Member findById(Long Id);
+    Member findByEmail(String email);
 
-    public void changeNickname(String nowNickname, String changeNickname);
+    Member findByNickname(String nickname);
+
+    Member findByLoginId(String loginId);
+
+    Member findById(Long Id);
+
+
+
+    void changeNickname(String nowNickname, String changeNickname);
 
 
     default UpdateDTO toUpdateDTO(Member member) {
@@ -36,8 +46,6 @@ public interface MemberService {
                 .build();
 
     }
-
-
 
 
 }

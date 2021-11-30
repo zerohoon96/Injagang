@@ -28,47 +28,64 @@
                 textarea::selection {
                     background-color: pink;
                 }
+
+                .border-gray {
+                    border: 1px solid #CFD4D9;
+                    border-top-left-radius: 4px;
+                    border-top-right-radius: 4px;
+                    border-bottom-right-radius: 4px;
+                    border-bottom-left-radius: 4px;
+                }
             </style>
 
         </head>
         <body>
-        <label class="form-control text-center mt-3"
-               th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></label><br>
-        <p th:text="|최종 수정 시간 : ${feedback.writeTime}|"></p>
+        <h3 class="mt-3 text-center"
+            th:text="|${feedback.essayPostName} 게시물에 저장된 ${feedback.feedbackWriter} 님의 첨삭입니다.|"></h3>
+        <hr>
+        <!--        <p class="text-right"><strong>최종 수정 시간 : </strong>[[${feedback.writeTime}]]</p>-->
+        <p style="font-weight: bold" class="text-right" th:text="|최종 수정 시간 : ${feedback.writeTime}|"></p>
+
         <div th:each="idx : ${#numbers.sequence(0,feedback.questions.size()-1)}">
 
             <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
-            <div type="text" style="border: 1px solid black;" th:id="|answer${idx+1}|"
+            <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap;" type="text"
+                 th:id="|answer${idx+1}|"
                  th:text="${feedback.answers[idx]}"></div>
-            <br>
 
             <!--첨삭 목록-->
             <div th:each="comment,info : ${feedback.comment}">
                 <div th:if="${idx+1} == ${feedback.num[info.index]}">
+                    <br>
                     <span style="font-weight: bold" th:id="|label${idx+1}${info.index}|"></span>
                     <span th:id="|comment${idx+1}${info.index}|"></span>
-                    <div style="border: 1px solid black;" th:text="${comment}"></div>
-                    <br>
+                    <textarea class="form-control" th:text="${comment}" rows="3" readonly></textarea>
                 </div>
             </div>
+            <br>
         </div>
 
         <!--총평 출력-->
-        <label>총평</label>
-        <div th:text="${feedback.content}" style="border: 1px solid black;"></div>
+        <label><b>총평</b></label>
+        <textarea class="form-control" th:text="${feedback.content}" rows="3" readonly></textarea>
+        <!--        <div th:text="${feedback.content}" style="border: 1px solid black;"></div>-->
         <br>
 
         <!--첨삭 수정, 삭제, 이전 버튼-->
-        <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
-            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
-               th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>
-            <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
-               th:href="|/essay/feedback/update/${feedback.feedbackId}|">수정</a>
+        <div class="text-center">
+            <div th:if="${feedback.curUserNickname} == ${feedback.feedbackWriter}">
+                <a type="button" class="btn btn-outline-info px-5"
+                   th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
+                <a type="button" class="btn btn-outline-warning px-5"
+                   th:href="|/essay/feedback/update/${feedback.feedbackId}|">수정</a>
+                <a type="button" class="btn btn-outline-danger px-5"
+                   th:href="|/essay/feedback/delete/${feedback.feedbackId}|">삭제</a>
+            </div>
+            <div th:if="${feedback.curUserNickname} != ${feedback.feedbackWriter}">
+                <a type="button" class="btn btn-outline-info px-5"
+                   th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
+            </div>
         </div>
-
-        <a type="button" class="margin-bottom-10 w-300 btn btn-primary"
-           th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
-
 
         <script th:inline="javascript">
             const selectedObj = window.getSelection();
@@ -130,7 +147,7 @@
                         console.log(cursor, ' 부터 ', end[i - 1][j] - start[i - 1][j] + 1, ' 이만큼 하이라이트');
                         newContent += '<span style="background-color: #E5CCFF">' + orgContent.substr(cursor, end[i - 1][j] - start[i - 1][j] + 1) + '</span>'; //하이라이트
                         console.log('추가 후 : ', newContent);
-                        document.getElementById('label' + i + ct).innerText = '선택 문장 ' + (j + 1) + ' : ';
+                        document.getElementById('label' + i + ct).innerText = '선택 문장 ' + (j + 1) + ')   ';
                         document.getElementById('comment' + i + ct).innerText = orgContent.substr(cursor, end[i - 1][j] - start[i - 1][j] + 1);
                         cursor = end[i - 1][j] + 1;
                         ct++;

@@ -166,6 +166,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public Member findByLoginId(String loginId) {
+
+        return memberRepository.findByLoginId(loginId).orElseThrow(
+                () -> new RuntimeException("없는 아이디입니다.")
+        );
+
+    }
+
+    @Override
     public Member findById(Long Id) {
         return memberRepository.findById(Id).orElseThrow(
                 () -> new IllegalArgumentException("멤버 없당--")

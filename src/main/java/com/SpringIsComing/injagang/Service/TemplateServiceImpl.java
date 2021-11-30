@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.TemplateDTO;
+import com.SpringIsComing.injagang.DTO.TemplateViewDTO;
 import com.SpringIsComing.injagang.Entity.EssayTemplate;
 import com.SpringIsComing.injagang.Entity.EssayTemplateContent;
 import com.SpringIsComing.injagang.Repository.TemplateRepository;
@@ -23,8 +24,32 @@ public class TemplateServiceImpl implements TemplateService {
         templateRepository.save(essayTemplate);
     }
 
+    @Override
+    public List<TemplateViewDTO> findTemplates() {
+        List<EssayTemplate> allTemplates = templateRepository.findAll();
+        List<TemplateViewDTO> dtoList = new ArrayList<>();
+
+        allTemplates.forEach(template -> {
+            List<String> questions = new ArrayList<>();
+
+            template.getContents().forEach(templateContent -> {
+                questions.add(templateContent.getQuestion());
+            });
+
+            dtoList.add(TemplateViewDTO.builder()
+                    .id(template.getId())
+                    .title(template.getTemplateTitle())
+                    .questions(questions)
+                    .checked(template.getChecked())
+                    .build());
+        });
+
+        return dtoList;
+    }
+
+    @Override
     public TemplateDTO readTemplate() {
-        List<EssayTemplate> all = templateRepository.findAll();
+        List<EssayTemplate> all = templateRepository.findEssayTemplatesByChecked(true);
         List<String> title = new ArrayList<>();
         List<List<String>> questions = new ArrayList<>();
         for (int i=0; i<all.size(); i++) {
@@ -42,5 +67,44 @@ public class TemplateServiceImpl implements TemplateService {
                 .build();
 
         return dto;
+    }
+
+    @Override
+    public TemplateViewDTO findTemplate(Long id) {
+        EssayTemplate entity = templateRepository.findById(id).get();
+
+        List<EssayTemplateContent> contents = entity.getContents();
+        List<String> questions = new ArrayList<>();
+
+        contents.forEach(content -> {
+            questions.add(content.getQuestion());
+        });
+
+        TemplateViewDTO dto = TemplateViewDTO.builder()
+                .id(entity.getId())
+                .title(entity.getTemplateTitle())
+                .questions(questions)
+                .build();
+
+        return dto;
+    }
+
+    @Override
+    public void grantTemplate(Long id) {
+        EssayTemplate essayTemplate = templateRepository.findById(id).get();
+
+        essayTemplate.setChecked(true);
+    }
+
+    @Override
+    public void revokeTemplate(Long id) {
+        EssayTemplate essayTemplate = templateRepository.findById(id).get();
+
+        essayTemplate.setChecked(false);
+    }
+
+    @Override
+    public void deleteTemplate(Long id) {
+        templateRepository.deleteById(id);
     }
 }

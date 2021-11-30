@@ -79,12 +79,12 @@ public class FriendServiceImpl implements FriendService {
 
         Friend friend1 = Friend.builder()
                 .member(loginMember)
-                .nickname(targetNickname)
+                .loginId(targetMember.getLoginId())
                 .build();
 
         Friend friend2 = Friend.builder()
                 .member(targetMember)
-                .nickname(loginNickname)
+                .loginId(loginMember.getLoginId())
                 .build();
 
         friendRepository.save(friend1);
