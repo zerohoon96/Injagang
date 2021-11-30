@@ -90,6 +90,15 @@
             console.log(mockInterviewList);
             console.log(friendList);
 
+            function isFriend(nickname){
+                for (let i = 0; i < friendList.length; i++) {
+                    if(friendList[i].nickname == nickname) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
             function displayEssay() {
                 head.innerHTML =
                     "<th class='col-4 text-align-center'>자기소개서 이름</th>" +
@@ -100,11 +109,27 @@
                 
                 let str = "";
                 essayList.forEach((essay) => {
-                    str +=
-                        "<tr>" +
-                        "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>" +
-                        "<td class='text-align-center'>" + essay.feedbackNum + "</td>";
+                    let curNickname = [[${nickname}]];
+                    let loginNickname = [[${loginNickname}]];
+                    str += "<tr>";
                     
+                    //공개범위에 따라 자소서 보기 처리
+                    if((curNickname == loginNickname) || essay.access == 2) {
+                        console.log("내 자소서 또는 게시물");
+                        str += "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>";
+                    }
+                    else if (isFriend(loginNickname) && essay.access == 1) { //친구일 경우
+                        console.log("친구일 경우");
+                        str += "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>";
+                    }
+                    else {
+                        console.log("볼 권한이 없음");
+                        str += "<td>" + essay.essayTitle + "</td>";
+                    }
+                    
+                    str += "<td class='text-align-center'>" + essay.feedbackNum + "</td>";
+                    
+                    //게시물일 때 예상질문 개수 클릭하면 게시물으로 이동
                     if(essay.access == 2) {
                         str += "<td class='text-align-center'><a href='/essay/board/" + essay.id + "'>" + essay.questionNum + "</a></td>";
                     }
@@ -112,6 +137,7 @@
                         str += "<td class='text-align-center'>" + essay.questionNum + "</td>";
                     }
                     
+                    //공개 범위
                     if(essay.access == 0){
                         str += '<td class="text-align-center">' + '비공개' + '</td>';
                     }
