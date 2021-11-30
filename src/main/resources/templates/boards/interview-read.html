@@ -40,14 +40,15 @@
                 <!-- 게시물 제목 -->
                 <h3 class="text-center mb-2">[[${result.title}]]</h3>
                 <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
-
+                <hr>
                 <!-- 게시물 글 내용 -->
                 [[${result.text}]]
-                <br><hr><br>
-                
+                <hr class="mt-4">
+                <br><br>
+                <input class="form-control text-center mt-3" style="border-color:black; font-weight: bold; pointer-events: none" value="면접 영상">
+
                 <!-- 업로드한 동영상과 피드백 -->
-                <div class="form-group" th:each="dto, idx : ${result.videoList}">
-                    <br>
+                <div class="form-group mt-2" th:each="dto, idx : ${result.videoList}">
                     <label th:for="|${dto.pk}label|" th:text="|${idx.count}. ${dto.videoName}|"></label>
                     <br>
                     <video th:id="|${dto.pk}label|" width='70%' controls>
@@ -76,26 +77,30 @@
                            th:attr="onclick=|make_feedback('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_feedbackBtn()|">
                 </div>
                 <br>
-                <hr>
+                <input class="form-control text-center" style="border-color:black; font-weight: bold; pointer-events: none" th:value="댓글">
+
                 <!-- 댓글 -->
     <!--            <h3>댓글</h3>-->
                 <!-- 기존 댓글 표시해줄 부분 -->
-                <div class="mb-2" th:each="dto : ${result.replyList}">
+                <div class="mb-2 mb-2" th:each="dto, idx : ${result.replyList}">
+                    <br th:if="${idx.count} == 1">
+                    <hr th:unless="${idx.count} == 1">
+
                     <form th:action="@{/interview/reply/delete}" th:method="post">
                         <div class="form-inline">
-                            <label class="form-control col-md" style="border: 0;" align="left">
-                                ↳ <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a>님</label>
+                            <label class="form-control col-md" style="border: 0; padding: 0" align="left">
+                                <a th:href="@{/mypage/{nickname}(nickname=${dto.nickname})}"><b>[[${dto.nickname}]]</b></a></label>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
                         </div>
-                        <div style="padding-right: 4%; padding-left: 4%">[[${dto.content}]]</div>
+                        [[${dto.content}]]
                         <input style="display: none" name="ib_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
                     </form>
                 </div>
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
-                <input class="btn btn-outline-info px-5" id="reply_input" type="button" value="댓글 달기"
+                <input class="btn btn-outline-info px-5 mt-2" id="reply_input" type="button" value="댓글 달기"
                        th:attr="onclick=|make_reply('${pk}', '${loginNickname}'); remove_replyBtn()|">
                 <br><br>
             </div>

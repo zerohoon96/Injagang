@@ -12,7 +12,7 @@
             </style>
         </head>
         
-        <div class="container-fluid mt-3">
+        <div class="container-fluid mt-3" style="padding-left: 15%; padding-right: 15%">
             <form id="updateForm" th:action="@{/essay/board/update/{pk}(pk=${result.pk})}" th:method="post">
                 <!-- 게시물 제목 -->
                 <div>
@@ -23,20 +23,19 @@
                 <!-- 게시물 글 내용 -->
                 <br><br>
                 <div>
-                    <h5>글 수정</h5>
-                    <textarea rows=10 name="text" class="form-control">[[${result.text}]]</textarea>
+                    <h5>내용 수정</h5>
+                    <textarea rows=8 name="text" class="form-control">[[${result.text}]]</textarea>
                 </div>
 
             </form>
             <br><br><br>
 
-            <h5>내가 작성한 글</h5>
+            <input class="form-control text-center mt-3" style="border-color:black; font-weight: bold; pointer-events: none" th:value="자기소개서">
             *해당 부분은 참고를 위해 읽기만 가능합니다.
-            <hr>
             <!-- 자소서 문항 내용 -->
-            <div class="form-group" th:each="dto, idx: ${result.contentList}">
+            <div class="form-group mt-2" th:each="dto, idx: ${result.contentList}">
                 <label th:text="|${idx.count}. ${dto.title}|"></label>
-                <textarea rows=10 style="pointer-events: none" type="text" class="form-control" name="content" th:text="${dto.text}"></textarea>
+                <textarea rows=10 type="text" class="form-control" name="content" th:text="${dto.text}" readonly></textarea>
                 <br>
             </div>
             <br>
