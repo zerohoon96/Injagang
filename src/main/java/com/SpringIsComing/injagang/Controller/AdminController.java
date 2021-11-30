@@ -34,7 +34,7 @@ public class AdminController {
             redirectAttributes.addAttribute("nickname", nickname);
             return "redirect:/mypage/{nickname}";
         }
-        
+
         log.info("dtoList = {}", dtoList);
         model.addAttribute("templateList", dtoList);
         return "admin/main";
