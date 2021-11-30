@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.TemplateViewDTO;
+import com.SpringIsComing.injagang.Service.InterviewQuestionService;
 import com.SpringIsComing.injagang.Service.TemplateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
     private final TemplateService templateService;
+    private final InterviewQuestionService interviewQuestionService;
 
     //관리자 권한이 있는 사람만 접속 가능
     @GetMapping("/admin")
@@ -35,5 +37,14 @@ public class AdminController {
         log.info("dto = {}", dto);
         model.addAttribute("dto", dto);
         return "admin/template-read";
+    }
+
+
+    @GetMapping("/admin/question")
+    public String question(Model model) {
+
+        model.addAttribute("questions", interviewQuestionService.findAll());
+
+        return "admin/fucking";
     }
 }

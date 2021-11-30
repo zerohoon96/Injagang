@@ -8,7 +8,7 @@ import javax.validation.constraints.*;
 public class RegisterDTO {
 
     @NotEmpty(message = "아이디를 입력해주세요")
-    @Pattern(regexp="(^[a-zA-Z0-9]+$).{5,20}"
+    @Pattern(regexp="(?=.*^[a-zA-Z0-9]+$).{5,20}"
             ,message = "5~20자의 영문, 숫자만 사용 가능합니다.")
     private String loginId;
     @NotEmpty(message = "비밀번호를 입력해주세요")
