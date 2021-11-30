@@ -5,69 +5,70 @@
     <th:block th:fragment="content">
         <head>
             <style>
-                .filebox input[type="file"] {
-                    position: absolute;
-                    width: 0;
-                    height: 0;
-                    padding: 0;
-                    overflow: hidden;
-                    border: 0;
+                .btn-link {
+                    mid-width: 100px;
+                    border-radius: 0px;
+                    text-decoration: none;
+                    opacity:1.0;
+                    box-shadow: none;
                 }
             </style>
         </head>
-        <h2 class="mt-3">면접 게시판 글쓰기</h2>
+        <h2 class="mt-4">면접 게시판 글쓰기</h2>
         <hr>
+
         <form id="addT" name="addT" th:action="@{/interview/board/add}" th:method="post">
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input type="text" class="form-control" name="title" placeholder="제목을 입력하세요" required>
+                <input it="title" type="text" class="form-control" name="title" placeholder="제목을 입력하세요." required>
             </div>
             <br>
-    
+
             <!-- 게시물 내용 글 입력 -->
-            <div class="form-group">
-                <label>Content</label>
-                <textarea class="form-control" rows="8" name="text" required></textarea>
+            <div class="form-group mt-1">
+                <label>내용</label>
+                <textarea id="content" style="resize: none" class="form-control" rows="8" name="text" placeholder="내용을 입력하세요." required></textarea>
             </div>
             <br>
             <!-- 면접 영상 업로드하기 -->
-            <div class="form-group">
-                <label><b>면접 영상 업로드</b></label>
-                <input name="uploadFiles" type="file" onchange="uploadVideos()" multiple required>
-            </div>
-            
+            <br>
+            <h5>면접 영상 선택</h5>
+            <hr style="margin-top: 0">
             <div class="uploadResult"></div>
             <div id="videoUrls"></div>
 
             <div class="form-inline">
-                <label class="form-control mr-1 text-center btn btn-outline-info" for="file">파일찾기</label>
-                <input class="upload-name form-control col-md" style="pointer-events: none; color: gray" value="첨부파일" placeholder="첨부파일">
-                <input type="file" id="file" style="display: none" name="uploadFiles" multiple>
-                <button class="uploadBtn form-control btn-outline-info ml-1" type="button">업로드</button>
+                <label class="form-control mr-1 text-center btn btn-outline-info" for="file">+</label>
+                <!--                <input class="upload-name form-control col-md" style="pointer-events: none; color: gray" value="첨부파일" placeholder="첨부파일">-->
+                <input id="file" style="display: none" name="uploadFiles" type="file" onchange="uploadVideos()" multiple required>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary registerInterview" style="float: right" onclick="pushVideoURLs()">
-                게시물 저장
-            </button>
+            <div class="text-center">
+                <!--                <input id="save" type="button" class="btn btn-outline-info px-5" value="게시물 저장">-->
+                <button type="submit" class="btn btn-outline-info px-5" onclick="pushVideoURLs()">
+                    게시물 저장
+                </button>
+            </div>
+            <br>
+            <br>
         </form>
-        
+
         <script th:inline="javascript">
             let urls = []; //영상들의 저장 경로
             //업로드한 비디오 보여주기
             function showUploadedVideos(arr){
                 console.log(arr);
-                $(".upload-name").val("파일선택");
-
                 let divArea = $('.uploadResult');
-    
+
                 let str = ""
                 for (let i = 0; i < arr.length; i++) {
                     str += "<div>";
-                    str += '<label>영상 제목</label>&nbsp';
-                    str += '<input name="videoNames" required><br>'; //영상 제목 입력란
-                    str += "<video width='640' height='auto'controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
-                    str += "<input class='btn btn-outline-info removeBtn' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
+                    str += '<div class="form-inline"><label class="mr-1">영상 제목</label>';
+                    str += '<input class="form-control col-4" name="videoNames" required>'; //영상 제목 입력란
+                    str += '<label class="form-control ml-1 btn btn-link" for="removeId">X</label></div>'
+                    str += "<video class='mt-1' width:75% controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
+                    str += "<input id='removeId' style='display: none' class='btn btn-link removeBtn ml-1' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
                     str += "</div>";
                     urls.push(arr[i].videoURL);
                 }
@@ -77,19 +78,25 @@
             //업로드하는 최종 영상들의 url들을 저장
             function pushVideoURLs() {
                 console.log("final onclick");
-                document.getElementById('videoUrls').innerHTML =
-                        '<input name="videoUrls" value='+urls+' style="display: none">';
+                if (urls.length != 0) {
+                    document.getElementById('videoUrls').innerHTML =
+                        '<input name="videoUrls" value=' + urls + ' style="display: none">';
+                }
+                else {
+                    alert("영상이 선택되지 않았습니다.");
+                }
             }
 
             function uploadVideos() {
                 let formData = new FormData();
                 let inputFile = $("input[type='file']");
                 let files = inputFile[0].files;
+
                 for (let i = 0; i < files.length; i++) {
                     console.log(files[i]);
                     formData.append("uploadFiles", files[i]);
                 }
-    
+
                 //실제 업로드 부분
                 //upload ajax
                 $.ajax({
@@ -100,16 +107,9 @@
                     type: 'POST',
                     dataType: 'json',
                     success: function (result){
-                        if (selected == "empty") {
-                            alert("파일이 선택되지 않았습니다.");
-                        }
-                        else {
-                            showUploadedVideos(result);
-                            selected = "empty";
-                        }
+                        showUploadedVideos(result);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        alert("파일이 선택되지 않았습니다.");
                         console.log(textStatus);
                     }
                 });
@@ -119,9 +119,9 @@
                 let target = $(this);
                 let fileName = target.data("name");
                 let targetDiv = $(this).closest("div");
-    
+
                 console.log(fileName);
-    
+
                 $.post('/removeFile', {fileName: fileName}, function (result) {
                     console.log(result);
                     if (result == true) {
@@ -132,24 +132,9 @@
                 });
             });
 
-            // 파일 선택시 파일 이름으로 변경
-            $("#file").on('change',function(){
-                let inputFile = $("input[type='file']");
-                let files = inputFile[0].files;
-                if (files.length != 0) {
-                    if (files.length == 1) {
-                        selected = $("#file").val();
-                        $(".upload-name").val($("#file").val());
-                    } else {
-                        selected = $("#file").val() + "...외 " + (files.length - 1) + "개";
-                        $(".upload-name").val(selected);
-                    }
-                }
-            });
-!!!!씨발 여기 비디오 처리하는거 고쳐야함
             //게시물 저장 버튼 클릭시
             $("#save").click(function () {
-                //안에 내용이 다 적혀있는지
+                console.log(urls.length);
                 if (document.getElementById("title").value.length == 0) {
                     alert("제목이 입력되지 않았습니다.");
                 }
@@ -157,14 +142,15 @@
                     alert("내용이 입력되지 않았습니다.");
                 }
                 else if (urls.length == 0) {
+                    pushVideoURLs();
                     alert("면접 영상을 선택해주세요.");
                 }
                 else {
                     alert("게시물이 저장되었습니다.");
                     document.getElementById("addT").submit();
                 }
-            });
+            })
         </script>
-        
+
     </th:block>
 </th:block>

@@ -39,7 +39,7 @@
                 <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
                 <!-- 게시물 글 내용 -->
                 [[${result.text}]]
-                <br><br>
+                <br><hr><br>
                 
                 <div class="form-group" th:each="dto, idx : ${result.contentList}">
                     <br>
@@ -63,7 +63,7 @@
 
                     <!-- 예상질문 달기 -->
                     <div th:id="${dto.pk}"></div>
-                    <input class="btn-outline-info questionButton mt-2 form-control" type="button" value="예상질문 달기"
+                    <input class="btn btn-outline-info questionButton mt-2 px-5" type="button" value="예상질문 달기"
                            th:attr="onclick=|make_expectedQuestion('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_questionBtn()|">
                 </div>
                 <br>
@@ -87,7 +87,7 @@
 
                 <!-- 댓글 달기 -->
                 <div id="new_reply"></div>
-                <input class="btn btn-outline-info form-control" id="reply_input" type="button" value="댓글 달기"
+                <input class="btn btn-outline-info  px-5" id="reply_input" type="button" value="댓글 달기"
                        th:attr="onclick=|make_reply('${result.pk}', '${loginNickname}'); remove_replyBtn()|">
                 <br><br>
             </div>

@@ -100,16 +100,16 @@ public class InterviewController {
     //면접 마쳤을 때
     @GetMapping("/test")
     String test(@SessionAttribute("loginSession") String nickname, Model model,
-                @RequestParam int qCnt, @RequestParam("interviewName") String title) {
+                @RequestParam int qCnt, @RequestParam("interviewName") String title, RedirectAttributes redirectAttributes) {
 
         log.info("qCnt = {}", qCnt);
         log.info("interviewName = {}", title);
 
         //모의면접 객체 저장
         service.registerTestInterview(qCnt, title, nickname);
-
+        redirectAttributes.addAttribute("nickname",nickname);
 //        model.addAttribute("loginNickname", nickname);
-        return "redirect:/mypage/" + nickname;
+        return "redirect:/mypage/{nickname}";
     }
 
 }

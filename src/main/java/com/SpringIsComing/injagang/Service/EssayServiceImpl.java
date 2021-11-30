@@ -26,6 +26,7 @@ public class EssayServiceImpl implements EssayService {
     private final EssayRepository essayRepository;
     private final MemberRepository memberRepository;
     private final AlarmRepository alarmRepository;
+
     @Override
     public List<Essay> findEssays(Member member) {
 
@@ -59,16 +60,19 @@ public class EssayServiceImpl implements EssayService {
         return save.getId();
     }
 
+    @Override
     public Essay findEssay(Long essayId) {
         return essayRepository.findById(essayId)
                 .orElseThrow(()-> new IllegalArgumentException("아몰랑"));
     }
 
+    @Override
     public EssayWriteDTO readEssay(Long id) {
         Optional<Essay> result = essayRepository.findById(id);
         return result.isPresent() ? essayEntityToDto(result.get()) : null;
     }
 
+    @Override
     public void deleteEssay(Long essayId) {
         List<EssayAlarm> alarmsByEssay = alarmRepository.findAlarmsByEssay(essayRepository.findById(essayId).get());
         alarmRepository.deleteAll(alarmsByEssay);

@@ -112,9 +112,11 @@ public class EssayController {
 
     @PostMapping("/delete/{essayId}")
     String essayDelete(@SessionAttribute("loginSession") String nickname,
-                       @PathVariable Long essayId) {
+                       @PathVariable Long essayId, RedirectAttributes redirectAttributes) {
         essayService.deleteEssay(essayId);
-        return "redirect:/mypage/" + nickname;
+        redirectAttributes.addAttribute("nickname",nickname);
+        log.info(nickname);
+        return "redirect:/mypage/{nickname}";
     }
 
     @GetMapping("/feedback/{essayId}/write")
@@ -216,10 +218,10 @@ public class EssayController {
     String updateFeedback(@SessionAttribute("loginSession") String nickname,
                           @PathVariable Long feedbackId,
                           @ModelAttribute("readFeedback") EssayFeedbackReadDTO readFeedback,
-                          @ModelAttribute("writeFeedback") EssayFeedbackInfoDTO writeFeedback) {
+                          @ModelAttribute("writeFeedback") EssayFeedbackInfoDTO writeFeedback) throws Exception {
         log.info("update controller!!!!!!!!!");
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
-        Essay essay = es.findEssay(essayFeedback.getEssay().getId()); //essay 저장
+        Essay essay = essayService.findEssay(essayFeedback.getEssay().getId()); //essay 저장
         List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findById(feedbackId); //첨삭 목록 저장
         List<EssayContent> essayContents = essay.getContents(); //자기소개서 내용 저장
 

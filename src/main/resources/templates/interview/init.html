@@ -23,7 +23,7 @@
                         alert("면접 질문을 한개 이상 선택해주세요.");
                     }
                 }
-                
+
                 function addInput() { //추가 버튼을 눌렀을때
                     if (cur.length > 0) { //입력값이 있어야 추가
                         console.log("cur : ",cur);
@@ -72,30 +72,49 @@
                         document.getElementById('expectedQuestion').innerHTML += "<option class='center' value=' ' selected>선택 안함</option>"; //value ''로 하면 selected가 안먹음..
                     }
                 }
-                
             </script>
             <meta charset="utf-8"/>
             <title>면접 보기</title>
         </head>
         <body>
-        
-<!--        면접 문항 한개도 선택 안할 시 예외처리-->
         <script>
             checkNoQuestion();
         </script>
-        
-        <div class="body">
-            <div id="content">
-                <div class="form-group container-fluid" id="interviewForm">
-                    <div id="headLine">
-                        <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>
-                    </div>
-                    <br>
-                    <form name="interview" action="/interview/test" method="post">
-                        <div class="margin-bottom-10">
-                            <label class=bold for="interviewName">면접 제목</label><br>
-                            <input class="input width-100" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요" required>
-                        </div><br>
+
+        <h1 class="mt-4">면접 설정</h1>
+        <hr>
+        <div class="container-fluid" style="padding-left: 15%; padding-right: 15%">
+            <!--            <div id="headLine">-->
+            <!--                <span style='border-bottom: 12px solid plum; padding: 0 0 0 0.2em;'>면접 설정</span>-->
+            <!--            </div>-->
+            <form name="interview" action="/interview/test" method="post">
+                <h5 for="interviewName">면접 제목</h5>
+                <input class="form-control" type="text" id="interviewName" name="interviewName" placeholder="면접 제목을 입력하세요." required>
+                <br>
+                <br>
+                <h5>기본 문제 선택</h5>
+                <div class="form-inline">
+                    <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="baseQuestion">인성 면접 질문</p>
+                    <select class="form-control col-6 text-center" id="baseQuestion" name="baseQuestion" required>
+                        <option class="text-center" value="" hidden>문제 수 선택</option>
+                        <th:block th:each="num: ${#numbers.sequence(0,baseQuestion)}">
+                            <option th:value="${num}"><p th:text="${num}"></p></option>
+                        </th:block>
+                    </select>
+                </div>
+                <br>
+                <br>
+                <div class="form-inline">
+                    <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="csQuestion">CS 면접 질문</p>
+                    <select class="form-control col-6 text-center" id="csQuestion" name="csQuestion" required>
+                        <option class="text-center" value="" hidden>문제 수 선택</option>
+                        <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                            <option th:value="${num}"><p th:text="${num}"></p></option>
+                        </th:block>
+                    </select>
+                </div>
+                <br>
+                <br>
 
                 <h5>예상 질문 댓글</h5>
                 <div class="form-inline mt-1">
