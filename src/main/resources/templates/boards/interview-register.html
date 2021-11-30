@@ -21,7 +21,7 @@
             <!-- 게시물 제목 입력 -->
             <div class="form-group">
                 <label> 제목</label>
-                <input th:if="!${isNoVideo}" type="text" class="form-control" name="title" placeholder="제목을 입력하세요." required>
+                <input id="title" th:if="!${isNoVideo}" type="text" class="form-control" name="title" placeholder="제목을 입력하세요.">
                 <input th:if="${isNoVideo}" type="text" class="form-control" name="title" th:value="${title}" required>
             </div>
             <br>
@@ -29,7 +29,7 @@
             <!-- 게시물 내용 글 입력 -->
             <div class="form-group mt-1">
                 <label>내용</label>
-                <textarea th:if="!${isNoVideo}"class="form-control" rows="8" name="text" style="resize: none" placeholder="내용을 입력하세요." required></textarea>
+                <textarea id="content" th:if="!${isNoVideo}"class="form-control" rows="8" name="text" style="resize: none" placeholder="내용을 입력하세요."></textarea>
                 <textarea th:if="${isNoVideo}" class="form-control" rows="8" name="text" required>[[${text}]]</textarea>
             </div>
             <br>
@@ -48,7 +48,7 @@
             <br>
             <div class="text-center">
                 <!--                <input id="save" type="button" class="btn btn-outline-info px-5" value="게시물 저장">-->
-                <button type="submit" class="btn btn-outline-info px-5" onclick="pushVideoURLs()">
+                <button id="save" type="button" class="btn btn-outline-info px-5" onclick="pushVideoURLs()">
                     게시물 저장
                 </button>
             </div>
@@ -58,6 +58,7 @@
 
         <script th:inline="javascript">
             let urls = []; //영상들의 저장 경로
+            let urlsIdx = []; //영상들의 인덱스
             //업로드한 비디오 보여주기
             function showUploadedVideos(arr){
                 console.log(arr);
@@ -67,12 +68,13 @@
                 for (let i = 0; i < arr.length; i++) {
                     str += "<div>";
                     str += '<div class="form-inline"><label class="mr-1">영상 제목</label>';
-                    str += '<input class="form-control col-4" name="videoNames" placeholder="영상 제목을 입력해주세요." required></div>'; //영상 제목 입력란
+                    str += '<input id="'+`videotitle${i}`+'"class="form-control col-4" name="videoNames" placeholder="영상 제목을 입력해주세요."></div>'; //영상 제목 입력란
                     // str += '<label class="form-control ml-1 btn btn-link" for="removeId">X</label>'
                     str += "<video class='mt-1' width='640' height='auto' controls><source src='/display?fileName="+arr[i].videoURL+"'></video>";
                     str += "<input id='removeId' class='btn btn-link removeBtn ml-1' type='button' data-name='"+arr[i].videoURL+"' value='X'>";
                     str += "</div>";
                     urls.push(arr[i].videoURL);
+                    urlsIdx.push(i);
                 }
                 divArea.append(str);
             }
@@ -126,17 +128,45 @@
                     if (result == true) {
                         targetDiv.remove();
                         //배열에서 해당 파일이름 제거
+                        urlsIdx.splice(urls.indexOf(fileName), 1);
                         urls.splice(urls.indexOf(fileName), 1);
                     }
                 });
             });
 
-            function checkVideo() {
-                if ([[${isNoVideo}]]) {
-                    alert("영상을 한개 이상 업로드 해야합니다.");
+            //게시물 저장 버튼 클릭시
+            $("#save").click(function () {
+                let check = true;
+                if (document.getElementById("title").value.length == 0) {
+                    check = false;
+                    alert("제목이 입력되지 않았습니다.");
                 }
-            }
-            checkVideo();
+                else if (document.getElementById("content").value.length == 0) {
+                    check = false;
+                    alert("내용이 입력되지 않았습니다.");
+                }
+                else {
+                    if (urls.length == 0) {
+                        check = false;
+                        alert("영상을 선택해주세요.");
+                    }
+                    else {
+                        for (let i = 0; i < urlsIdx.length; i++) {
+                            if (document.getElementById(`videotitle${urlsIdx[i]}`).value.length == 0) {
+                                check = false;
+                                alert(`${i + 1}번째 영상 제목이 입력되지 않았습니다.`);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (check) {
+                    console.log("asdf",urls.length);
+                    console.log(urls);
+                    alert("게시물이 저장되었습니다.");
+                    document.getElementById("addT").submit();
+                }
+            })
         </script>
 
     </th:block>

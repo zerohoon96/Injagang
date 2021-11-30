@@ -58,10 +58,11 @@ public class InterviewController {
 
         if (allParameters.get("expectedQuestion").toString().equals(" ")) {
             expectedQuestion = 0;
+            log.info("No Expected Question");
         } else {
             expectedQuestion = Integer.parseInt(allParameters.get("expectedQuestion").toString());
+            log.info("expectedQuestion: " + expectedQuestion);
         }
-        log.info("크기 : " + allParameters.size());
         log.info("" + allParameters);
 
         for(userAddQuestion=0; userAddQuestion<allParameters.size(); userAddQuestion++){
@@ -83,7 +84,7 @@ public class InterviewController {
 
 
         // 예상 댓글 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
-//        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
+        service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);
 
         // 질문 순서 섞기
         Collections.shuffle(questionList);

@@ -49,7 +49,7 @@
         <div th:each="idx : ${#numbers.sequence(0,feedback.questions.size()-1)}">
 
             <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${feedback.questions[idx]}|"></label>
-            <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap;" type="text"
+            <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap; word-break: break-all;" type="text"
                  th:id="|answer${idx+1}|"
                  th:text="${feedback.answers[idx]}"></div>
 
@@ -57,13 +57,17 @@
             <div th:each="comment,info : ${feedback.comment}">
                 <div th:if="${idx+1} == ${feedback.num[info.index]}">
                     <br>
-                    <span style="font-weight: bold" th:id="|label${idx+1}${info.index}|"></span>
-                    <span th:id="|comment${idx+1}${info.index}|"></span>
+                    <div style="word-break: break-all;">
+                        <span style="font-weight: bold" th:id="|label${idx+1}${info.index}|"></span>
+                        <span th:id="|comment${idx+1}${info.index}|"></span>
+                    </div>
                     <textarea class="form-control" th:text="${comment}" rows="3" readonly></textarea>
                 </div>
             </div>
             <br>
         </div>
+        <br>
+        <hr>
 
         <!--총평 출력-->
         <label><b>총평</b></label>
@@ -85,7 +89,9 @@
                 <a type="button" class="btn btn-outline-info px-5"
                    th:href="|/essay/board/ ${feedback.essayId}|">이전</a>
             </div>
+            <br><br>
         </div>
+        <br><br>
 
         <script th:inline="javascript">
             const selectedObj = window.getSelection();

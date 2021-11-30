@@ -61,7 +61,7 @@
             <div th:each="idx : ${#numbers.sequence(0,readFeedback.questions.size()-1)}">
 
                 <label th:for="|answer${idx+1}|" th:text="|${idx+1}. ${readFeedback.questions[idx]}|"></label>
-                <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap;" type="text" th:id="|answer${idx+1}|"
+                <div class="border-gray" style="padding: 6px 12px; white-space:pre-wrap; word-break: break-all;" type="text" th:id="|answer${idx+1}|"
                      th:text="${readFeedback.answers[idx]}" th:onmouseup="|dragUpdate(${idx+1})|"
                      th:onmousedown="|dragStart(${idx+1})|">
                 </div>
@@ -89,6 +89,8 @@
                 </button>
 
             </div>
+            <br>
+            <hr>
 
             <!--총평 입력-->
             <label for="totalComment"><b>총평</b></label>
@@ -97,7 +99,7 @@
             <!--최종 첨삭 저장 버튼-->
             <div class="text-center mt-2">
                 <button type="submit" class="btn btn-outline-info px-5">수정 저장</button>
-                <button type="submit" class="btn btn-outline-danger px-5">수정 취소</button>
+                <a type="button" class="btn btn-outline-danger px-5" th:href="|/essay/feedback/read/${readFeedback.feedbackId}|">수정 취소</a>
             </div>
             <br>
             <br>
@@ -227,7 +229,7 @@
                     document.getElementById('end' + idx).innerHTML += '<input type="hidden" id="end' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].end">';
                     document.getElementById('start' + idx + i).value = start[idx - 1][i];
                     document.getElementById('end' + idx + i).value = end[idx - 1][i];
-                    document.getElementById('comment' + idx).innerHTML += '<br></r><b>선택 문장 ' + (i + 1) + ') </b><span>' + selectedString[idx - 1][i] + '</span><br>' +
+                    document.getElementById('comment' + idx).innerHTML += '<div style="word-break: break-all;"><br></r><b>선택 문장 ' + (i + 1) + ') </b><span>' + selectedString[idx - 1][i] + '</span><br></div>' +
                         '<textarea class="mt-1 mb-1 form-control" id="commentContent' + idx + i + '" name="everyComment[' + (idx - 1) + '].commentList[' + i + '].comment" rows="3" readonly>' + comment[idx - 1][i] + '</textarea>' +
                         '<div class="text-right">' +
                         '<button class="btn btn-outline-warning" type="button" style="display: inline" id="commentBtn' + idx + i + '2" onclick="editFeedback(' + idx + ',' + i + ')">수정</button> ' +
@@ -358,7 +360,7 @@
                     return;
                 }
 
-                document.getElementById('getFeedback' + idx).innerHTML = '<br><b>현재 선택 문장 : </b><span>' + rangeBuf[idx - 1].toString() + '</span><br>' +
+                document.getElementById('getFeedback' + idx).innerHTML = '<div style="word-break: break-all;"><br><b>현재 선택 문장 : </b><span>' + rangeBuf[idx - 1].toString() + '</span><br></div>' +
                     '<div class="text-right">' +
                     '<textarea id="input' + idx + '" type="text" class="mt-1 mb-1 form-control" placeholder="첨삭을 입력하세요" rows=3 onchange="updateBuf(' + idx + ')"></textarea>' +
                     '<button class="btn btn-outline-info" type="button" onclick="addFeedback(' + idx + ')">확인</button> ' +
