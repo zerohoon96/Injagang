@@ -37,15 +37,17 @@
                 <!-- 게시물 제목 -->
                 <h3 class="text-center mb-2">[[${result.title}]]</h3>
                 <p class="small text-right" th:text="|작성자 : ${result.writer}|"></p>
+                <hr>
                 <!-- 게시물 글 내용 -->
                 [[${result.text}]]
-                <br><hr><br>
-                
-                <div class="form-group" th:each="dto, idx : ${result.contentList}">
-                    <br>
+                <hr class="mt-4">
+                <br><br>
+                <input class="form-control text-center mt-3" style="border-color:black; font-weight: bold; pointer-events: none" th:value="자기소개서">
+
+                <div class="form-group mt-2" th:each="dto, idx : ${result.contentList}">
                     <label th:for="|${dto.pk}content|" th:text="|${idx.count}. ${dto.title}|"></label>
                     <br>
-                    <textarea rows=10 style="pointer-events: none" th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:text="${dto.text}"></textarea>
+                    <textarea rows=10 th:id="|${dto.pk}content|" type="text" class="form-control" name="content" th:text="${dto.text}" readonly></textarea>
             
                     <!-- 예상질문 부분 -->
                     <div class="mt-2" th:each="qdto : ${result.questionList}" th:if="${dto.pk == qdto.contentId}">
@@ -67,18 +69,23 @@
                            th:attr="onclick=|make_expectedQuestion('${result.pk}', '${dto.pk}', '${loginNickname}'); remove_questionBtn()|">
                 </div>
                 <br>
-                <hr>
+                <input class="form-control text-center" style="border-color:black; font-weight: bold; pointer-events: none" th:value="댓글">
+
                 <!-- 댓글 -->
 <!--                <h3 class="text-center">댓글</h3>-->
                 <!-- 기존 댓글 표시 -->
-                <div class="mb-2" th:each="dto : ${result.replyList}">
+                <div class="mb-2" th:each="dto, idx: ${result.replyList}">
                     <form th:action="@{/essay/reply/delete}" th:method="post">
+                        <br th:if="${idx.count} == 1">
+                        <hr th:unless="${idx.count} == 1">
+
                         <div class="form-inline">
-                            <label class="form-control col-md" style="pointer-events:none; border: 0;" align="left">↳ <b>[[${dto.nickname}]]</b>님</label>
+                            <label class="mr-1"><b>[[${dto.nickname}]]</b></label>
+                            <div class="col-md"></div>
                             <button class="btn btn-link btn-sm ml-2" type="submit"
                                     th:if="${loginNickname == dto.nickname}">X</button>
                         </div>
-                        <div style="padding-left: 4%; padding-right: 4%">[[${dto.content}]]</div>
+                        [[${dto.content}]]
 <!--                    <label class="form-control" style="pointer-events: none; border: 0; padding-left: 0;" align="left">[[${dto.content}]]</label>-->
                         <input style="display: none" name="eb_pk" th:value="${result.pk}">
                         <input style="display: none" name="reply_pk" th:value="${dto.pk}">
