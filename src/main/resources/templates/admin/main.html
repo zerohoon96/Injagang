@@ -2,36 +2,42 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
-        <br>
-        <h3>Admin Page</h3>
-        <br>
-        
+        <head>
+            <style>
+                tr {
+                    text-align: center;
+                }
+            </style>
+        </head>
+
+        <h2 class="mt-3">관리자 페이지</h2>
+        <hr>
         <form th:action="@{/admin/add}" th:method="get">
-            <button class="btn btn-outline-primary">질문 추가</button>
+            <button class="btn btn-outline-info">질문 추가</button>
         </form>
         <br>
-        
+
         <table id="board_body" class="table table-striped col-12">
-        <thead>
-        <tr style="border-top:none !important;">
-            <th class="text-left" scope="col">템플릿 제목</th>
-            <th scope="col">승인 여부</th>
-            <th scope="col">내용 보기</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="dto : ${templateList}">
-            <td>[[${dto.title}]]</td>
-            
-            <!--승인 여부-->
-            <td th:if="${dto.checked}">O</td>
-            <td th:if="!${dto.checked}">X</td>
-            
-            <!--자소서 템플릿 보러 가기-->
-            <td><a th:href="@{/template/read(id=${dto.id})}">GO</a></td>
-        </tr>
-        </tbody>
+            <thead>
+            <tr style="border-top:none !important;">
+                <th class="text-left" scope="col">템플릿 제목</th>
+                <th scope="col">승인 여부</th>
+                <th scope="col">내용 보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dto : ${templateList}">
+                <td class="text-left">[[${dto.title}]]</td>
+
+                <!--승인 여부-->
+                <td th:if="${dto.checked}">O</td>
+                <td th:if="!${dto.checked}">X</td>
+
+                <!--자소서 템플릿 보러 가기-->
+                <td><a th:href="@{/template/read(id=${dto.id})}">GO</a></td>
+            </tr>
+            </tbody>
         </table>
-        
+
     </th:block>
 </th:block>

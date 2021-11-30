@@ -4,23 +4,24 @@
 
 <th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
-
-
         <body>
-               <div>
-                <form action th:object="${question}" method="post">
-                    <div>
-                    <label for="title">질문</label>
-                    <input type="text" id="title" th:field="*{title}">
-                    </div>
-
-                    <div th:each="type : ${questionTypes}">
-                        <input type="radio" th:field="*{questionType}" th:value="${type.name()}">
-                        <label th:for="${#ids.prev('questionType')}" th:text="${type.description}"></label>
-                    </div>
-                    <button type="submit">등록</button>
-                </form>
-               </div>
+        <div class="container-fluid mt-4" style="padding-right: 20%; padding-left: 20%">
+            <form action th:object="${question}" method="post">
+                <div class="form-inline">
+                    <h3 for="title" class="mr-1" style="margin: 0">질문</h3>
+                    <input type="text" id="title" class="form-control col-md" th:field="*{title}">
+                </div>
+                <br>
+                <div th:each="type : ${questionTypes}">
+                    <input type="radio" th:field="*{questionType}" th:value="${type.name()}">
+                    <label th:for="${#ids.prev('questionType')}" th:text="${type.description}"></label>
+                </div>
+                <div class="text-center mt-2">
+                    <button class="btn btn-outline-info px-5" type="submit">등록</button>
+                </div>
+                <br>
+            </form>
+        </div>
 
         </body>
     </th:block>
