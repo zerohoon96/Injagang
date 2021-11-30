@@ -17,7 +17,7 @@ public class InterviewQuestionService {
 
     public Long save(InterviewQuestion interviewQuestion){
         InterviewQuestion save = interviewQuestionRepository.save(interviewQuestion);
-      
+
         return save.getId();
     }
 

@@ -183,5 +183,14 @@ public class MemberServiceImpl implements MemberService {
         );
     }
 
+    @Override
+    public boolean isAdmin(String nickname) {
+        Member member = memberRepository.findByNickname(nickname);
+        if(member.getType() == MemberType.ADMIN)
+            return true;
+        else
+            return false;
+    }
+
 
 }

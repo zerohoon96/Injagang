@@ -32,7 +32,7 @@ public interface MemberService {
 
     Member findById(Long Id);
 
-
+    boolean isAdmin(String nickname);
 
     void changeNickname(String nowNickname, String changeNickname);
 
@@ -47,6 +47,5 @@ public interface MemberService {
                 .build();
 
     }
-
 
 }
