@@ -62,10 +62,19 @@ public class AlarmServiceImpl  implements AlarmService {
         return createEssayAlarm(essayId, nickname,"예상질문");
     }
 
+    @Override
+    public Long addProofreadAlarm(Long essayId, String nickname){
+        return createEssayAlarm(essayId, nickname, "첨삭");
+    }
+
     private Long createEssayAlarm(Long essayId, String nickname, String type) {
         Essay essay = essayRepository.findById(essayId).orElseThrow(
                 () -> new IllegalArgumentException("에세이 없당")
         );
+
+        if (essay.getWriter().getNickname().equals(nickname)) {
+            return 0L;
+        }
 
         String content;
         String title = essay.getTitle();
@@ -98,6 +107,11 @@ public class AlarmServiceImpl  implements AlarmService {
         Interview interview = interviewRepository.findById(interviewId).orElseThrow(
                 () -> new IllegalArgumentException("인터뷰 없당")
         );
+
+
+        if (interview.getWriter().getNickname().equals(nickname)) {
+            return 0L;
+        }
 
         String content;
         String title = interview.getTitle();

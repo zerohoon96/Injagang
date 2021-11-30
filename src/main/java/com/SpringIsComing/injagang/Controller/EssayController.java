@@ -24,6 +24,7 @@ public class EssayController {
     private final EssayService essayService;
     private final TemplateService templateService;
     private final FeedbackService feedbackService;
+    private final AlarmService alarmService;
     private final FeedbackCommentService feedbackCommentService;
     private final Comparator<EssayFeedbackComment> comparator = new Comparator<EssayFeedbackComment>() { //첨삭 정렬
         @Override
@@ -154,6 +155,7 @@ public class EssayController {
 
         //feedback 저장
         Long feedbackId = feedbackService.storeFeedback(writer, essay, feedback);
+        alarmService.addProofreadAlarm(essayId, nickname);
         return "redirect:/essay/feedback/read/" + feedbackId; //첨삭 읽기로 redirect
     }
 
