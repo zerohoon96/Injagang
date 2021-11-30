@@ -8,6 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Iterator;
 
@@ -30,7 +31,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(SessionConst.LOGIN_SESSION) == null) {
-            response.sendRedirect("/login?redirectURL=" + requestURI);
+//            response.sendRedirect("/login?redirectURL=" + requestURI);
+            response.setContentType("text/html; charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.println("<script>alert('로그인을 해 주세요.'); location.href='/login?redirectURL=" + requestURI + "';</script>");
+            out.flush();
+
+
             return false;
         }
 
