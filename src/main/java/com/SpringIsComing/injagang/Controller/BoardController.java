@@ -39,7 +39,7 @@ public class BoardController {
     @GetMapping("/essay/board")
     public String essayBoard(@SessionAttribute(value = "loginSession",required = false) String nickname,
                              @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model){
-        log.info("==========essayBoard==========");
+
 
         model.addAttribute("result", service.getEssayList(pageRequestDTO));
         model.addAttribute("loginNickname", nickname);
@@ -50,7 +50,7 @@ public class BoardController {
     @GetMapping("/interview/board")
     public String interviewBoard(@SessionAttribute(value = "loginSession",required = false) String nickname,
                                  @ModelAttribute("pageRequestDTO") PageRequestDTO pageRequestDTO, Model model) {
-        log.info("==========interviewBoard==========");
+
 
         model.addAttribute("result", service.getInterviewList(pageRequestDTO));
         model.addAttribute("loginNickname", nickname);
@@ -62,7 +62,7 @@ public class BoardController {
     public String essayViewer(@SessionAttribute("loginSession") String nickname,
                               @PathVariable("pk") Long eb_pk,
                               @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
-        log.info("----------essayViewer----------");
+
 
         /* eb_pk로 해당 Essay 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         EssayBoardDTO dto = service.readEssayBoard(eb_pk);
@@ -80,7 +80,7 @@ public class BoardController {
                                   @RequestParam(required = false) boolean title,
                                   @RequestParam(required = false) boolean text,
                                   @ModelAttribute("requestDTO") PageRequestDTO requestDTO, Model model) {
-        log.info("----------interviewViewer----------");
+
 
         /* ib_pk로 해당 Interview 객체를 찾아 DTO로 변환 후 model attribute 추가하여 넘기기 */
         InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
@@ -94,7 +94,7 @@ public class BoardController {
     @GetMapping("/essay/board/update/{pk}")
     public String updateEssayBoard(@SessionAttribute("loginSession") String nickname,
                                    @PathVariable("pk") Long eb_pk, Model model) {
-        log.info("==========essayBoardUpdate==========");
+
 
         EssayBoardDTO dto = service.readEssayBoard(eb_pk);
         model.addAttribute("result", dto);
@@ -108,9 +108,8 @@ public class BoardController {
                                        @PathVariable("pk") Long eb_pk,
                                        @RequestParam("title") String title,
                                        @RequestParam("text") String text) {
-        log.info("==========essayBoardUpdatePost==========");
-        log.info("title: " + title);
-        log.info("text: " + text);
+
+
 
         service.updateEssayBoard(eb_pk, title, text);
 
@@ -121,7 +120,7 @@ public class BoardController {
     @GetMapping("/interview/board/update/{pk}")
     public String updateInterviewBoard(@SessionAttribute("loginSession") String nickname,
                                        @PathVariable("pk") Long ib_pk, Model model) {
-        log.info("==========interviewBoardUpdate==========");
+
 
         InterviewBoardDTO dto = service.readInterviewBoard(ib_pk);
         model.addAttribute("result", dto);
@@ -136,7 +135,7 @@ public class BoardController {
                                            @RequestParam String title,
                                            @RequestParam String text,
                                            @RequestParam List<String> videoNames) {
-        log.info("==========interviewBoardUpdatePost==========");
+
 
         service.updateInterviewBoard(ib_pk, title, text, videoNames);
 
@@ -146,7 +145,6 @@ public class BoardController {
     //자소서 게시물 삭제 - 객체를 삭제하지는 않음
     @GetMapping("/essay/board/delete/{pk}")
     public String deleteEssayBoard(@PathVariable Long pk) {
-        log.info("==========deleteEssayBoard==========");
 
         service.deleteEssayBoard(pk);
         return "redirect:/essay/board";
@@ -155,7 +153,7 @@ public class BoardController {
     //면접 게시물 삭제 - 객체를 삭제
     @GetMapping("/interview/board/delete/{pk}")
     public String deleteInterviewBoard(@PathVariable Long pk) {
-        log.info("==========deleteEssayBoard==========");
+
 
         service.deleteInterviewBoard(pk);
         return "redirect:/interview/board";
@@ -167,7 +165,7 @@ public class BoardController {
                                      @RequestParam(required = false) boolean isNoEssay,
                                      @RequestParam(required = false) String title,
                                      @RequestParam(required = false) String text) {
-        log.info("----------registerEssayBoard----------");
+
 
         //현재 로그인 되어있는 nickname으로 그 사람이 쓴 자소서 리스트 불러오기
         List<EssayDTO> dtoList = service.getEssays(nickname);
@@ -185,15 +183,15 @@ public class BoardController {
     public String registerEssayBoardPost(@SessionAttribute("loginSession") String nickname,
                                          @ModelAttribute("dto") EssayDTO dto,
                                          RedirectAttributes redirectAttributes) {
-        log.info("----------registerEssayBoardPost----------");
+
 
         /**
          * 게시물 등록하고 자소서 게시판으로 리다이렉트
          **/
-        log.info("dto: " + dto);
+
 
         if(dto.getPk() == -1){
-            log.info("===============No Essay uploaded===============");
+
             redirectAttributes.addAttribute("isNoEssay", true);
             redirectAttributes.addAttribute("title", dto.getTitle());
             redirectAttributes.addAttribute("text", dto.getText());
@@ -209,7 +207,6 @@ public class BoardController {
                                          @RequestParam(required = false) boolean isNoVideo,
                                          @RequestParam(required = false) String title,
                                          @RequestParam(required = false) String text) {
-        log.info("----------registerInterviewBoard----------");
 
         model.addAttribute("isNoVideo", isNoVideo);
         model.addAttribute("title", title);
@@ -226,8 +223,6 @@ public class BoardController {
                                              @RequestParam(value = "videoNames", required = false) List<String> videoNames,
                                              @RequestParam("videoUrls") List<String> files,
                                              RedirectAttributes redirectAttributes) throws Exception{
-        log.info("----------registerInterviewBoardPost----------");
-        log.info("title: " + title + " text: " + text);
 
         //영상을 한개도 업로드 안하고 올릴 시 예외 처리
         if (videoNames == null) {
@@ -250,7 +245,6 @@ public class BoardController {
             pathList.add(filePath);
             //srcPathList.add(srcFilePath);
         }
-        //log.info("srcPathList: " + srcPathList);
         log.info("pathList: " + pathList);
 
         InterviewDTO dto = InterviewDTO.builder()
@@ -271,12 +265,10 @@ public class BoardController {
                                         @RequestParam("essay_pk") Long essay_pk,
                                         @RequestParam("content_pk") Long content_pk,
                                         @RequestParam("questionContent")String content) {
-        log.info("==========registerEssayQuestion==========");
-        log.info("content: " + content);
 
         //예상질문 저장 후 리다이렉트
         service.registerExpectedQuestion(content_pk, content, nickname);
-        alarmService.addFeedbackAlarm(essay_pk,nickname);
+        alarmService.addExpectedQuestionAlarm(essay_pk, nickname);
         return "redirect:/essay/board/" + essay_pk;
     }
 
@@ -285,8 +277,6 @@ public class BoardController {
     public String registerEssayReply(@SessionAttribute("loginSession") String nickname,
                                      @RequestParam("essay_pk") Long essay_pk,
                                      @RequestParam("replyContent") String content) {
-        log.info("==========registerEssayReply==========");
-        log.info("content: " + content);
 
         service.registerEssayReply(essay_pk, content, nickname);
         alarmService.addEssayReplyAlarm(essay_pk, nickname);
@@ -298,8 +288,6 @@ public class BoardController {
     public String registerInterviewReply(@SessionAttribute("loginSession") String nickname,
                                          @RequestParam("pk") Long pk,
                                          @RequestParam("content") String content) {
-        log.info("==========registerInterviewReply==========");
-        log.info("content: " + content);
 
         service.registerInterviewReply(pk, content, nickname);
         alarmService.addInterviewReplyAlarm(pk, nickname);
@@ -312,8 +300,6 @@ public class BoardController {
                                         @RequestParam("interview_pk") Long interview_pk,
                                         @RequestParam("video_pk") Long video_pk,
                                         @RequestParam("feedbackContent")String content) {
-        log.info("==========registerInterviewFeedback==========");
-        log.info("content: " + content);
 
         service.registerInterviewFeedback(video_pk, content, nickname);
         alarmService.addInterviewFeedbackAlarm(interview_pk, nickname);
@@ -325,7 +311,6 @@ public class BoardController {
     public String deleteEssayBoardQuestion(@SessionAttribute("loginSession") String nickname,
                                       @RequestParam Long eb_pk, @RequestParam Long question_pk) {
 
-        log.info("==========deleteEssayBoardQuestion==========");
 
         service.deleteEssayQuestion(question_pk);
         return "redirect:/essay/board/" + eb_pk;
@@ -335,8 +320,6 @@ public class BoardController {
     @PostMapping("/essay/reply/delete")
     public String deleteEssayBoardReply(@SessionAttribute("loginSession") String nickname,
                                    @RequestParam Long eb_pk, @RequestParam Long reply_pk) {
-        log.info("==========deleteEssayBoardReply==========");
-        log.info("reply_pk: " + reply_pk);
 
         service.deleteBoardReply(reply_pk);
         return "redirect:/essay/board/" + eb_pk;
@@ -347,7 +330,6 @@ public class BoardController {
     public String deleteInterviewBoardReply(@SessionAttribute("loginSession") String nickname,
                                        @RequestParam Long ib_pk, @RequestParam Long reply_pk) {
 
-        log.info("==========deleteInterviewBoardReply==========");
 
         service.deleteBoardReply(reply_pk);
         return "redirect:/interview/board/" + ib_pk;
@@ -358,7 +340,6 @@ public class BoardController {
     public String deleteInterviewBoardFeedback(@SessionAttribute("loginSession") String nickname,
                                                @RequestParam Long ib_pk, @RequestParam Long feedback_pk) {
 
-        log.info("==========deleteInterviewBoardFeedback==========");
 
         service.deleteInterviewFeedback(feedback_pk);
         return "redirect:/interview/board/" + ib_pk;

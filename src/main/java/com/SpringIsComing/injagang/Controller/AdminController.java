@@ -51,21 +51,21 @@ public class AdminController {
 
     @GetMapping("/template/accept")
     public String templateAccept(@RequestParam Long id) {
-        log.info("-----------templateAccept-----------");
+
         templateService.grantTemplate(id);
         return "redirect:/admin";
     }
 
     @GetMapping("/template/revoke")
     public String templateRevoke(@RequestParam Long id) {
-        log.info("-----------templateRevoke-----------");
+
         templateService.revokeTemplate(id);
         return "redirect:/admin";
     }
 
     @GetMapping("/template/delete")
     public String templateDelete(@RequestParam Long id) {
-        log.info("-----------templateDelete-----------");
+
         templateService.deleteTemplate(id);
         return "redirect:/admin";
     }
@@ -87,8 +87,6 @@ public class AdminController {
 
     @PostMapping("/admin/add")
     public String saveQuestion(@ModelAttribute("question") InterviewQuestion interviewQuestion) {
-        log.info("병신={}",interviewQuestion.getTitle());
-        log.info("병신2={}",interviewQuestion.getQuestionType());
 
         interviewQuestionService.save(interviewQuestion);
 

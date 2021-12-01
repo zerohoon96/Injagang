@@ -34,7 +34,7 @@ public class AlarmController {
     @GetMapping("/showAlarm")
     public List<AlarmDTO> test(@SessionAttribute("loginSession") String nickname) {
 
-        log.info("자바스크립트 ㅈㄴ 맘에 안드네");
+
 
         Member loginMember = memberService.findByNickname(nickname);
 
@@ -52,7 +52,7 @@ public class AlarmController {
         List<AlarmDTO> friendDTO = alarmService.findFriendAlarmsByMember(loginMember).stream()
                 .map(a -> alarmService.fromFriendAlarmToAlarmDTO(a)).collect(toList());
 
-        log.info("쓰벌={}",result.size());
+
 
         result.addAll(essayDTO);
         result.addAll(interviewDTO);
@@ -66,7 +66,7 @@ public class AlarmController {
     @PostMapping("/alarmRead")
     public String test2(@RequestBody AlarmIdDTO alarmIdDTO) {
 
-        log.info("개시키야={}", alarmIdDTO.getId());
+
         Long id = alarmIdDTO.getId();
         alarmService.alarmRead(id);
 

@@ -20,7 +20,7 @@ public class AuthController {
     @GetMapping("confirm-email")
     public String viewConfirmEmail(@Valid @RequestParam String token){
         memberService.confirmEmail(token);
-        log.info("에라이");
+
 
 
         return "redirect:/login";

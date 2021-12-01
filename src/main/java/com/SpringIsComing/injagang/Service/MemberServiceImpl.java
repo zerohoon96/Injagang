@@ -29,7 +29,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Long save(RegisterDTO registerDTO) {
-        log.info("tlqkf");
 
         String digest = encoder.encode(registerDTO.getPassword());
 
@@ -41,7 +40,6 @@ public class MemberServiceImpl implements MemberService {
                 .nickname(registerDTO.getNickname())
                 .email(registerDTO.getEmail())
                 .type(MemberType.GUEST)
-                .auth(true)
                 .build();
 
         Member saved = memberRepository.save(saveMember);
@@ -109,7 +107,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 토근"));
 
         Member findMember = memberRepository.findByLoginId(findToken.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다"));
-
         findToken.useToken();
 
         return findMember;
@@ -123,8 +120,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePassword(String nickname, String password) {
-        Member findMember = memberRepository.findByNickname(nickname);
+    public void changePassword(String loginId, String password) {
+        Member findMember = memberRepository.findByLoginId(loginId).get();
 
         String digest = encoder.encode(password);
 
@@ -146,11 +143,9 @@ public class MemberServiceImpl implements MemberService {
 //        Member loginMember = memberRepository.findByNickname(loginNickname);
 //        Member targetMember = memberRepository.findByNickname(targetNickname);
 //
-//        log.info("무유유");
 //
 //        loginMember.addFriend(targetMember);
 //
-//        log.info("식빵={}", loginMember.getFriends().size());
 //
 //    }
 

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public abstract class Alarm {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ALARM_ID")
     private Long id;
 
@@ -27,7 +27,7 @@ public abstract class Alarm {
 
     private LocalDateTime date; //날짜
 
-    private boolean read = false;
+    private boolean read_check = false;
 
 
     public Alarm(Member member, String content, LocalDateTime date) {
@@ -37,6 +37,6 @@ public abstract class Alarm {
     }
 
     public void alarmRead(){
-        this.read = true;
+        this.read_check = true;
     }
 }

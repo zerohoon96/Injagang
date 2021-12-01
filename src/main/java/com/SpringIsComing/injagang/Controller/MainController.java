@@ -85,10 +85,9 @@ public class MainController {
 
         if (curNickname == null) {
             curNickname = nickname;
-            log.info("hello moto");
 
         }
-        log.info("아우={}",curNickname);
+
 
         Member targetMember = memberService.findByNickname(curNickname);
 
@@ -118,7 +117,7 @@ public class MainController {
         }
 
         for (Friend friend : loginFriends) {
-            log.info("김건부={}", friend.getLoginId());
+
             if (friend.getLoginId().equals(targetMember.getLoginId())) {
                 friendState = 1;
                 break;
@@ -173,7 +172,7 @@ public class MainController {
         model.addAttribute("friendList", friendDTOList);
 
         log.info("mockInterviewDTOList = {}", mockInterviewDTOList);
-        log.info("깐부={}", friendState);
+
         model.addAttribute("friendState", friendState);
         model.addAttribute("nickname", curNickname);
         model.addAttribute("loginNickname", nickname);
@@ -216,7 +215,7 @@ public class MainController {
 //        }
 
         if (bindingResult.hasErrors()) {
-            log.info("개새끼");
+
 
             return "mypage/updateInformation";
         }
@@ -225,7 +224,7 @@ public class MainController {
         Member loginMember = memberService.findByNickname(nickname);
         if (!memberService.passwordCheck(loginMember, updateDTO.getCurPassword())) {
             bindingResult.rejectValue("curPassword", "curPasswordCheck", "현재 비밀번호가 틀립니다.");
-            log.info("개새끼2");
+
 
             return "mypage/updateInformation";
 
@@ -233,7 +232,7 @@ public class MainController {
 
         if (!updateDTO.getNewPassword().equals(updateDTO.getPasswordCheck())) {
             bindingResult.rejectValue("newPassword", "passwordCheck", "비밀번호가 다릅니다.");
-            log.info("개새끼3");
+
 
             return "mypage/updateInformation";
         }
@@ -242,7 +241,7 @@ public class MainController {
         if (memberService.nicknameDuplicateCheck(updateDTO.getNickname()) && !sameNickname) {
             bindingResult.rejectValue("nickname", "duplicateNickname", "닉네임이 중복됩니다.");
 
-            log.info("개새끼4");
+
 
             return "mypage/updateInformation";
 
@@ -432,7 +431,6 @@ public class MainController {
     public String changePasswordEnd(@Valid @ModelAttribute("passwords") ChangePasswordTokenDTO changePasswordTokenDTO
             , BindingResult bindingResult, @RequestParam String token) {
 
-
         if (bindingResult.hasErrors()) {
             return "mypage/changePasswordToken";
         }
@@ -444,7 +442,6 @@ public class MainController {
 
         Member findMember = memberService.confirmEmailForPassword(token);
         memberService.changePassword(findMember.getLoginId(), changePasswordTokenDTO.getPassword());
-
         return "redirect:/login";
 
     }
