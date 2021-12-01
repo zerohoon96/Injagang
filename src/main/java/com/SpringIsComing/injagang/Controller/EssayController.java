@@ -116,7 +116,6 @@ public class EssayController {
                        @PathVariable Long essayId, RedirectAttributes redirectAttributes) {
         essayService.deleteEssay(essayId);
         redirectAttributes.addAttribute("nickname",nickname);
-        log.info(nickname);
         return "redirect:/mypage/{nickname}";
     }
 
@@ -221,7 +220,7 @@ public class EssayController {
                           @PathVariable Long feedbackId,
                           @ModelAttribute("readFeedback") EssayFeedbackReadDTO readFeedback,
                           @ModelAttribute("writeFeedback") EssayFeedbackInfoDTO writeFeedback) throws Exception {
-        log.info("update controller!!!!!!!!!");
+
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
         Essay essay = essayService.findEssay(essayFeedback.getEssay().getId()); //essay 저장
         List<EssayFeedbackComment> feedbackComment = feedbackCommentService.findById(feedbackId); //첨삭 목록 저장

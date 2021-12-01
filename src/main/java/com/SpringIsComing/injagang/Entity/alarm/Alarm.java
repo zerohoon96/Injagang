@@ -27,7 +27,7 @@ public abstract class Alarm {
 
     private LocalDateTime date; //날짜
 
-    private boolean read = false;
+    private boolean readCheck = false;
 
 
     public Alarm(Member member, String content, LocalDateTime date) {
@@ -37,6 +37,6 @@ public abstract class Alarm {
     }
 
     public void alarmRead(){
-        this.read = true;
+        this.readCheck = true;
     }
 }

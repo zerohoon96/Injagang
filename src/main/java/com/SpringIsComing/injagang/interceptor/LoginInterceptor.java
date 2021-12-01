@@ -23,9 +23,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         String requestURI = request.getRequestURI();
 
 
-        log.info("개새기들1 ={}",request.getMethod());
-        log.info("개새기들2={}",request.getRequestURL());
-
         log.info("URI={}", requestURI);
 
         HttpSession session = request.getSession(false);

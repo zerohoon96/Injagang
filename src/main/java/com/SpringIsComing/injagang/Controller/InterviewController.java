@@ -26,7 +26,6 @@ public class InterviewController {
     String interviewInit(@SessionAttribute("loginSession") String nickname, Model model,
                          @RequestParam(required = false) boolean isNoQuestion) {
 
-        log.info("=========interview init=========");
 
         Map<String, Integer> essayMap = new HashMap<>(); //예상 질문이 있는 자기소개서만 추가 (면접 설정을 할때 무조건 질문 개수가 1개 이상이 되도록..)
 
