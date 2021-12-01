@@ -31,7 +31,7 @@ public class Reply {
     @JoinColumn(name = "MEMBER_ID")
     private Member replyer;
 
-    @Column(length = 500)
+    @Column(length = 2000)
     private String content; //내용
 
     private LocalDateTime date; //글쓴 날짜

@@ -45,7 +45,7 @@ public class Essay{
 
     private String title; //제목
 
-    @Column(length = 1500)
+    @Column(length = 2000)
     private String text; //내용 글
 
     private LocalDateTime date; //최신 작성 시간

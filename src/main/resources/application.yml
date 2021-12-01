@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:tcp://localhost/~/test
     username: sa
     password:
     driver-class-name: org.h2.Driver
@@ -13,12 +13,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-
-
 
   mail:
     host: smtp.gmail.com
@@ -40,12 +38,9 @@ server:
     session:
       tracking-modes: cookie
 
-#com:
-#  SpringIsComing:
-#    injagang:
-#      upload:
-#        path: /Users/smod/upload
+com:
+  SpringIsComing:
+    injagang:
+      upload:
+        path: /Users/smod/upload
 
-org:
-  gradle:
-    daemon: false

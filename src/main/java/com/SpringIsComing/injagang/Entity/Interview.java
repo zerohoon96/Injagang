@@ -35,7 +35,7 @@ public class Interview {
 
     private String title; //제목
 
-    @Column(length = 1500)
+    @Column(length = 2000)
     private String text; //내용 글
 
     private LocalDateTime date; //작성 날짜
