@@ -54,13 +54,11 @@ public class MainController {
 
         HttpSession session = request.getSession(false);
 
-        String loginSession = (String) session.getAttribute("loginSession");
-
-        if (session == null || loginSession == null) {
-            return "mainPage";//아직 안됨
+        if (session == null || session.getAttribute("loginSession") == null) {
+            return "mypage/test";//아직 안됨
         }
 
-        redirectAttributes.addAttribute("nickname", loginSession);
+        redirectAttributes.addAttribute("nickname", (String) session.getAttribute("loginSession"));
         return "redirect:/mypage/{nickname}";
     }
 
