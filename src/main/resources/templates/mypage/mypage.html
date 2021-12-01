@@ -190,7 +190,7 @@
                 head.innerHTML = "<th class='col-8 text-align-center'>친구 목록</th>";
                 body.innerHTML = "<br>";
                 for (let i = 0; i < friendList.length; i++) {
-                    body.innerHTML += "<a href='/mypage/" + friendList[i].nickname + "' style='text-decoration: none'>" + friendList[i].nickname + " </a>&nbsp&nbsp&nbsp";
+                    body.innerHTML += "<div class='text-center'><a href='/mypage/" + friendList[i].nickname + "' style='text-decoration: none'>" + friendList[i].nickname + " </div></a>";
                     if (i > 0 && i % 5 == 0)
                         body.innerHTML += "<br>";
                 }

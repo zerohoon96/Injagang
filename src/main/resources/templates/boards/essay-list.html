@@ -25,9 +25,16 @@
             </thead>
             <tbody>
             <tr th:each="dto : ${result.dtoList}" th:if="${dto.access} == 2">
-                <td class="text-left"><a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page},
-                type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
-                    [[${dto.title}]]</a><span class="ml-1" th:text="|[${dto.rCnt}]|"></span></td>
+                <td th:if="${dto.title.length()} < 31" class="text-left">
+                    <a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page},
+                        type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
+                        [[${dto.title}]]</a><span class="ml-1" th:text="|[${dto.rCnt}]|"></span>
+                </td>
+                <td th:unless="${dto.title.length()} < 31" class="text-left">
+                    <a th:href="@{/essay/board/{pk}(pk=${dto.pk}, page=${result.page},
+                        type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}" th:text="|${dto.title.substring(0, 31)}...|">
+                        </a><span class="ml-1" th:text="|[${dto.rCnt}]|"></span>
+                </td>
                 <td>[[${dto.qCnt}]]</td>
                 <td>[[${dto.fCnt}]]</td>
                 <td><a th:href="@{|/mypage/${dto.writer}|}">[[${dto.writer}]]</a></td>
@@ -35,14 +42,14 @@
             </tr>
             </tbody>
         </table>
-        
+
         <!-- 글쓰기 버튼 -->
         <div style="float: right; margin-bottom: 30px;">
             <a th:href="@{/essay/board/add}">
                 <button type="button" class="btn btn-outline-info">글쓰기</button>
             </a>
         </div>
-        
+
         <!-- 페이지 네비게이터 -->
         <ul class="pagination h-100 justify-content-center align-items-center">
             <li class="page-item " th:if="${result.prev}">
@@ -63,7 +70,7 @@
                 type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}">Next</a>
             </li>
         </ul>
-        
+
         <!-- 검색창 -->
         <form action="/essay/board" method="get" id="searchForm">
             <div class="input-group" style="margin: auto;">
@@ -71,29 +78,34 @@
                 <div class="input-group-prepend mr-1">
                     <select class="custom-select" name="type">
                         <option style="text-align: center" th:selected="${pageRequestDTO.type == null}">선택</option>
-                        <option style="text-align: center" value="t" th:selected="${pageRequestDTO.type == 't'}">제목</option>
-                        <option style="text-align: center" value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자</option>
+                        <option style="text-align: center" value="t" th:selected="${pageRequestDTO.type == 't'}">제목
+                        </option>
+                        <option style="text-align: center" value="w" th:selected="${pageRequestDTO.type == 'w'}">작성자
+                        </option>
                     </select>
                 </div>
-                <input style="border-radius: 4px" class="form-control mr-1" name="keyword" th:value="${pageRequestDTO.keyword}">
+                <input style="border-radius: 4px" class="form-control mr-1" name="keyword"
+                       th:value="${pageRequestDTO.keyword}">
                 <div class="input-group-append" id="button-addon4">
-                    <button style="border-bottom-left-radius: 4px; border-top-left-radius: 4px" class="btn btn-outline-secondary btn-search" type="button">검색</button>
+                    <button style="border-bottom-left-radius: 4px; border-top-left-radius: 4px"
+                            class="btn btn-outline-secondary btn-search" type="button">검색
+                    </button>
                     <button class="btn btn-outline-secondary btn-clear" type="button">초기화</button>
                 </div>
             </div>
         </form>
-        
+
         <!-- 검색 기능 -->
         <script th:inline="javascript">
             let searchForm = $("#searchForm");
-            $('.btn-search').click(function(e){
+            $('.btn-search').click(function (e) {
                 searchForm.submit();
             });
-        
-            $('.btn-clear').click(function(e){
+
+            $('.btn-clear').click(function (e) {
                 searchForm.empty().submit();
             });
         </script>
-        
+
     </th:block>
 </th:block>
