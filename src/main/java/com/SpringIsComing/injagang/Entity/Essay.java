@@ -33,7 +33,7 @@ public class Essay{
     @Builder.Default
     private List<EssayContent> contents =  new ArrayList<>(); //자소서 문항들
 
-    @OneToMany(mappedBy = "essay")
+    @OneToMany(mappedBy = "essay", cascade = CascadeType.ALL)
     @Builder.Default
     private List<EssayFeedback> feedbacks = new ArrayList<>(); //피드백들
 

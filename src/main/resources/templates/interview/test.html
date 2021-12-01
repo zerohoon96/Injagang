@@ -99,16 +99,16 @@
                     "</p>" +
                     "<hr style='margin-top: 0'>" +
                     "<p id='p2'><br><br>" +
-                    "1. 아래 [시작하기] 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
-                    "2. 들려주는 문제를 잘 듣고 [이제 말하세요!] 문구가 나오면 답변을 해주세요.<br><br>" +
-                    "3. 답변을 완료한 후에는 [다음으로] 버튼을 누르세요<br><br>" +
-                    "4. [다음으로] 버튼을 누르면 면접 영상이 다운로드되고 다음 문제를 진행합니다.<br><br>" +
-                    "5. 모든 문제가 종료되었으면 [면접 종료] 버튼을 눌러 종료합니다.<br><br>" +
+                    "1. 아래 <b>[시작하기]</b> 버튼을 누르면 설정한 문제로 모의 면접이 시작됩니다.<br><br>" +
+                    "2. 들려주는 문제를 잘 듣고 <b>[이제 말하세요!]</b> 문구가 나오면 답변을 해주세요.<br><br>" +
+                    "3. 답변을 완료한 후에는 <b>[다음으로]</b> 버튼을 누르세요<br><br>" +
+                    "4. <b>[다음으로]</b> 버튼을 누르면 면접 영상이 다운로드되고 다음 문제를 진행합니다.<br><br>" +
+                    "5. 모든 문제가 종료되었으면 <b>[면접 종료]</b> 버튼을 눌러 종료합니다.<br><br>" +
                     "6. 아래 화면에서 녹화에 적당한 카메라 각도를 설정 후 시작하세요.<br><br>" +
                     "</p>" +
                     "</div>";
 
-                document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info form-control' style='width:300px' type='button' value='시작하기' onclick='startInterview(0)'/><br><br>";
+                document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info px-5' type='button' value='시작하기' onclick='startInterview(0)'/><br><br>";
             }
 
             function startVideo() { //화면에 카메라를 띄우는 함수
@@ -212,7 +212,7 @@
                     let btnValue = "다음문제";
                     if (idx == questions.length - 1)
                         btnValue = "면접종료";
-                    document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info form-control' type='button' style='width: 300px' value=" + btnValue + " onClick='processVideo(" + (idx + 1) + ")'/>";
+                    document.getElementById('everyBtn').innerHTML = "<br><input class='btn btn-outline-info px-5' type='button' value=" + btnValue + " onClick='processVideo(" + (idx + 1) + ")'/>";
                     resolve();
                 });
             }
