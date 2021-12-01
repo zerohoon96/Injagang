@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.Controller;
 
 import com.SpringIsComing.injagang.DTO.UploadResultDTO;
+import com.SpringIsComing.injagang.upload.UploadConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +32,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileController {
 
-    @Value("${com.SpringIsComing.injagang.upload.path}")
-    private String uploadPath;
+//    @Value("${com.SpringIsComing.injagang.upload.path}")
+    private String uploadPath = UploadConst.UPLOAD_PATH;
 
     //파일 업로드용 컨트롤러
     @PostMapping("/uploadAjax")
