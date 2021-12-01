@@ -19,13 +19,13 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     List<Alarm> findAlarmsByMember(Member member);
 
-    @Query("select ea from EssayAlarm ea join fetch ea.member where ea.member = :m and ea.read = false")
+    @Query("select ea from EssayAlarm ea join fetch ea.member where ea.member = :m and ea.read_check = false")
     List<EssayAlarm> findEssayAlarmsByMember(@Param("m") Member member);
 
-    @Query("select ia from InterviewAlarm ia join fetch ia.member where ia.member = :m and ia.read = false")
+    @Query("select ia from InterviewAlarm ia join fetch ia.member where ia.member = :m and ia.read_check = false")
     List<InterviewAlarm> findInterviewAlarmsByMember(@Param("m") Member member);
 
-    @Query("select fa from FriendAlarm fa join fetch fa.member where fa.member = :m and fa.read = false")
+    @Query("select fa from FriendAlarm fa join fetch fa.member where fa.member = :m and fa.read_check = false")
     List<FriendAlarm> findFriendAlarmsByMember(@Param("m") Member member);
 
     List<InterviewAlarm> findAlarmsByInterview(Interview interview);
