@@ -24,6 +24,10 @@ public interface InterviewService {
 
     List<MockInterviewDTO> findMockInterviews(String nickname);
 
+    void getRandomBasicQuestions(List<String> questionList, int baseQuestion, int csQuestion, int jobQuestion, int situationQuestion);
+
+    List<Integer> getQuestionNums();
+
     default MypageInterviewDTO toMypageInterViewDTO(Interview interview){
 
         List<Video> videos = interview.getVideos();

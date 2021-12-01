@@ -2,10 +2,7 @@ package com.SpringIsComing.injagang.Service;
 
 import com.SpringIsComing.injagang.DTO.MockInterviewDTO;
 import com.SpringIsComing.injagang.Entity.*;
-import com.SpringIsComing.injagang.Repository.EssayRepository;
-import com.SpringIsComing.injagang.Repository.InterviewRepository;
-import com.SpringIsComing.injagang.Repository.MemberRepository;
-import com.SpringIsComing.injagang.Repository.MockInterviewRepository;
+import com.SpringIsComing.injagang.Repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,6 +24,7 @@ public class InterviewServiceImpl implements InterviewService{
     private final MemberRepository memberRepository;
     private final InterviewRepository interviewRepository;
     private final MockInterviewRepository mockInterviewRepository;
+    private final InterviewQuestionRepository questionRepository;
 
     @Override
     public List<Interview> findInterviews(Member member) {
@@ -81,6 +79,67 @@ public class InterviewServiceImpl implements InterviewService{
         });
 
         return dtoList;
+    }
+
+    @Override
+    public void getRandomBasicQuestions(List<String> questionList, int baseQuestion, int csQuestion, int jobQuestion, int situationQuestion) {
+        List<InterviewQuestion> allQuestions = questionRepository.findAll();
+
+        List<Integer> integerList = new ArrayList<>();
+        for (int i = 0; i < allQuestions.size(); i++) {
+            integerList.add(i);
+        }
+
+        Collections.shuffle(integerList);
+        for (int i : integerList) {
+            if(baseQuestion <= 0) break;
+
+            if(allQuestions.get(i).getQuestionType() == QuestionType.PERSONALITY) {
+                questionList.add(allQuestions.get(i).getTitle());
+                baseQuestion--;
+            }
+        }
+
+        Collections.shuffle(integerList);
+        for (int i : integerList) {
+            if(csQuestion <= 0) break;
+
+            if(allQuestions.get(i).getQuestionType() == QuestionType.CS) {
+                questionList.add(allQuestions.get(i).getTitle());
+                csQuestion--;
+            }
+        }
+
+        Collections.shuffle(integerList);
+        for (int i : integerList) {
+            if(jobQuestion <= 0) break;
+
+            if(allQuestions.get(i).getQuestionType() == QuestionType.JOB) {
+                questionList.add(allQuestions.get(i).getTitle());
+                jobQuestion--;
+            }
+        }
+
+        Collections.shuffle(integerList);
+        for (int i : integerList) {
+            if(situationQuestion <= 0) break;
+
+            if(allQuestions.get(i).getQuestionType() == QuestionType.SITUATION) {
+                questionList.add(allQuestions.get(i).getTitle());
+                situationQuestion--;
+            }
+        }
+    }
+
+    @Override
+    public List<Integer> getQuestionNums() {
+        List<Integer> list = new ArrayList<>();
+
+        list.add(questionRepository.countByQuestionType(QuestionType.PERSONALITY));
+        list.add(questionRepository.countByQuestionType(QuestionType.CS));
+        list.add(questionRepository.countByQuestionType(QuestionType.JOB));
+        list.add(questionRepository.countByQuestionType(QuestionType.SITUATION));
+        return list;
     }
 
     @Override

@@ -103,12 +103,31 @@
                     </select>
                 </div>
                 <br>
-                <br>
                 <div class="form-inline">
                     <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="csQuestion">CS 면접 질문</p>
                     <select class="form-control col-6 text-center" id="csQuestion" name="csQuestion" required>
                         <option class="text-center" value="" hidden>문제 수 선택</option>
                         <th:block th:each="num: ${#numbers.sequence(0,csQuestion)}">
+                            <option th:value="${num}"><p th:text="${num}"></p></option>
+                        </th:block>
+                    </select>
+                </div>
+                <br>
+                <div class="form-inline">
+                    <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="csQuestion">직무 면접 질문</p>
+                    <select class="form-control col-6 text-center" id="jobQuestion" name="jobQuestion" required>
+                        <option class="text-center" value="" hidden>문제 수 선택</option>
+                        <th:block th:each="num: ${#numbers.sequence(0,jobQuestion)}">
+                            <option th:value="${num}"><p th:text="${num}"></p></option>
+                        </th:block>
+                    </select>
+                </div>
+                <br>
+                <div class="form-inline">
+                    <p class="col-6" style="padding-left: 10%; padding-right: 10%" for="csQuestion">상황 면접 질문</p>
+                    <select class="form-control col-6 text-center" id="situationQuestion" name="situationQuestion" required>
+                        <option class="text-center" value="" hidden>문제 수 선택</option>
+                        <th:block th:each="num: ${#numbers.sequence(0,situationQuestion)}">
                             <option th:value="${num}"><p th:text="${num}"></p></option>
                         </th:block>
                     </select>

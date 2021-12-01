@@ -34,9 +34,14 @@ public class InterviewController {
         service.getEssays(essayMap, nickname);
 //        log.info("essayMap = {}", essayMap);
 
+        List<Integer> questionNums = service.getQuestionNums();
+        log.info("questionNums: " + questionNums);
+
         model.addAttribute("isNoQuestion", isNoQuestion);
-        model.addAttribute("baseQuestion",10); //인성면접 개수
-        model.addAttribute("csQuestion",6); //전공면접 개수
+        model.addAttribute("baseQuestion",questionNums.get(0)); //인성 질문 개수
+        model.addAttribute("csQuestion",questionNums.get(1)); //cs 질문 개수
+        model.addAttribute("jobQuestion",questionNums.get(2)); //직무 질문 개수
+        model.addAttribute("situationQuestion",questionNums.get(3)); //상황 질문 개수
         model.addAttribute("essayMap",essayMap); //자소서 이름, 질문수
         model.addAttribute("loginNickname", nickname);
         return "interview/init";
@@ -53,6 +58,8 @@ public class InterviewController {
         List<String> questionList = new ArrayList<>();
         int baseQuestion = Integer.parseInt(allParameters.get("baseQuestion").toString());
         int csQuestion = Integer.parseInt(allParameters.get("csQuestion").toString());
+        int jobQuestion = Integer.parseInt(allParameters.get("jobQuestion").toString());
+        int situationQuestion = Integer.parseInt(allParameters.get("situationQuestion").toString());
         int expectedQuestion;
         int userAddQuestion;
 
@@ -80,8 +87,8 @@ public class InterviewController {
             return "redirect:/interview/init";
         }
 
-        // 인성, cs 면접 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
-
+        // 인성, cs, 직무, 상황 면접 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
+        service.getRandomBasicQuestions(questionList, baseQuestion, csQuestion, jobQuestion, situationQuestion);
 
         // 예상 댓글 질문 해당 개수만큼 디비에서 랜덤으로 뽑아서 리스트에 추가
         service.getRandomExpectedQuestions(questionList, expectedQuestion, nickname);

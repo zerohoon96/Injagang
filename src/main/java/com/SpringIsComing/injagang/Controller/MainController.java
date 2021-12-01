@@ -137,7 +137,7 @@ public class MainController {
         List<MypageInterviewDTO> interviewDTOList = interviewService.findInterviews(targetMember).stream()
                 .map(i -> interviewService.toMypageInterViewDTO(i)).collect(toList());
 
-        List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(nickname);
+        List<MockInterviewDTO> mockInterviewDTOList = interviewService.findMockInterviews(curNickname);
 
         List<MypageFriendDTO> friendDTOList = targetFriends.stream()
                 .map(f -> memberService.findByLoginId(f.getLoginId()))
