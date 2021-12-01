@@ -1,6 +1,7 @@
 package com.SpringIsComing.injagang.config;
 
 import com.SpringIsComing.injagang.interceptor.LoginInterceptor;
+import com.SpringIsComing.injagang.upload.UploadConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -13,8 +14,8 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${com.SpringIsComing.injagang.upload.path}")
-    private String uploadPath;
+//    @Value("${com.SpringIsComing.injagang.upload.path}")
+    private String uploadPath = UploadConst.UPLOAD_PATH;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

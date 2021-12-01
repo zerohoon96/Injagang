@@ -3,6 +3,7 @@ package com.SpringIsComing.injagang.Controller;
 import com.SpringIsComing.injagang.DTO.*;
 import com.SpringIsComing.injagang.Service.AlarmService;
 import com.SpringIsComing.injagang.Service.BoardService;
+import com.SpringIsComing.injagang.upload.UploadConst;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ import java.util.stream.Collectors;
 public class BoardController {
 
     //영상 업로드 위치
-    @Value("${com.SpringIsComing.injagang.upload.path}")
-    private String uploadPath;
+//    @Value("${com.SpringIsComing.injagang.upload.path}")
+    private String uploadPath = UploadConst.UPLOAD_PATH;
 
     private final BoardService service;
     private final AlarmService alarmService;
