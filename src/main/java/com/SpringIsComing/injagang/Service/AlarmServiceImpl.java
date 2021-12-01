@@ -79,8 +79,10 @@ public class AlarmServiceImpl  implements AlarmService {
         String content;
         String title = essay.getTitle();
 
-
-        content = nickname + " 님이 " + title + "에 " + type +"을 남겼습니다.";
+        if (title.length() > 20) {
+            title = title.substring(0, 20) + "...";
+        }
+        content = nickname + "님이 " + title + "에 " + type +"을 남겼습니다.";
 
 
         EssayAlarm essayAlarm = new EssayAlarm(essay.getWriter(), content, LocalDateTime.now(), nickname, essay);
@@ -115,8 +117,10 @@ public class AlarmServiceImpl  implements AlarmService {
 
         String content;
         String title = interview.getTitle();
-
-        content = nickname + " 님이 " + title + "에 " + type +"을 남겼습니다.";
+        if (title.length() > 20) {
+            title = title.substring(0, 20) + "...";
+        }
+        content = nickname + "님이 " + title + "에 " + type +"을 남겼습니다.";
 
         InterviewAlarm interviewAlarm = new InterviewAlarm(interview.getWriter(), content, LocalDateTime.now(), nickname, interview);
 
