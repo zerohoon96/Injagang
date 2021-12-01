@@ -276,6 +276,7 @@ public class BoardController {
 
         //예상질문 저장 후 리다이렉트
         service.registerExpectedQuestion(content_pk, content, nickname);
+        alarmService.addFeedbackAlarm(essay_pk,nickname);
         return "redirect:/essay/board/" + essay_pk;
     }
 
