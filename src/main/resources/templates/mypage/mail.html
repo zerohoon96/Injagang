@@ -11,7 +11,7 @@
                 .body{
                     display: flex;
                     height: 100%;
-                    background: #f5f6f7;
+                    /*background: #f5f6f7;*/
                     justify-content: center;
                     align-items: center;
                 }
@@ -24,57 +24,15 @@
                     align-items: center;
                 }
 
-                .container-fluid {
-                    background-color: #f5f6f7;
-                    height: 100%;
-                }
-                .input{
-                    display: block;
-                    width: 100%;
-                    height: 51px;
-                    border: solid 1px #dadada;
-                    padding: 10px 14px 10px 14px;
-                    box-sizing: border-box;
-                    background: #fff;
-                    /* position: relative; */
-                }
-                .flex{
-                    display: flex;
-                }
-
-                .justify-content-even{
-                    justify-content:space-evenly
-                }
-
-                .w-300{
-                    width: 300px;
-                }
-
                 .w-400 {
                     width: 400px;
                 }
-                .margin-top-30{
-                    margin-top: 30px;
-                }
-
-                .margin-bottom-10 {
-                    margin-bottom: 10px;
-                }
-
-                .margin-bottom-30 {
-                    margin-bottom: 30px;
-                }
-
-                .margin-bottom-50 {
-                    margin-bottom: 50px;
+                .margin-top-20{
+                    margin-top: 20px;
                 }
 
                 .btn{
                     padding: 10px 14px 10px 14px;
-                }
-
-                .field-error {
-                    color: red;
                 }
 
 
@@ -86,12 +44,12 @@
         <div class="body">
             <div id="content">
 
-                <a href="/login" class="margin-top-30"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
+                <a href="/login" class="margin-top-20"><img th:src="@{/인자강.png}" width="300px" height="200px" src="../../static/인자강.png"></a>
 
                 <span>입력하신 이메일로 메일을 전송했습니다.</span>
                 <span>이메일을 확인해주세요.</span>
                 <br><br>
-                <button class="w-400 btn btn-primary" th:onclick="|location.href='@{/login}'|">로그인하러가기</button>
+                <button class="w-400 btn btn-outline-info" th:onclick="|location.href='@{/login}'|">로그인 하러가기</button>
             </div>
         </div>
         </body>

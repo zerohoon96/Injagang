@@ -138,6 +138,7 @@ public class EssayController {
         model.addAttribute("questions", questions);
         model.addAttribute("answers", answers);
         model.addAttribute("essayPostName", essay.getEssayTitle());
+        model.addAttribute("loginNickname", nickname);
         return "feedback/write";
     }
 
@@ -161,7 +162,8 @@ public class EssayController {
 
     @GetMapping("/feedback/read/{feedbackId}")
         //첨삭 읽기를 눌렀을때
-    String readFeedback(@SessionAttribute("loginSession") String nickname,
+    String readFeedback(Model model,
+                        @SessionAttribute("loginSession") String nickname,
                         @PathVariable Long feedbackId,
                         @ModelAttribute("feedback") EssayFeedbackReadDTO feedback) throws Exception {
         EssayFeedback essayFeedback = feedbackService.findById(feedbackId); //feedbackID로 essayFeedback 저장
@@ -205,6 +207,7 @@ public class EssayController {
         feedback.setEssayId(essay.getId());
         feedback.setCurUserNickname(nickname);
         feedback.setWriteTime(essayFeedback.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        model.addAttribute("loginNickname", nickname);
         return "feedback/read";
     }
 
@@ -217,7 +220,8 @@ public class EssayController {
 
     @GetMapping("/feedback/update/{feedbackId}")
         //첨삭 수정을 눌렀을때
-    String updateFeedback(@SessionAttribute("loginSession") String nickname,
+    String updateFeedback(Model model,
+                          @SessionAttribute("loginSession") String nickname,
                           @PathVariable Long feedbackId,
                           @ModelAttribute("readFeedback") EssayFeedbackReadDTO readFeedback,
                           @ModelAttribute("writeFeedback") EssayFeedbackInfoDTO writeFeedback) throws Exception {
@@ -263,6 +267,7 @@ public class EssayController {
         readFeedback.setEssayId(essay.getId());
         readFeedback.setCurUserNickname(nickname);
         readFeedback.setWriteTime(essayFeedback.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        model.addAttribute("loginNickname", nickname);
         return "feedback/update";
     }
 

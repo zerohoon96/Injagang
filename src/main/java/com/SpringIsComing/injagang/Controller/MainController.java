@@ -5,10 +5,8 @@ import com.SpringIsComing.injagang.DTO.FindDTO;
 import com.SpringIsComing.injagang.DTO.LoginDTO;
 import com.SpringIsComing.injagang.DTO.RegisterDTO;
 import com.SpringIsComing.injagang.DTO.*;
-import com.SpringIsComing.injagang.Entity.Essay;
 import com.SpringIsComing.injagang.Entity.Friend;
 import com.SpringIsComing.injagang.Entity.Member;
-import com.SpringIsComing.injagang.Entity.MockInterview;
 import com.SpringIsComing.injagang.Service.*;
 import com.SpringIsComing.injagang.session.SessionConst;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +19,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -55,7 +51,7 @@ public class MainController {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("loginSession") == null) {
-            return "mypage/test";//아직 안됨
+            return "/mypage/start";//아직 안됨
         }
 
         redirectAttributes.addAttribute("nickname", (String) session.getAttribute("loginSession"));
