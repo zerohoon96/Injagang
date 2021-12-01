@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+<th:block th:replace="~{layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
         <head>
             <style>
@@ -27,9 +27,7 @@
                 <td th:if="${dto.title.length} < 31" class="text-left"><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
                 type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}">
                     [[${dto.title}]]</a></span><span class="ml-1" th:text="|[${dto.rCnt}]|"></span></td>
-                <td>[[${dto.fCnt}]]</td>
-                <td th:unless="${dto.title.length} < 31" class="text-left">
-                    <a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
+                <td th:unless="${dto.title.length} < 31" class="text-left"><a th:href="@{/interview/board/{pk}(pk=${dto.pk}, page=${result.page},
                     type=${pageRequestDTO.type}, keyword = ${pageRequestDTO.keyword})}" th:text="|${dto.title.substring(0, 31)}...|"></a>
                     <span class="ml-1" th:text="|[${dto.rCnt}]|"></span></td>
                 <td>[[${dto.fCnt}]]</td>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<th:block th:replace="~{/layout/basic :: setContent(~{this :: content})}">
+<th:block th:replace="~{layout/basic :: setContent(~{this :: content})}">
     <th:block th:fragment="content">
         <head>
             <meta charset="utf-8">
@@ -104,7 +104,7 @@
                     "<th class='col-4 text-align-center'>자기소개서 이름</th>" +
                     "<th class='col-2 text-align-center'>첨삭 개수</th>" +
                     "<th class='col-2 text-align-center'>예상질문 개수</th>" +
-                        "<th class='col-2 text-align-center'>공개 범위</th>" +
+                    "<th class='col-2 text-align-center'>공개 범위</th>" +
                     "<th class='col-2 text-align-center'>작성 날짜</th>";
                 
                 let str = "";
@@ -116,7 +116,11 @@
                     //공개범위에 따라 자소서 보기 처리
                     if((curNickname == loginNickname) || essay.access == 2) {
                         console.log("내 자소서 또는 게시물");
-                        str += "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + essay.essayTitle + "</a></td>";
+                        let eTitle = essay.essayTitle;
+                        if (eTitle.length > 25) {
+                            eTitle = eTitle.substring(0, 24) + "...";
+                        }
+                        str += "<td><a href='/essay/read/" + essay.id + "' style='text-decoration: none'>" + eTitle + "</a></td>";
                     }
                     else if (isFriend(loginNickname) && essay.access == 1) { //친구일 경우
                         console.log("친구일 경우");
@@ -162,9 +166,13 @@
 
                 body.innerHTML = "";
                 interviewList.forEach((interview) => {
+                    let tmpTitle = interview.title;
+                    if (tmpTitle.length > 25) {
+                        tmpTitle = tmpTitle.substring(0, 24) + "...";
+                    }
                     body.innerHTML +=
                         "<tr>" +
-                        "<td><a href='/interview/board/" + interview.id +"' style='text-decoration: none'>" + interview.title + "</a></td>" +
+                        "<td><a href='/interview/board/" + interview.id +"' style='text-decoration: none'>" + tmpTitle + "</a></td>" +
                         "<td class='text-align-center'>" + interview.questionNum + "</td>" +
                         "<td class='text-align-center'>" + interview.feedbackNum + "</td>" +
                         "<td class='text-align-center'>" + interview.createTime + "</td>" +
@@ -181,7 +189,11 @@
     
                 body.innerHTML = "";
                 mockInterviewList.forEach((mock) => {
-                    body.innerHTML += `<tr><td>${mock.title}</td>
+                    let tmpMock = mock.title;
+                    if (tmpMock.length > 25) {
+                        tmpMock = tmpMock.substring(0, 24) + "...";
+                    }
+                    body.innerHTML += `<tr><td>${tmpMock}</td>
             <td class="text-align-center">${mock.qnum}</td> <td class="text-align-center">${mock.date}</td></tr>`;
                 });
             }
