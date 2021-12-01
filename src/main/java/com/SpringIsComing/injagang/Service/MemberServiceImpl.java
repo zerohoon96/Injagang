@@ -107,7 +107,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 토근"));
 
         Member findMember = memberRepository.findByLoginId(findToken.getUserId()).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다"));
-
         findToken.useToken();
 
         return findMember;
@@ -121,8 +120,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void changePassword(String nickname, String password) {
-        Member findMember = memberRepository.findByNickname(nickname);
+    public void changePassword(String loginId, String password) {
+        Member findMember = memberRepository.findByLoginId(loginId).get();
 
         String digest = encoder.encode(password);
 

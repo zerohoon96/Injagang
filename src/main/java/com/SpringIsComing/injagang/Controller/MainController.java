@@ -435,7 +435,6 @@ public class MainController {
     public String changePasswordEnd(@Valid @ModelAttribute("passwords") ChangePasswordTokenDTO changePasswordTokenDTO
             , BindingResult bindingResult, @RequestParam String token) {
 
-
         if (bindingResult.hasErrors()) {
             return "mypage/changePasswordToken";
         }
@@ -447,7 +446,6 @@ public class MainController {
 
         Member findMember = memberService.confirmEmailForPassword(token);
         memberService.changePassword(findMember.getLoginId(), changePasswordTokenDTO.getPassword());
-
         return "redirect:/login";
 
     }
